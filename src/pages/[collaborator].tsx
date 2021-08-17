@@ -6,16 +6,10 @@ import { api } from "../service/api"
 interface CollaboratorDataProps {
   gitData: {
     login: string,
-    avatar_url?: string,
-    html_url?: string,
-    followers_url: string,
-    following_url: string,
-    repos_url: string,
     name: string,
     location: string
     email?: string,
     bio: string,
-    public_repos: number,
     followers: number,
     following: number
   }
@@ -25,16 +19,10 @@ export default function Collaborator({ gitData }: CollaboratorDataProps) {
 
   const {
     login,
-    avatar_url,
-    html_url,
-    followers_url,
-    following_url,
-    repos_url,
     name,
     location,
     email,
     bio,
-    public_repos,
     followers,
     following,
   } = gitData
@@ -53,7 +41,6 @@ export default function Collaborator({ gitData }: CollaboratorDataProps) {
             className="h-2/4 rounded-full"
             layoutId={layoutIdLogo}
           />
-
           <div className="ml-5 flex flex-1 flex-col mt-4 md:mt-0">
             <div className="pl-2 mb-3 flex-1">
               <h4 className="text-xl md:text-2xl">Meu nome: <span className="font-extrabold">{name ?? 'Sem nome'}</span></h4>
@@ -61,6 +48,7 @@ export default function Collaborator({ gitData }: CollaboratorDataProps) {
               <p>Localidade: <span className="font-extrabold">{location}</span></p>
               <p>Total de Followers: {followers}</p>
               <p>Total de Following: {following}</p>
+              <p>E-mail para contato: {email}</p>
             </div>
             <motion.div
               initial={{ opacity: 0 }}
@@ -102,16 +90,10 @@ export const getServerSideProps: GetServerSideProps = async ({ params }) => {
 
   const gitData = {
     login: data.login,
-    avatar_url: data.avatar_url,
-    html_url: data.html_url,
-    followers_url: data.followers_url,
-    following_url: data.following_url,
-    repos_url: data.repos_url,
     name: data.name,
     location: data.location,
     email: data.email,
     bio: data.bio,
-    public_repos: data.public_repos,
     followers: data.followers,
     following: data.following,
   }
@@ -120,7 +102,7 @@ export const getServerSideProps: GetServerSideProps = async ({ params }) => {
     props: {
       gitData,
     },
-    redirect: 60 * 30 //30 minutos
+    redirect: 60 * 30
   }
 
 }
