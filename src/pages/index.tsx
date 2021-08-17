@@ -11,13 +11,6 @@ export default function Page() {
   const [confettiWidth, setConfettiWidth] = useState(0);
   const [confettiHeight, setConfettiHeight] = useState(0);
 
-  const [shuffledCollaboratorsLength, setShuffledCollaboratorsLength] = useState(0);
-
-  useEffect(() => {
-    setShuffledCollaboratorsLength(setShuffledCollaborators.length)
-    shuffledCollaboratorsLength % 2 == 0 ? 'grid-cols-3' : 'grid-cols-2'
-  }, [shuffledCollaborators])
-
   useEffect(() => {
     setShuffledCollaborators(shuffle(collaborators));
 
