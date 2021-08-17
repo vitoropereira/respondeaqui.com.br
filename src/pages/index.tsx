@@ -2,9 +2,7 @@ import Confetti from "react-confetti";
 import { useState, useEffect } from "react";
 
 import collaborators from "../../public/init/collaborators.json";
-import CollaboratorsCard from "../components/CollaboratorsCard";
-import Link from "next/link";
-import Layout from "../components/Layout";
+import CollaboratorsCard from "./components/CollaboratorsCard";
 
 export default function Page() {
   const [shuffledCollaborators, setShuffledCollaborators] = useState([]);
