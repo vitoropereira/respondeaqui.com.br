@@ -8,7 +8,7 @@ export default async function getCollaborators() {
   const collaborators = await octokit.paginate(
     "GET /repos/{owner}/{repo}/collaborators",
     {
-      owner: "vop1234",
+      owner: "vitoropereira",
       repo: "respondeaqui.com.br",
     }
   );
