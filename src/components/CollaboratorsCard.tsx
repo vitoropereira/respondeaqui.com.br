@@ -9,15 +9,11 @@ interface CollaboratorsCardProps {
   layoutId: string;
 }
 
-const CollaboratorsCard = ({
-  username,
-  imagesUrls,
-  layoutId,
-}: CollaboratorsCardProps) => {
+const CollaboratorsCard = ({ username, layoutId }: CollaboratorsCardProps) => {
   const [imagesUrl, setImagesUrl] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  const collaboratorPage = `./${username}`;
+  const collaboratorPage = `./${username.username}`;
   const layoutIdLogo = `${layoutId}_logo`;
 
   return (
@@ -25,7 +21,7 @@ const CollaboratorsCard = ({
       <a className="hover:bg-blue-300">
         <div className="relative w-20 md:w-40 mx-3 mt-3 cursor-pointer transition">
           <motion.img
-            src={imagesUrl}
+            src={username.avatar_url}
             className="w-full h-full rounded-t-xl"
             layoutId={layoutIdLogo}
           />

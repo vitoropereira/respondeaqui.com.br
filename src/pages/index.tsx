@@ -5,21 +5,12 @@ import collaborators from "../../public/init/collaborators.json";
 import CollaboratorsCard from "../components/CollaboratorsCard";
 import { GetStaticProps } from "next";
 
-export interface OwnerProps {
-  id: number;
-  node_id: string;
-  avatar_url: string;
-  url: string;
-  html_url: string;
-  repos_url: string;
-}
+export interface OwnerProps {}
 
-interface RepositoryProps {
-  owner: OwnerProps;
-}
+interface PageProps {}
 
 export default function Page({ imagesUrls }) {
-  // console.log(imagesUrls);
+  console.log(imagesUrls);
   const [shuffledCollaborators, setShuffledCollaborators] = useState([]);
   const [confettiWidth, setConfettiWidth] = useState(0);
   const [confettiHeight, setConfettiHeight] = useState(0);
@@ -59,13 +50,12 @@ export default function Page({ imagesUrls }) {
       </p>
 
       <div className="mt-10 md:mt-24 flex flex-wrap justify-center">
-        {shuffledCollaborators.map((username) => {
+        {imagesUrls.map((username) => {
           return (
             <CollaboratorsCard
               key={username}
               username={username}
               layoutId={username}
-              imagesUrls={imagesUrls}
             />
           );
         })}
@@ -85,19 +75,25 @@ function shuffle(arr) {
 
 export const getStaticProps: GetStaticProps = async () => {
   const shuffleCollaborators = shuffle(collaborators);
-  const imagesUrls = shuffleCollaborators.forEach(async (username: string) => {
-    const response = await fetch(
-      `https://api.github.com/users/${username}/repos`
-    );
+  const imagesUrls = [];
+  shuffleCollaborators.forEach(async (username: string) => {
+    try {
+      const response = await fetch(
+        `https://api.github.com/users/${username}/repos`
+      );
 
-    const data = await response.json();
-    console.log(data);
+      const data = await response.json();
+      imagesUrls[username] = {
+        username,
+        avatar_url: data[0].owner.avatar_url,
+        html_url: data[0].owner.html_url,
+      };
+    } catch (error) {
+      console.log(error);
+    }
   });
 
-  console.log("imagesUrls");
-  console.log(imagesUrls);
   return {
-    props: {},
-    revalidate: 1,
+    props: { imagesUrls },
   };
 };
