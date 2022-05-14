@@ -21,7 +21,6 @@ interface RepositoryProps {
 }
 
 const CollaboratorsCard = ({ username, layoutId }: CollaboratorsCardProps) => {
-  console.log(username);
   const [imagesUrl, setImagesUrl] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
@@ -42,7 +41,6 @@ const CollaboratorsCard = ({ username, layoutId }: CollaboratorsCardProps) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const collaboratorAvatar = `./avatars/${username}.jpg`;
   const collaboratorPage = `./${username}`;
   const layoutIdLogo = `${layoutId}_logo`;
 
