@@ -1,36 +1,27 @@
-import { motion } from "framer-motion"
-import { GetServerSideProps } from "next"
-import Link from "next/link"
-import { api } from "../service/api"
+import { motion } from "framer-motion";
+import { GetServerSideProps } from "next";
+import Link from "next/link";
+import { api } from "../service/api";
 
 interface CollaboratorDataProps {
   gitData: {
-    login: string,
-    name: string,
-    location: string
-    email?: string,
-    bio: string,
-    followers: number,
-    following: number
-  }
+    login: string;
+    name: string;
+    location: string;
+    email?: string;
+    bio: string;
+    followers: number;
+    following: number;
+  };
 }
 
 export default function Collaborator({ gitData }: CollaboratorDataProps) {
+  const { login, name, location, email, bio, followers, following } = gitData;
 
-  const {
-    login,
-    name,
-    location,
-    email,
-    bio,
-    followers,
-    following,
-  } = gitData
+  const collaboratorAvatar = `./avatars/${login}.jpg`;
+  const layoutIdLogo = `${login}_logo`;
 
-  const collaboratorAvatar = `./avatars/${login}.jpg`
-  const layoutIdLogo = `${login}_logo`
-
-  const gitHubProfile = `https://github.com/${login}`
+  const gitHubProfile = `https://github.com/${login}`;
 
   return (
     <>
@@ -43,9 +34,14 @@ export default function Collaborator({ gitData }: CollaboratorDataProps) {
           />
           <div className="ml-5 flex flex-1 flex-col mt-4 md:mt-0">
             <div className="pl-2 mb-3 flex-1">
-              <h4 className="text-xl md:text-2xl">Meu nome: <span className="font-extrabold">{name ?? 'Sem nome'}</span></h4>
+              <h4 className="text-xl md:text-2xl">
+                Meu nome:{" "}
+                <span className="font-extrabold">{name ?? "Sem nome"}</span>
+              </h4>
               <p>"{bio}"</p>
-              <p>Localidade: <span className="font-extrabold">{location}</span></p>
+              <p>
+                Localidade: <span className="font-extrabold">{location}</span>
+              </p>
               <p>Total de Followers: {followers}</p>
               <p>Total de Following: {following}</p>
               <p>E-mail para contato: {email}</p>
@@ -78,15 +74,13 @@ export default function Collaborator({ gitData }: CollaboratorDataProps) {
         </motion.div>
       </div>
     </>
-  )
+  );
 }
 
-
-
 export const getServerSideProps: GetServerSideProps = async ({ params }) => {
-  const { collaborator } = params
+  const { collaborator } = params;
 
-  const { data } = await api.get(`/users/${collaborator}`)
+  const { data } = await api.get(`/users/${collaborator}`);
 
   const gitData = {
     login: data.login,
@@ -96,13 +90,12 @@ export const getServerSideProps: GetServerSideProps = async ({ params }) => {
     bio: data.bio,
     followers: data.followers,
     following: data.following,
-  }
+  };
 
   return {
     props: {
       gitData,
     },
-    redirect: 60 * 30
-  }
-
-}
+    redirect: 60 * 30,
+  };
+};

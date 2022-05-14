@@ -2,7 +2,7 @@ import Confetti from "react-confetti";
 import { useState, useEffect } from "react";
 
 import collaborators from "../../public/init/collaborators.json";
-import CollaboratorsCard from "./components/CollaboratorsCard";
+import CollaboratorsCard from "../components/CollaboratorsCard";
 
 export default function Page() {
   const [shuffledCollaborators, setShuffledCollaborators] = useState([]);
@@ -37,20 +37,23 @@ export default function Page() {
       </h1>
 
       <p className="mt-3">
-        Este é um projeto desenvolvido para auxiliar pessoas a estudarem para concurso.
-        A metodologia utilizada é de apenas responder questões.
-        Esta página é uma homenagem a todos que em algum momento auxiliou este projeto de alguma forma.
-
+        Este é um projeto desenvolvido para auxiliar pessoas a estudarem para
+        concurso. A metodologia utilizada é de apenas responder questões. Esta
+        página é uma homenagem a todos que em algum momento auxiliou este
+        projeto de alguma forma.
       </p>
 
       <div className="mt-10 md:mt-24 flex flex-wrap justify-center">
         {shuffledCollaborators.map((username) => {
           return (
-            <CollaboratorsCard key={username} username={username} layoutId={username} />
-          )
+            <CollaboratorsCard
+              key={username}
+              username={username}
+              layoutId={username}
+            />
+          );
         })}
       </div>
-
     </>
   );
 }
