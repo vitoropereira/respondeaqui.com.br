@@ -8,21 +8,21 @@ export const feedbackTypes = {
   BUG: {
     title: "Problema",
     image: {
-      src: "bug.svg",
+      src: "/images/bug.svg",
       alt: "Imagem de um inseto",
     },
   },
   IDEA: {
     title: "Ideia",
     image: {
-      src: "idea.svg",
+      src: "/images/idea.svg",
       alt: "Imagem de uma lâmpada",
     },
   },
   OTHER: {
     title: "Outro",
     image: {
-      src: "thought.svg",
+      src: "/images/thought.svg",
       alt: "Imagem de um balão de pensamento",
     },
   },
@@ -59,6 +59,7 @@ export function WidgetForm() {
               />
               <FeedBackContentStep
                 onFeedbackSent={() => setFeedbackSent(true)}
+                feedbackType={feedbackType}
               />
             </>
           )}
