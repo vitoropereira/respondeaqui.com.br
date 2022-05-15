@@ -4,12 +4,19 @@ import { useState, useEffect } from "react";
 import collaborators from "../../public/init/collaborators.json";
 import CollaboratorsCard from "../components/CollaboratorsCard";
 import { GetStaticProps } from "next";
+import { Widget } from "../components/Widget";
 
-export interface OwnerProps {}
+export interface OwnerProps {
+  username: string;
+  avatar_url: string;
+  html_url: string;
+}
 
-interface PageProps {}
+interface PageProps {
+  imagesUrls: OwnerProps[];
+}
 
-export default function Page({ imagesUrls }) {
+export default function Page({ imagesUrls }: PageProps) {
   console.log(imagesUrls);
   const [shuffledCollaborators, setShuffledCollaborators] = useState([]);
   const [confettiWidth, setConfettiWidth] = useState(0);
@@ -38,7 +45,7 @@ export default function Page({ imagesUrls }) {
         gravity={0.15}
       />
 
-      <h1 className="text-2xl sm:text-4xl lg:text-5xl mt-2 md:mt-4 leading-none font-extrabold tracking-tight text-gray-900">
+      <h1 className="text-2xl sm:text-4xl lg:text-5xl mt-2 md:mt-4 leading-none font-extrabold tracking-tight text-gray-100">
         Os colaboradores deste projeto são:
       </h1>
 
@@ -50,16 +57,17 @@ export default function Page({ imagesUrls }) {
       </p>
 
       <div className="mt-10 md:mt-24 flex flex-wrap justify-center">
-        {imagesUrls.map((username) => {
+        {imagesUrls.map((item) => {
           return (
             <CollaboratorsCard
-              key={username}
-              username={username}
-              layoutId={username}
+              key={item.username}
+              username={item}
+              layoutId={item.username}
             />
           );
         })}
       </div>
+      <Widget />
     </>
   );
 }

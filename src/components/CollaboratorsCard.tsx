@@ -2,10 +2,11 @@ import { motion } from "framer-motion";
 import { GetStaticProps } from "next";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { OwnerProps } from "../pages";
 
 interface CollaboratorsCardProps {
-  username: string;
-  imagesUrls: string;
+  username: OwnerProps;
+  imagesUrls?: string;
   layoutId: string;
 }
 
@@ -29,7 +30,7 @@ const CollaboratorsCard = ({ username, layoutId }: CollaboratorsCardProps) => {
         <div className="mx-3 m-auto mb-3 py-2 w-20 md:w-40 rounded-b-xl bg-blue-300 hover:bg-blue-600 transition">
           <p className="text-xs md:text-sm lg:text-md flex justify-center whitespace-nowrap overflow-hidden overflow-ellipsis">
             {" "}
-            @{username}{" "}
+            @{username.username}{" "}
           </p>
         </div>
       </a>
