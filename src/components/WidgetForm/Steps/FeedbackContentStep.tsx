@@ -1,4 +1,3 @@
-import { Camera } from "phosphor-react";
 import { FormEvent, useState } from "react";
 import { FeedbackType } from "..";
 import { apiFeedback } from "../../../service/api";
@@ -21,15 +20,19 @@ export function FeedBackContentStep({
   async function handleSubmitFeedback(event: FormEvent) {
     event.preventDefault();
     setIsSendingFeedback(true);
+    try {
+      await apiFeedback.post("/api/feedbacks", {
+        type: feedbackType,
+        comment,
+        screenshot,
+      });
+      onFeedbackSent();
+      setIsSendingFeedback(false);
+    } catch (error) {
+      console.log(error);
 
-    await apiFeedback.post("/api/feedbacks", {
-      type: feedbackType,
-      comment,
-      screenshot,
-    });
-
-    setIsSendingFeedback(false);
-    onFeedbackSent();
+      setIsSendingFeedback(false);
+    }
   }
 
   return (
