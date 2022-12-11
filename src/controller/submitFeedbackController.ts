@@ -37,7 +37,7 @@ export class SubmitFeedback {
         ].join("\n"),
       });
     } catch (error) {
-      console.log(error);
+      console.log(error, "sendMail mensagem de erro!!");
     }
   }
 }

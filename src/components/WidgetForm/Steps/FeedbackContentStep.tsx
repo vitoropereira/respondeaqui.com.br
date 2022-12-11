@@ -29,7 +29,7 @@ export function FeedBackContentStep({
       onFeedbackSent();
       setIsSendingFeedback(false);
     } catch (error) {
-      console.log(error);
+      console.log(error, "Mensagem de erro!!!");
 
       setIsSendingFeedback(false);
     }

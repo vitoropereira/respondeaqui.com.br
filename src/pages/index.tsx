@@ -101,7 +101,7 @@ export const getStaticProps: GetStaticProps = async () => {
         html_url: data[0].owner.html_url,
       };
     } catch (error) {
-      console.log(error);
+      console.log(error, "shuffleCollaborators Mensagem de erro!!");
     }
   });
 

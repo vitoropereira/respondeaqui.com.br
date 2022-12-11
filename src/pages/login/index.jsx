@@ -34,7 +34,6 @@ export default function Login() {
   const handleGithubLogin = async () => {
     let result = await loginFirebase.githubPopup()
     if (result) {
-      console.log(result)
       const newUser = {
         id: result.user.multiFactor.user.uid,
         name: result.user.multiFactor.user.displayName,
