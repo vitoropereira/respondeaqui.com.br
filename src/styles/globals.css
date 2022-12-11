@@ -2,7 +2,18 @@
 @tailwind components;
 @tailwind utilities;
 @layer body {
-    body {
-        @apply bg-[#09090a] text-zinc-100;
-    }
+  body {
+    @apply bg-[#dedede] text-zinc-100;
+  }
+}
+
+@layer utilities {
+  .scrollbar::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  .scrollbar::-webkit-scrollbar-thumb {
+    background-color: rgba(0, 0, 0, 0.2);
+  }
 }

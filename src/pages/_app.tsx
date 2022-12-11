@@ -1,16 +1,18 @@
 import { AnimateSharedLayout } from "framer-motion";
 import { AppProps } from "next/app";
-import Layout from "../components/Layout";
+import { AuthUserContextProvider } from "../context/AuthUserContextProvider";
 
 import "../styles/globals.css";
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
-    <AnimateSharedLayout>
-      <Layout>
+    <AuthUserContextProvider>
+      {/* <ThemeProvider     <GlobalStyled />  theme={isDarkTheme ? lightTheme : darkTheme}> */}
+      <AnimateSharedLayout>
         <Component {...pageProps} />
-      </Layout>
-    </AnimateSharedLayout>
+      </AnimateSharedLayout>
+      {/* </ThemeProvider> */}
+    </AuthUserContextProvider>
   );
 }
 

@@ -38,3 +38,5 @@ yarn
 .lock
 TODO.MD
 ./scripts
+
+texts.md

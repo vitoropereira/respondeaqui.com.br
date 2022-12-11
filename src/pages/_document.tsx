@@ -1,5 +1,4 @@
 import Document, { Head, Html, Main, NextScript } from "next/document";
-import { render } from "react-dom";
 
 class MyDocument extends Document {
   static async getInitialProps(ctx) {

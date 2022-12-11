@@ -1,7 +1,7 @@
 import { motion } from "framer-motion";
 import { GetServerSideProps } from "next";
 import Link from "next/link";
-import { api } from "../service/api";
+import { apiGithub } from "../service/api";
 
 interface CollaboratorDataProps {
   gitData: {
@@ -38,7 +38,7 @@ export default function Collaborator({ gitData }: CollaboratorDataProps) {
                 Meu nome:{" "}
                 <span className="font-extrabold">{name ?? "Sem nome"}</span>
               </h4>
-              <p>"{bio}"</p>
+              <p>{bio}</p>
               <p>
                 Localidade: <span className="font-extrabold">{location}</span>
               </p>
@@ -80,7 +80,7 @@ export default function Collaborator({ gitData }: CollaboratorDataProps) {
 export const getServerSideProps: GetServerSideProps = async ({ params }) => {
   const { collaborator } = params;
 
-  const { data } = await api.get(`/users/${collaborator}`);
+  const { data } = await apiGithub.get(`/users/${collaborator}`);
 
   const gitData = {
     login: data.login,
