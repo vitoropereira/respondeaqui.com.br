@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import ChatIcon from "@mui/icons-material/Chat";
@@ -9,14 +9,17 @@ import { UserProps } from "../../repositories/user-repository";
 import { NewChat } from "../../components/NewChat";
 import { ChatList } from "../../components/ChatList";
 import { ChatWindow } from "../../components/ChatWindow";
-import { ChatIntro } from "../../components/ChatIntro";
 
 function App() {
   const [chatList, setChatList] = useState([]);
   const [activeChat, setActiveChat] = useState({
     chatId: "304ea09b-b85f-45b6-b63b-806c577cfe5b",
   });
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState({
+    id: "3bfb0142-88a8-4c3e-955f-049a6da89d26",
+    name: "Vitor",
+    avatar: "https://avatars.githubusercontent.com/u/47868559?v=4",
+  });
   const [showNewChat, setShowNewChat] = useState(false);
   const [isDarkTheme, setIsDarkTheme] = useState(true);
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -28,27 +31,27 @@ function App() {
   };
 
   const handleLoginData = async (user: UserProps) => {
+    // await Api.addUser(newUser);
+    setUser(user);
+  };
+
+  useEffect(() => {
     let newUser = {
       id: "3bfb0142-88a8-4c3e-955f-049a6da89d26",
       name: "Vitor",
       avatar: "https://avatars.githubusercontent.com/u/47868559?v=4",
     };
-
-    // await Api.addUser(newUser);
-    setUser(newUser);
-  };
-
-  // useEffect(() => {
-  //   if (user !== null) {
-  //     let user = Api.onChatList(user.id, setChatList);
-  //     return user;
-  //   }
-  //   handleLoginData();
-  // }, [user]);
-
-  if (!user) {
-    return route.push("./login");
-  }
+    // if (user !== null) {
+    //   let user = Api.onChatList(user.id, setChatList);
+    //   return user;
+    // }
+    handleLoginData(newUser);
+  }, [user]);
+  console.log("user -=----");
+  console.log(user);
+  // if (!user) {
+  //   return route.push("../login");
+  // }
 
   return (
     <div className="flex h-screen bg-light-backgroundSecond dark:bg-dark-backgroundSecond">
