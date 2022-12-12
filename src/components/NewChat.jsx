@@ -32,7 +32,7 @@ export function NewChat({ user, chatList, show, setShow }) {
       className="w-[35%] max-w-[415px] fixed left-0 top-0 bottom-0 bg-light-background dark:bg-dark-background flex flex-col border-r-[1px] border-r-light-border dark:border-r-dark-border transition-all ease-linear max-md:fixed max-md:w-full max-md:h-full max-md:flex-1 max-md:z-10 z-10   "
       style={{ left: show ? 0 : -420 }}
     >
-      <div className="flex bg-cyan-500 items-center pt-[60px] pr-[15px] pb-[15px] pl-[15px]">
+      <div className="flex bg-brand-500 items-center pt-[60px] pr-[15px] pb-[15px] pl-[15px]">
         <div
           onClick={handleClose}
           className="w-10 h-10 flex justify-center items-center cursor-pointer"
@@ -40,7 +40,7 @@ export function NewChat({ user, chatList, show, setShow }) {
           <ArrowBackIcon style={{ color: "#FFF" }} />
         </div>
         <h2 className="text-lg h-10 leading-10 flex-1 font-bold text-white ml-5">
-          Nova Conversa
+          Nova Pergunta
         </h2>
       </div>
       <div className="flex-1 overflow-y-auto">

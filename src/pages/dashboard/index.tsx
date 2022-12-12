@@ -10,23 +10,28 @@ import { ChatList } from "../../components/ChatList";
 import { ChatWindow } from "../../components/ChatWindow";
 import { NewChat } from "../../components/NewChat";
 import { ThemeContext } from "../../context/ThemeContextProvider";
+import { ToolTip } from "../../components/Tooltip";
+import { AuthUserContext } from "../../context/AuthUserContextProvider";
+
+interface User {
+  id: string;
+  name: string;
+  avatar?: string;
+}
 
 function App() {
   const [chatList, setChatList] = useState([]);
   const [activeChat, setActiveChat] = useState({
     chatId: undefined, // "304ea09b-b85f-45b6-b63b-806c577cfe5b",
   });
-  const [user, setUser] = useState({
-    id: "3bfb0142-88a8-4c3e-955f-049a6da89d26",
-    name: "Vitor",
-    avatar: "https://avatars.githubusercontent.com/u/47868559?v=4",
-  });
+  const [user, setUser] = useState<User>();
   const [showNewChat, setShowNewChat] = useState(false);
   const [isDarkTheme, setIsDarkTheme] = useState(true);
   const [themeMode, setThemeMode] = useState("");
   const [mobileOpen, setMobileOpen] = useState(false);
 
-  const theme = useContext(ThemeContext);
+  const userAuth = useContext(AuthUserContext);
+  const router = useRouter();
 
   useEffect(() => {
     if (isDarkTheme) {
@@ -38,9 +43,17 @@ function App() {
 
   // const route = useRouter();
 
-  // const handleNewChat = () => {
-  //   setShowNewChat(true);
-  // };
+  const handleNewChat = () => {
+    setShowNewChat(true);
+  };
+
+  useEffect(() => {
+    if (userAuth) {
+      setUser(userAuth.user);
+    } else {
+      router.push("./login");
+    }
+  }, [router, userAuth]);
 
   // const handleLoginData = async (user: UserProps) => {
   //   // await Api.addUser(newUser);
@@ -97,10 +110,13 @@ function App() {
             </div>
 
             <div
-              // onClick={handleNewChat}
+              onClick={handleNewChat}
               className="w-10 h-10 rounded-[20px] flex justify-center items-center cursor-pointer"
+              title="Fazer uma nova pergunta!"
             >
-              <ChatIcon style={{ color: "#919191" }} />
+              <ToolTip tooltip="Clique para fazer uma nova pergunta!">
+                <ChatIcon style={{ color: "#919191" }} />
+              </ToolTip>
             </div>
           </div>
         </header>
