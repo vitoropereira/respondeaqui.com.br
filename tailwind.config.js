@@ -11,12 +11,12 @@ module.exports = {
       },
       colors: {
         brand: {
-          500: "#8257e6",
+          500: "#1d2daa",
         },
         light: {
-          background: "#fff",
-          backgroundSecond: "#F6F6F6",
-          backgroundHover: "#F5F5F5",
+          background: "#f5f5f5",
+          backgroundSecond: "#dbdbdb",
+          backgroundHover: "#dbdbdb",
           backgroundActive: "#EBEBEB",
           chatBackground: "#E5DDD5",
           border: " #eee",
@@ -25,9 +25,9 @@ module.exports = {
           lastMessage: "#3B4A54",
         },
         dark: {
-          background: "#111B21",
-          backgroundSecond: "#202C33",
-          backgroundHover: "#202C33",
+          background: "#000050",
+          backgroundSecond: "#00143C",
+          backgroundHover: "#00143C",
           backgroundActive: "#2A3942",
           chatBackground: "#161F25",
           border: "#374045",

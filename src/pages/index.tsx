@@ -4,7 +4,6 @@ import { useState, useEffect } from "react";
 import collaborators from "../../public/init/collaborators.json";
 import CollaboratorsCard from "../components/CollaboratorsCard";
 import { GetStaticProps } from "next";
-import { Widget } from "../components/Widget";
 import Footer from "../components/Footer";
 import Header from "../components/Header";
 
@@ -69,7 +68,6 @@ export default function Page({ imagesUrls }: PageProps) {
           );
         })}
       </div>
-      <Widget />
       <Footer />
     </>
   );

@@ -1,9 +1,6 @@
 import { useEffect, useState, useRef } from "react";
-import { MessageItem } from "../MessageItem";
+import { MessageItem } from "./MessageItem";
 import Picker from "@emoji-mart/react";
-import SpeechRecognition, {
-  useSpeechRecognition,
-} from "react-speech-recognition";
 
 import LogoutIcon from "@mui/icons-material/Logout";
 import InsertEmoticonIcon from "@mui/icons-material/InsertEmoticon";
@@ -16,12 +13,12 @@ import Image from "next/image";
 export function ChatWindow({ user, data, mobileOpen, setMobileOpen }) {
   const body = useRef();
 
-  const {
-    transcript,
-    listening,
-    resetTranscript,
-    browserSupportsSpeechRecognition,
-  } = useSpeechRecognition();
+  // const {
+  //   transcript,
+  //   listening,
+  //   resetTranscript,
+  //   browserSupportsSpeechRecognition,
+  // } = useSpeechRecognition();
 
   const [emojiOpen, setEmojiOpen] = useState(false);
   const [text, setText] = useState("");
