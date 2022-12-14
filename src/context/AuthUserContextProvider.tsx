@@ -1,44 +1,54 @@
-import { getAuth, onAuthStateChanged } from "firebase/auth";
-import { createContext, useState } from "react";
+import { createContext, useState, useEffect, ReactNode } from "react";
+import {
+  getAuth,
+  onAuthStateChanged,
+  User,
+  UserCredential,
+} from "firebase/auth";
 import { firebaseApp } from "../service/fireBase";
 
-interface User {
-  id: string;
-  name: string;
-  avatar: string;
+export interface UserProps {
+  id?: string | null | undefined;
+  name?: string | null | undefined;
+  avatar?: string | null | undefined;
+  email?: string | null | undefined;
 }
 
-interface AuthUserContextType {
-  user: User;
+interface AuthUserContextProps {
+  currentUser: UserProps | undefined;
 }
 
-export const AuthUserContext = createContext({} as AuthUserContextType);
+interface AuthUserContextProviderProps {
+  children: ReactNode;
+}
 
-export function AuthUserContextProvider({ children }) {
-  const [userAuth, setUserAuth] = useState<User>();
+export const AuthUserContext = createContext({} as AuthUserContextProps);
+
+export function AuthUserContextProvider({
+  children,
+}: AuthUserContextProviderProps) {
+  const [currentUser, setCurrentUser] = useState<UserProps | undefined>();
 
   const auth = getAuth(firebaseApp);
 
-  if (auth) {
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        const newUser = {
-          id: user.uid,
-          name: user.displayName,
-          avatar: user.photoURL,
-        };
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      const userData = {
+        id: user?.uid,
+        name: user?.displayName,
+        avatar: user?.photoURL,
+        email: user?.email,
+      };
 
-        setUserAuth(newUser);
-        // console.log(userAuth);
-      } else {
-        // User is signed out
-        // ...
-      }
+      setCurrentUser(userData);
     });
-  }
+
+    return unsubscribe;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
-    <AuthUserContext.Provider value={{ user: userAuth }}>
+    <AuthUserContext.Provider value={{ currentUser }}>
       {children}
     </AuthUserContext.Provider>
   );

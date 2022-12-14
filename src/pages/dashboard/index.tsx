@@ -1,4 +1,5 @@
-import { useState, useContext, useEffect } from "react";
+/* eslint-disable react-hooks/exhaustive-deps */
+import { useState, useContext, useEffect, useMemo } from "react";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import ChatIcon from "@mui/icons-material/Chat";
@@ -8,30 +9,55 @@ import SearchIcon from "@mui/icons-material/Search";
 import { ChatIntro } from "../../components/ChatIntro";
 import { ChatList } from "../../components/ChatList";
 import { ChatWindow } from "../../components/ChatWindow";
+import { Loading } from "../../components/Loading";
 import { NewChat } from "../../components/NewChat";
-import { ThemeContext } from "../../context/ThemeContextProvider";
 import { ToolTip } from "../../components/Tooltip";
-import { AuthUserContext } from "../../context/AuthUserContextProvider";
-
-interface User {
-  id: string;
-  name: string;
-  avatar?: string;
-}
+import {
+  AuthUserContext,
+  UserProps,
+} from "../../context/AuthUserContextProvider";
 
 function App() {
   const [chatList, setChatList] = useState([]);
   const [activeChat, setActiveChat] = useState({
-    chatId: undefined, // "304ea09b-b85f-45b6-b63b-806c577cfe5b",
+    chatId: undefined,
   });
-  const [user, setUser] = useState<User>();
+  const [user, setUser] = useState<UserProps>();
   const [showNewChat, setShowNewChat] = useState(false);
   const [isDarkTheme, setIsDarkTheme] = useState(true);
   const [themeMode, setThemeMode] = useState("");
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
-  const userAuth = useContext(AuthUserContext);
+  const { currentUser } = useContext(AuthUserContext);
   const router = useRouter();
+
+  const handleNewChat = () => {
+    setShowNewChat(true);
+  };
+
+  const isAuthenticated = useMemo(() => {
+    if (currentUser) {
+      setIsLoading(false);
+      return true;
+    }
+  }, []);
+
+  useEffect(() => {
+    console.log("currentUser");
+    console.log(currentUser);
+    if (isAuthenticated) {
+      const userData = {
+        id: currentUser?.id,
+        name: currentUser?.name,
+        avatar: currentUser?.avatar,
+      };
+
+      setUser(userData);
+    } else {
+      router.push("./login");
+    }
+  }, [isAuthenticated]);
 
   useEffect(() => {
     if (isDarkTheme) {
@@ -40,20 +66,6 @@ function App() {
       setThemeMode("");
     }
   }, [isDarkTheme, themeMode]);
-
-  // const route = useRouter();
-
-  const handleNewChat = () => {
-    setShowNewChat(true);
-  };
-
-  useEffect(() => {
-    if (userAuth) {
-      setUser(userAuth.user);
-    } else {
-      router.push("./login");
-    }
-  }, [router, userAuth]);
 
   // const handleLoginData = async (user: UserProps) => {
   //   // await Api.addUser(newUser);
@@ -73,9 +85,9 @@ function App() {
   //   handleLoginData(newUser);
   // }, [user]);
 
-  // if (!user) {
-  //   return route.push("../login");
-  // }
+  if (isLoading || !user) {
+    return <Loading />;
+  }
 
   return (
     <div
@@ -90,13 +102,18 @@ function App() {
         />
         <header className="h-[60px] flex justify-between items-center px-4 py-0 max-[994px]:w-screen bg-light-backgroundSecond dark:bg-dark-backgroundSecond">
           <div className="flex justify-center items-center gap-2">
-            <Image
-              width={40}
-              height={40}
-              className="rounded-full cursor-pointer"
-              src={user.avatar}
-              alt={`Foto do usuário ${user.name}`}
-            />
+            {user.avatar ? (
+              <Image
+                width={40}
+                height={40}
+                className="rounded-full cursor-pointer"
+                src={user.avatar}
+                alt={`Foto do usuário ${user.name}`}
+              />
+            ) : (
+              ""
+            )}
+
             <p className="ml-1 text-light-text dark:text-dark-text">
               {user.name}
             </p>

@@ -1,30 +1,34 @@
 import { Chats, GithubLogo, GoogleLogo, Moon, SunDim } from "phosphor-react";
-import { FirebaseLoginRepository } from "src/repositories/firebase/firebase-login";
-import { FirebaseUserRepository } from "src/repositories/firebase/firebase-user";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useState } from "react";
 import { AuthUserContext } from "../../context/AuthUserContextProvider";
 import { useRouter } from "next/router";
 
+import { CreateUser } from "../../models/user";
+import { FirebaseUserRepository } from "../../repositories/firebase/firebase-user";
+import { FirebaseLoginRepository } from "../../repositories/firebase/firebase-login";
+
 export default function Login() {
   const [darkMode, setDarkMode] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
 
-  const user = useContext(AuthUserContext);
+  const { currentUser } = useContext(AuthUserContext);
   const router = useRouter();
 
-  const loginFirebase = new FirebaseLoginRepository();
-  const userFirebase = new FirebaseUserRepository();
+  const firebaseLoginRepository = new FirebaseLoginRepository();
+  const firebaseUserRepository = new FirebaseUserRepository();
+  const userModel = new CreateUser(firebaseUserRepository);
 
   const handleGoogleLogin = async () => {
-    let result = await loginFirebase.googlePopup();
+    let result = await firebaseLoginRepository.googlePopup();
     if (result) {
       const newUser = {
-        id: result.user.multiFactor.user.uid,
+        SocialId: result.user.multiFactor.user.uid,
         name: result.user.multiFactor.user.displayName,
+        email: result.user.multiFactor.user.email,
         avatar: result.user.multiFactor.user.photoURL,
       };
 
-      await userFirebase.addUser(newUser);
-
+      await userModel.createUser(newUser);
       router.push("./dashboard");
     } else {
       alert("Erro!");
@@ -48,11 +52,9 @@ export default function Login() {
     }
   };
 
-  useEffect(() => {
-    if (user.user) {
-      router.push("./dashboard");
-    }
-  }, [router, user]);
+  // if (currentUser) {
+  //   router.push("./dashboard");
+  // }
 
   return (
     <div className={`${darkMode && "dark"}`}>
