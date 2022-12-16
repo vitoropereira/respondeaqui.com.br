@@ -4,7 +4,8 @@ import { useState, useEffect } from "react";
 import collaborators from "../../public/init/collaborators.json";
 import CollaboratorsCard from "../components/CollaboratorsCard";
 import { GetStaticProps } from "next";
-import { Widget } from "../components/Widget";
+import Footer from "../components/Footer";
+import Header from "../components/Header";
 
 export interface OwnerProps {
   username: string;
@@ -17,7 +18,6 @@ interface PageProps {
 }
 
 export default function Page({ imagesUrls }: PageProps) {
-  console.log(imagesUrls);
   const [shuffledCollaborators, setShuffledCollaborators] = useState([]);
   const [confettiWidth, setConfettiWidth] = useState(0);
   const [confettiHeight, setConfettiHeight] = useState(0);
@@ -36,6 +36,7 @@ export default function Page({ imagesUrls }: PageProps) {
 
   return (
     <>
+      <Header />
       <Confetti
         width={confettiWidth}
         height={confettiHeight}
@@ -67,7 +68,7 @@ export default function Page({ imagesUrls }: PageProps) {
           );
         })}
       </div>
-      <Widget />
+      <Footer />
     </>
   );
 }
@@ -84,6 +85,7 @@ function shuffle(arr) {
 export const getStaticProps: GetStaticProps = async () => {
   const shuffleCollaborators = shuffle(collaborators);
   const imagesUrls = [];
+
   shuffleCollaborators.forEach(async (username: string) => {
     try {
       const response = await fetch(
@@ -97,7 +99,7 @@ export const getStaticProps: GetStaticProps = async () => {
         html_url: data[0].owner.html_url,
       };
     } catch (error) {
-      console.log(error);
+      console.log(error, "shuffleCollaborators Mensagem de erro!!");
     }
   });
 
