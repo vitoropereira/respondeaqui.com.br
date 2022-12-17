@@ -1,6 +1,7 @@
 import { UserRepository } from "../repositories/user-repository";
 
 interface UserProps {
+  userId: string;
   name: string;
   avatar: string;
   email: string;
@@ -28,7 +29,8 @@ export class CreateUser {
 
   async validateUniqueEmail(email: string) {
     try {
-      const existEmail = await this.userRepository.findUSerByEmail(email);
+      const existEmail = await this.userRepository.findUserByEmail(email);
+
       if (existEmail) {
         return true;
       }
@@ -50,6 +52,11 @@ export class CreateUser {
       urlAvatar = `https://ui-avatars.com/api/?name=${splittedName[0]}`;
     }
     return urlAvatar;
+  }
+
+  async getUserByEmail(email: string) {
+    const user = await this.userRepository.findUserByEmail(email);
+    return user;
   }
 
   // async hashPassword(unhashedPassword: string) {

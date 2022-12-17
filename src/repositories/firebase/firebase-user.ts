@@ -1,9 +1,12 @@
-import { UserRepository } from "../user-repository";
 import { collection, addDoc, query, where, getDocs } from "firebase/firestore";
 import "firebase/compat/auth";
+import { v4 as uuidv4 } from "uuid";
+
+import { UserRepository } from "../user-repository";
 import { db } from "../../service/fireBase";
 
 interface UserProps {
+  userId: string;
   name: string;
   avatar: string;
   email: string;
@@ -12,7 +15,9 @@ interface UserProps {
 export class FirebaseUserRepository implements UserRepository {
   async addUser(user: UserProps) {
     try {
+      const newId = uuidv4();
       const docRef = await addDoc(collection(db, "users"), {
+        userId: newId,
         name: user.name,
         avatar: user.avatar,
         email: user.email,
@@ -24,25 +29,25 @@ export class FirebaseUserRepository implements UserRepository {
     }
   }
 
-  async findUSerByEmail(email: string) {
+  async findUserByEmail(email: string) {
     try {
-      let user = [];
+      let user: UserProps;
       const userRef = collection(db, "users");
-      // Create a query against the collection.
       const q = query(userRef, where("email", "==", email));
       const querySnapshot = await getDocs(q);
 
       querySnapshot.forEach((doc) => {
-        user.push(doc.data);
+        user = doc.data() as UserProps;
       });
 
-      if (user.length > 0) {
-        return true;
+      if (user) {
+        return user;
       }
-      return false;
+
+      return undefined;
     } catch (e) {
       console.error("Error adding document: ", e);
-      return false;
+      return undefined;
     }
   }
 }

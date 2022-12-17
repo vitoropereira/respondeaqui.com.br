@@ -4,18 +4,18 @@ import Image from "next/image";
 import { useRouter } from "next/router";
 import ChatIcon from "@mui/icons-material/Chat";
 import DarkModeIcon from "@mui/icons-material/DarkMode";
-import SearchIcon from "@mui/icons-material/Search";
 
-import { ChatIntro } from "../../components/ChatIntro";
-import { ChatList } from "../../components/ChatList";
-import { ChatWindow } from "../../components/ChatWindow";
-import { Loading } from "../../components/Loading";
-import { NewChat } from "../../components/NewChat";
-import { ToolTip } from "../../components/Tooltip";
+import { Loading } from "src/components/Loading";
+import { ToolTip } from "src/components/Tooltip";
+import { ChatList } from "src/components/ChatList";
+import { ChatWindow } from "src/components/ChatWindow";
+import { ChatIntro } from "src/components/ChatIntro";
+import { NewChat } from "src/components/NewChat";
 import {
   AuthUserContext,
   UserProps,
-} from "../../context/AuthUserContextProvider";
+} from "src/context/AuthUserContextProvider";
+import { Input } from "src/components/Input";
 
 function App() {
   const [chatList, setChatList] = useState([]);
@@ -44,8 +44,6 @@ function App() {
   }, []);
 
   useEffect(() => {
-    console.log("currentUser");
-    console.log(currentUser);
     if (isAuthenticated) {
       const userData = {
         id: currentUser?.id,
@@ -94,12 +92,7 @@ function App() {
       className={`flex h-screen bg-light-backgroundSecond dark:bg-dark-backgroundSecond ${themeMode}`}
     >
       <div className="w-[35%] max-w-[415px] flex flex-col border-r border-r-light-border dark:border-r-dark-border">
-        <NewChat
-          chatList={chatList}
-          user={user}
-          show={showNewChat}
-          setShow={setShowNewChat}
-        />
+        <NewChat user={user} show={showNewChat} setShow={setShowNewChat} />
         <header className="h-[60px] flex justify-between items-center px-4 py-0 max-[994px]:w-screen bg-light-backgroundSecond dark:bg-dark-backgroundSecond">
           <div className="flex justify-center items-center gap-2">
             {user.avatar ? (
@@ -138,16 +131,7 @@ function App() {
           </div>
         </header>
 
-        <div className="bg-light-background dark:bg-dark-background px-4 py-1  max-[994px]:w-screen">
-          <div className="bg-light-backgroundSecond dark:bg-dark-backgroundSecond h-10 rounded-[10px] flex items-center px-2 py-0">
-            <SearchIcon fontSize="small" style={{ color: "#919191" }} />
-            <input
-              type="search"
-              className="flex-1 border-0 outline-0 dark:border-0 dark:outline-0 rounded-[10px] -mr-2 bg-transparent ml-3 text-light-text dark:text-light-text"
-              placeholder="Procurar ou iniciar uma nova dúvida."
-            />
-          </div>
-        </div>
+        <Input placeholderText="Procurar ou iniciar uma nova dúvida." />
 
         <div className="flex-1 bg-light-background dark:bg-dark-background overflow-y-auto w-screen">
           {chatList.map((item, key) => (

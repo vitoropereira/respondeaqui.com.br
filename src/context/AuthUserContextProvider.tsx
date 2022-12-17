@@ -6,9 +6,12 @@ import {
   UserCredential,
 } from "firebase/auth";
 import { firebaseApp } from "../service/fireBase";
+import { CreateUser } from "src/models/user";
+import { FirebaseUserRepository } from "src/repositories/firebase/firebase-user";
 
 export interface UserProps {
   id?: string | null | undefined;
+  userId?: string | null | undefined;
   name?: string | null | undefined;
   avatar?: string | null | undefined;
   email?: string | null | undefined;
@@ -39,7 +42,6 @@ export function AuthUserContextProvider({
         avatar: user?.photoURL,
         email: user?.email,
       };
-
       setCurrentUser(userData);
     });
 

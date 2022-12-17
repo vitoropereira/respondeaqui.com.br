@@ -1,4 +1,5 @@
 interface UserProps {
+  userId: string;
   name: string;
   avatar: string;
   email: string;
@@ -6,5 +7,5 @@ interface UserProps {
 
 export interface UserRepository {
   addUser: (user: UserProps) => Promise<void>;
-  findUSerByEmail: (email: string) => Promise<boolean>;
+  findUserByEmail: (email: string) => Promise<UserProps | undefined>;
 }
