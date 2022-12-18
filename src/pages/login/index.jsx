@@ -1,37 +1,74 @@
 import { Chats, GithubLogo, GoogleLogo, Moon, SunDim } from "phosphor-react";
-import { useContext, useState } from "react";
-import { AuthUserContext } from "../../context/AuthUserContextProvider";
+import { useState } from "react";
 import { useRouter } from "next/router";
+import { Loading } from "src/components/Loading";
 
-import { CreateUser } from "../../models/user";
-import { FirebaseUserRepository } from "../../repositories/firebase/firebase-user";
 import { FirebaseLoginRepository } from "../../repositories/firebase/firebase-login";
 
 export default function Login() {
   const [darkMode, setDarkMode] = useState(true);
-  const [isLoading, setIsLoading] = useState(true);
+  const [globalErrorMessage, setGlobalErrorMessage] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [errorObject, setErrorObject] = useState(undefined);
 
-  const { currentUser } = useContext(AuthUserContext);
   const router = useRouter();
 
   const firebaseLoginRepository = new FirebaseLoginRepository();
-  const firebaseUserRepository = new FirebaseUserRepository();
-  const userModel = new CreateUser(firebaseUserRepository);
 
   const handleGoogleLogin = async () => {
+    setIsLoading(true);
+    setErrorObject(undefined);
     let result = await firebaseLoginRepository.googlePopup();
+    console.log(result);
     if (result) {
       const newUser = {
-        SocialId: result.user.multiFactor.user.uid,
-        name: result.user.multiFactor.user.displayName,
+        username: result.user.multiFactor.user.displayName,
+        avatarURL: result.user.multiFactor.user.photoURL,
         email: result.user.multiFactor.user.email,
-        avatar: result.user.multiFactor.user.photoURL,
+        signInMethod: result.credential.signInMethod,
+        features: ["create:user"],
       };
 
-      await userModel.createUser(newUser);
-      router.push("./dashboard");
-    } else {
-      alert("Erro!");
+      try {
+        const response = await fetch(`/api/v1/users`, {
+          method: "POST",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(newUser),
+        });
+
+        setGlobalErrorMessage(undefined);
+
+        const responseBody = await response.json();
+
+        if (response.status === 201) {
+          router.push("./dashboard");
+          return;
+        }
+
+        if (response.status === 400) {
+          setErrorObject(responseBody);
+          setIsLoading(false);
+          return;
+        }
+
+        if (response.status >= 401) {
+          setGlobalErrorMessage(
+            `${responseBody.message} ${responseBody.action}`
+          );
+          setIsLoading(false);
+          return;
+        }
+      } catch (error) {
+        console.log("error");
+        console.log(error);
+        setGlobalErrorMessage(
+          "Não foi possível se conectar ao Responde Aqui. Por favor, verifique sua conexão."
+        );
+        setIsLoading(false);
+      }
     }
   };
 
@@ -84,22 +121,34 @@ export default function Login() {
           <p className="font-medium text-xl dark:text-white text-black">
             Faça login para continuar
           </p>
-          <button
-            className="border-none rounded-xl mt-3 cursor-pointer w-80 h-16 flex justify-center items-center gap-3 bg-red-600 hover:bg-red-800 md:w-72 md:h-16"
-            onClick={handleGoogleLogin}
-          >
-            <GoogleLogo color="#fff" size={32} />
-            <span className="text-xl font-semibold text-white">
-              Entrar com Google
-            </span>
-          </button>
-          <button
-            className="border-none rounded-xl mt-3 cursor-pointer w-80 h-16 flex justify-center items-center gap-3 bg-gray-600 hover:bg-gray-800 md:w-72 md:h-16"
-            onClick={handleGithubLogin}
-          >
-            <GithubLogo color="#fff" size={32} />
-            <span>Entrar com Github</span>
-          </button>
+          {isLoading ? (
+            <Loading />
+          ) : (
+            <>
+              <button
+                className="border-none rounded-xl mt-3 cursor-pointer w-80 h-16 flex justify-center items-center gap-3 bg-red-600 hover:bg-red-800 md:w-72 md:h-16"
+                onClick={handleGoogleLogin}
+              >
+                <GoogleLogo color="#fff" size={32} />
+                <span className="text-xl font-semibold text-white">
+                  Entrar com Google
+                </span>
+              </button>
+              <button
+                className="border-none rounded-xl mt-3 cursor-pointer w-80 h-16 flex justify-center items-center gap-3 bg-gray-600 hover:bg-gray-800 md:w-72 md:h-16"
+                onClick={handleGithubLogin}
+              >
+                <GithubLogo color="#fff" size={32} />
+                <span>Entrar com Github</span>
+              </button>
+            </>
+          )}
+
+          {errorObject && (
+            <h1 className="font-medium text-xl dark:text-white text-black">
+              {errorObject.message}
+            </h1>
+          )}
         </div>
       </div>
     </div>

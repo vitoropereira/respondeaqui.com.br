@@ -6,8 +6,6 @@ import {
   UserCredential,
 } from "firebase/auth";
 import { firebaseApp } from "../service/fireBase";
-import { CreateUser } from "src/models/user";
-import { FirebaseUserRepository } from "src/repositories/firebase/firebase-user";
 
 export interface UserProps {
   id?: string | null | undefined;

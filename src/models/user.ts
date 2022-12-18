@@ -1,65 +1,74 @@
-import { UserRepository } from "../repositories/user-repository";
+import { User } from "@prisma/client";
+import { NextApiRequest } from "next";
+import { UsersRepository } from "src/repositories/usersRepository";
+import { combineArrays } from "src/utils/generalFunctions";
 
-interface UserProps {
-  userId: string;
-  name: string;
-  avatar: string;
+interface UserCreateData {
+  username: string;
   email: string;
+  avatarURL: string;
+  signInMethod: string[];
+  features: string[];
 }
 
-export class CreateUser {
-  constructor(private userRepository: UserRepository) {}
-  async createUser(userData: UserProps) {
-    let user;
-    try {
-      const emailExist = await this.validateUniqueEmail(userData.email);
-      if (!userData.avatar) {
-        const userAvatarUrl = await this.createAvatar(userData.name);
-        userData.avatar = userAvatarUrl;
-      }
+export class UserModel {
+  constructor(private usersRepository: UsersRepository) {}
+  async create(request: UserCreateData) {
+    const userData = await this.validateUniqueEmail(request.email);
 
-      if (!emailExist) {
-        await this.userRepository.addUser(userData);
-      }
-    } catch (e) {
-      console.error("Error createUser: ", e);
-      return false;
+    if (userData) {
+      const userUpdated = await this.updateUserData(userData, request);
+      return userUpdated;
     }
-  }
 
-  async validateUniqueEmail(email: string) {
-    try {
-      const existEmail = await this.userRepository.findUserByEmail(email);
+    const { avatarURL, email, signInMethod, username, features } = request;
 
-      if (existEmail) {
-        return true;
-      }
-      return false;
-    } catch (e) {
-      console.error("Error validateUniqueEmail: ", e);
-      return false;
-    }
-  }
+    const newUserFeatures = ["read:user"];
+    const newFeatures = combineArrays(features, newUserFeatures) as string[];
 
-  async createAvatar(name: string) {
-    const splittedName = name.split(" ");
-    let urlAvatar;
-    if (splittedName.length > 1) {
-      urlAvatar = `https://ui-avatars.com/api/?name=${
-        splittedName[0] + splittedName[1]
-      }`;
-    } else {
-      urlAvatar = `https://ui-avatars.com/api/?name=${splittedName[0]}`;
-    }
-    return urlAvatar;
-  }
+    const user = await this.usersRepository.createUser({
+      avatarURL,
+      email,
+      signInMethod,
+      username,
+      features: newFeatures,
+    });
 
-  async getUserByEmail(email: string) {
-    const user = await this.userRepository.findUserByEmail(email);
     return user;
   }
 
-  // async hashPassword(unhashedPassword: string) {
-  //   return await hash(unhashedPassword, 10);
-  // }
+  async validateUniqueEmail(email: string) {
+    const existUserWithEmail = await this.usersRepository.findUserByEmail(
+      email
+    );
+
+    if (existUserWithEmail) {
+      return existUserWithEmail;
+    }
+
+    return undefined;
+  }
+
+  async updateUserData(user: User, request: UserCreateData) {
+    const updatedUser = await this.usersRepository.updateUserData(
+      user,
+      request
+    );
+
+    return updatedUser;
+  }
+
+  async getUserData(request: NextApiRequest) {
+    const userRequest = request.body as User;
+
+    const existUserWithEmail = await this.usersRepository.findUserByEmail(
+      userRequest.email
+    );
+
+    if (existUserWithEmail) {
+      return existUserWithEmail;
+    }
+
+    return undefined;
+  }
 }
