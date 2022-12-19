@@ -6,7 +6,7 @@ import DarkModeIcon from "@mui/icons-material/DarkMode";
 
 import { Loading } from "src/components/Loading";
 import { ToolTip } from "src/components/Tooltip";
-import { ChatList } from "src/components/ChatList";
+import { QuestionList } from "src/components/QuestionList";
 import { ChatWindow } from "src/components/ChatWindow";
 import { ChatIntro } from "src/components/ChatIntro";
 import { NewQuestion } from "src/components/NewQuestion";
@@ -95,7 +95,8 @@ function App() {
       setGlobalErrorMessage(undefined);
 
       const responseBody = await response.json();
-
+      console.log("responseBody");
+      console.log(response.status);
       if (response.status === 200) {
         loading();
         setAllQuestions(responseBody);
@@ -191,16 +192,17 @@ function App() {
 
         <Input placeholderText="Procurar por uma pergunta." icon={true} />
 
-        <div className="flex-1 bg-light-background dark:bg-dark-background overflow-y-auto w-screen">
-          {allQuestions.map((item) => (
-            <ChatList
-              key={item.id}
-              data={item}
-              active={activeQuestion === item.id}
-              onClick={() => setActiveQuestion(item.id)}
-              onMobileClick={() => setMobileOpen(true)}
-            />
-          ))}
+        <div className="flex-1 bg-light-background dark:bg-dark-background overflow-y-auto max-[994px]:w-screen">
+          {allQuestions &&
+            allQuestions.map((item) => (
+              <QuestionList
+                key={item.id}
+                data={item}
+                active={activeQuestion === item.id}
+                onClick={() => setActiveQuestion(item.id)}
+                onMobileClick={() => setMobileOpen(true)}
+              />
+            ))}
         </div>
       </div>
       <div className="flex-1 h-screen">

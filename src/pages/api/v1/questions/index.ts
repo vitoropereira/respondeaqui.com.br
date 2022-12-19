@@ -34,5 +34,5 @@ async function getHandler(request: RequestProps, response: NextApiResponse) {
 
   const questions = await question.getAllQuestions();
 
-  return response.status(201).json(questions);
+  return response.status(200).json(questions);
 }

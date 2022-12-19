@@ -34,6 +34,9 @@ export class PrismaQuestionRepository implements QuestionsRepository {
 
   async findAllQuestion() {
     const questions = await prisma.question.findMany({
+      orderBy: {
+        updated_at: "desc",
+      },
       include: {
         user: true,
       },
