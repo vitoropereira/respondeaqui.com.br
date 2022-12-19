@@ -1,31 +1,35 @@
 import { Chats, GithubLogo, GoogleLogo, Moon, SunDim } from "phosphor-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import { Loading } from "src/components/Loading";
+import { useAuthUser } from "src/context/AuthUserContextProvider";
 
 import { FirebaseLoginRepository } from "../../repositories/firebase/firebase-login";
 
 export default function Login() {
   const [darkMode, setDarkMode] = useState(true);
-  const [globalErrorMessage, setGlobalErrorMessage] = useState(false);
+  const [globalErrorMessage, setGlobalErrorMessage] = useState(undefined);
   const [isLoading, setIsLoading] = useState(false);
   const [errorObject, setErrorObject] = useState(undefined);
+
+  const { currentUser, fetchUser } = useAuthUser();
 
   const router = useRouter();
 
   const firebaseLoginRepository = new FirebaseLoginRepository();
-
+  //TODO tratar error "FirebaseError: Firebase: Error (auth/popup-closed-by-user)." quando fecha a tela de login.
   const handleGoogleLogin = async () => {
     setIsLoading(true);
     setErrorObject(undefined);
-    let result = await firebaseLoginRepository.googlePopup();
-    console.log(result);
-    if (result) {
+    const { user, credential } = await firebaseLoginRepository.googlePopup();
+    const { email, displayName, photoURL } = user;
+
+    if (user) {
       const newUser = {
-        username: result.user.multiFactor.user.displayName,
-        avatarURL: result.user.multiFactor.user.photoURL,
-        email: result.user.multiFactor.user.email,
-        signInMethod: result.credential.signInMethod,
+        username: displayName,
+        avatarURL: photoURL,
+        email,
+        signInMethod: credential.signInMethod,
         features: ["create:user"],
       };
 
@@ -44,6 +48,7 @@ export default function Login() {
         const responseBody = await response.json();
 
         if (response.status === 201) {
+          fetchUser(newUser.email);
           router.push("./dashboard");
           return;
         }
@@ -72,22 +77,29 @@ export default function Login() {
     }
   };
 
-  const handleGithubLogin = async () => {
-    let result = await loginFirebase.githubPopup();
-    if (result) {
-      const newUser = {
-        id: result.user.multiFactor.user.uid,
-        name: result.user.multiFactor.user.displayName,
-        avatar: result.user.multiFactor.user.photoURL,
-      };
-
-      await userFirebase.addUser(newUser);
-
-      router.push("./dashboard");
-    } else {
-      alert("Erro!");
+  useEffect(() => {
+    if (currentUser) {
+      fetchUser(currentUser.email);
+      router.push("../dashboard");
     }
-  };
+  }, [currentUser, fetchUser, router]);
+
+  // const handleGithubLogin = async () => {
+  //   let result = await loginFirebase.githubPopup();
+  //   if (result) {
+  //     const newUser = {
+  //       id: result.user.multiFactor.user.uid,
+  //       name: result.user.multiFactor.user.displayName,
+  //       avatar: result.user.multiFactor.user.photoURL,
+  //     };
+
+  //     await userFirebase.addUser(newUser);
+
+  //     router.push("./dashboard");
+  //   } else {
+  //     alert("Erro!");
+  //   }
+  // };
 
   // if (currentUser) {
   //   router.push("./dashboard");
@@ -134,13 +146,13 @@ export default function Login() {
                   Entrar com Google
                 </span>
               </button>
-              <button
+              {/* <button
                 className="border-none rounded-xl mt-3 cursor-pointer w-80 h-16 flex justify-center items-center gap-3 bg-gray-600 hover:bg-gray-800 md:w-72 md:h-16"
                 onClick={handleGithubLogin}
               >
                 <GithubLogo color="#fff" size={32} />
                 <span>Entrar com Github</span>
-              </button>
+              </button> */}
             </>
           )}
 

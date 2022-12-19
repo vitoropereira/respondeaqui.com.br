@@ -259,7 +259,6 @@ function canRequest(feature: string) {
     next: () => void
   ) {
     const userTryingToRequest = request.body;
-
     if (!can(userTryingToRequest, feature)) {
       throw new ForbiddenError({
         message: `Usuário não pode executar esta operação.`,

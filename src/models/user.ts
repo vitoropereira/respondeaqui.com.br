@@ -23,7 +23,13 @@ export class UserModel {
 
     const { avatarURL, email, signInMethod, username, features } = request;
 
-    const newUserFeatures = ["read:user"];
+    const newUserFeatures = [
+      "read:user",
+      "read:content",
+      "update:content",
+      "create:content",
+    ];
+
     const newFeatures = combineArrays(features, newUserFeatures) as string[];
 
     const user = await this.usersRepository.createUser({

@@ -11,19 +11,13 @@ export default nextConnect({
   onError: controller.onErrorHandler,
 })
   .use(controller.injectRequestMetadata)
-  .get(authorization.canRequest("read:session"), getHandler);
+  .post(getHandler); /*authorization.canRequest("read:session"),*/
 
 async function getHandler(request: NextApiRequest, response: NextApiResponse) {
   const prismaUsersRepository = new PrismaUsersRepository();
   const getUser = new UserModel(prismaUsersRepository);
 
-  const authenticatedUser = getUser.getUserData(request);
-
-  // const secureOutputValues = authorization.filterOutput(
-  //   authenticatedUser,
-  //   "read:user:self",
-  //   authenticatedUser
-  // );
+  const authenticatedUser = await getUser.getUserData(request);
 
   return response.status(200).json(authenticatedUser);
 }

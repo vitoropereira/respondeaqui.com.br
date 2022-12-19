@@ -1,24 +1,20 @@
-import { FirebaseQuestionRepository } from "src/repositories/firebase/firebase-question";
-import { FirebaseUserRepository } from "src/repositories/firebase/firebase-user";
-import { CreateUser } from "./user";
+import { PrismaQuestionRepository } from "src/repositories/prisma/prismaQuestionsRepository";
 
 interface QuestionProps {
-  idQuestion: string;
   content: string;
-  authorId: string;
-  questionedAt: Date;
+  userId: string;
 }
 
-export class CreateQuestion {
-  constructor(private firebaseQuestionRepository: FirebaseQuestionRepository) {}
+export class Question {
+  constructor(private prismaQuestionRepository: PrismaQuestionRepository) {}
   async createQuestion(questionData: QuestionProps) {
+    const { content, userId } = questionData;
     try {
-      const saveQuestion = await this.firebaseQuestionRepository.createQuestion(
-        questionData
-      );
-
-      console.log("saveQuestion - > CreateQuestion");
-      console.log(saveQuestion);
+      const saveQuestion = await this.prismaQuestionRepository.createQuestion({
+        content,
+        userId,
+      });
+      return saveQuestion;
     } catch (e) {
       console.error("Error createQuestion: ", e);
       return false;
@@ -26,8 +22,27 @@ export class CreateQuestion {
   }
 
   async filterQuestionsByText(text: string) {
-    const questions = this.firebaseQuestionRepository.findQuestionByText(text);
-    console.log("questions ---->>");
-    console.log(questions);
+    const questions = this.prismaQuestionRepository.findQuestionByText(text);
+  }
+
+  async getQuestionsByUserId(userId: string) {
+    try {
+      const userQuestions =
+        await this.prismaQuestionRepository.findQuestionByUserId(userId);
+      return userQuestions;
+    } catch (e) {
+      console.error("Error getQUestions: ", e);
+      return false;
+    }
+  }
+
+  async getAllQuestions() {
+    try {
+      const questions = await this.prismaQuestionRepository.findAllQuestion();
+      return questions;
+    } catch (e) {
+      console.error("Error getQUestions: ", e);
+      return false;
+    }
   }
 }

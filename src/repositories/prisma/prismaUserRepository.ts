@@ -33,7 +33,6 @@ export class PrismaUsersRepository implements UsersRepository {
   }
 
   async findUserByEmail(email: string) {
-    console.log("prisma", email);
     const existUser = await prisma.user.findFirst({
       where: {
         email,
