@@ -1,6 +1,10 @@
 import Image from "next/image";
 import { useEffect, useState } from "react";
-import { limitText } from "src/utils/generalFunctions";
+import {
+  getRelativeTime,
+  lastMessageTime,
+  limitText,
+} from "src/utils/generalFunctions";
 
 interface QuestionLists {
   id: string;
@@ -38,13 +42,9 @@ export function QuestionList({
   const [time, setTime] = useState("");
 
   useEffect(() => {
-    let d = new Date(data.updated_at);
-    let hours = String(d.getHours());
-    let minutes = String(d.getMinutes());
-
-    hours = String(hours).padStart(2, "0");
-    minutes = String(minutes).padStart(2, "0");
-    setTime(`${hours}:${minutes}`);
+    let messageDate = new Date(data.updated_at);
+    const updatedTime = getRelativeTime(messageDate);
+    setTime(updatedTime);
   }, [data]);
 
   return (
