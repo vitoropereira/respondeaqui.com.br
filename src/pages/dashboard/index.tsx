@@ -103,8 +103,6 @@ function App() {
       setGlobalErrorMessage(undefined);
 
       const responseBody = await response.json();
-      console.log("responseBody");
-      console.log(response.status);
       if (response.status === 200) {
         loading();
         setAllQuestions(responseBody);

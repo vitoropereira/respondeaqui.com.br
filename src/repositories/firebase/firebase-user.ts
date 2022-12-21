@@ -22,8 +22,6 @@ export class FirebaseUserRepository implements UserRepository {
         avatar: user.avatar,
         email: user.email,
       });
-
-      console.log("Document written with ID: ", docRef.id);
     } catch (e) {
       console.error("Error adding document: ", e);
     }

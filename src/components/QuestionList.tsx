@@ -45,11 +45,7 @@ export function QuestionList({
   onMobileClick,
 }: QuestionListProps) {
   const [time, setTime] = useState("");
-  if (data.chat.length > 0) {
-    console.log("data.chat");
-    console.log(data.chat[data.chat.length - 1].created_at);
-    console.log(data.updated_at);
-  }
+
   useEffect(() => {
     let messageDate: Date;
     if (data.chat.length > 0) {
