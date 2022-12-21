@@ -2,10 +2,7 @@ import { useState, useEffect, FormEvent, ChangeEvent, useContext } from "react";
 import Image from "next/image";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 
-import {
-  AuthUserContext,
-  UserProps,
-} from "src/context/AuthUserContextProvider";
+import { AuthUserContext } from "src/context/AuthUserContextProvider";
 
 import { Input } from "./Input";
 import { Loading } from "./Loading";
@@ -16,7 +13,6 @@ interface QuestionProps {
 }
 
 interface NewQuestionProps {
-  user: UserProps;
   show: boolean;
   setShow: (show: boolean) => void;
 }
@@ -30,7 +26,7 @@ export interface QuestionLists {
   user: User;
 }
 
-export interface User {
+interface User {
   id: string;
   username: string;
   email: string;
@@ -41,7 +37,7 @@ export interface User {
   updated_at: string;
 }
 
-export function NewQuestion({ user, show, setShow }: NewQuestionProps) {
+export function NewQuestion({ show, setShow }: NewQuestionProps) {
   const [question, setQuestion] = useState<QuestionProps>();
   const [newQuestion, setNewQuestion] = useState("");
   const [listQuestion, setListQuestion] = useState<QuestionLists[]>();
@@ -85,7 +81,7 @@ export function NewQuestion({ user, show, setShow }: NewQuestionProps) {
       if (response.status === 201) {
         setNewQuestion("");
         setIsLoading(false);
-        //TODO: atualizar a lista de questões que o usuário possui.
+        setListQuestion([responseBody, ...listQuestion]);
         return;
       }
 

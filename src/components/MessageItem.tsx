@@ -1,30 +1,72 @@
 import { useEffect, useState } from "react";
 
-export function MessageItem({data, user}) {
-  const [time, setTime] = useState('')
+export interface Question {
+  id: string;
+  content: string;
+  userId: string;
+  created_at: Date;
+  updated_at: Date;
+}
 
+export interface ChatLists {
+  id: string;
+  content: string;
+  questionId: string;
+  userId: string;
+  created_at: Date;
+  user: User;
+  question: Question;
+}
+
+interface User {
+  id: string;
+  username: string;
+  email: string;
+  signInMethod: string[];
+  features: string[];
+  avatarURL: string;
+  created_at: string;
+  updated_at: string;
+}
+
+interface MessageItemProps {
+  chatData: ChatLists;
+}
+
+export function MessageItem({ chatData }: MessageItemProps) {
+  const [time, setTime] = useState("");
   useEffect(() => {
-    if(data.date > 0) {
-      let d = new Date(data.date.seconds * 1000) 
-      let hours = d.getHours()
-      let minutes = d.getMinutes()
+    let d = new Date(chatData.created_at);
+    let hours = String(d.getHours()).padStart(2, "0");
+    let minutes = String(d.getMinutes()).padStart(2, "0");
 
-      hours = hours < 10 ? '0'+hours : hours
-      minutes = minutes < 10 ? '0'+minutes : minutes
-      setTime(`${hours}:${minutes}`)
-    }
-  }, [data])
+    setTime(`${hours}:${minutes}`);
+  }, [chatData]);
 
   return (
-    <div className="flex mb-3" style={{
-      justifyContent: user.id === data.author ? 'flex-end' : 'flex-start'
-    }}>
-      <div className="bg-white rounded-xl flex flex-col p-1 max-w-[90%]"
-        style={{backgroundColor: user.id === data.author ? '#D9FDD3' : '#FFF' }}
-      > 
-        <div className="text-sm mt-1 mr-10 mb-1 ml-1">{data.body}</div>
-        <div className="text-xs text-gray-500 mr-1 text-right h-4 -mt-4">{time}</div>
+    <div
+      className="flex mb-3"
+      style={{
+        justifyContent:
+          chatData.user.id === chatData.question.userId
+            ? "flex-end"
+            : "flex-start",
+      }}
+    >
+      <div
+        className="rounded-xl flex flex-col p-1 max-w-[90%]"
+        style={{
+          backgroundColor:
+            chatData.user.id === chatData.question.userId ? "#D9FDD3" : "#FFF",
+        }}
+      >
+        <div className="text-sm mt-1 mr-10 mb-1 ml-1 text-light-textSecondary dark:text-dark-textSecondary">
+          {chatData.content}
+        </div>
+        <div className="text-xs text-gray-500 mr-1 text-right h-4 -mt-4">
+          {time}
+        </div>
       </div>
     </div>
-  )
+  );
 }

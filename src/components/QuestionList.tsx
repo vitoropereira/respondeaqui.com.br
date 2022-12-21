@@ -1,19 +1,6 @@
 import Image from "next/image";
 import { useEffect, useState } from "react";
-import {
-  getRelativeTime,
-  lastMessageTime,
-  limitText,
-} from "src/utils/generalFunctions";
-
-interface QuestionLists {
-  id: string;
-  content: string;
-  userId: string;
-  created_at: string;
-  updated_at: string;
-  user: User;
-}
+import { getRelativeTime, limitText } from "src/utils/generalFunctions";
 
 interface User {
   id: string;
@@ -24,6 +11,24 @@ interface User {
   avatarURL: string;
   created_at: string;
   updated_at: string;
+}
+
+interface Chat {
+  id: string;
+  content: string;
+  questionId: string;
+  userId: string;
+  created_at: Date;
+}
+
+interface QuestionLists {
+  id: string;
+  content: string;
+  userId: string;
+  created_at: string;
+  updated_at: string;
+  user: User;
+  chat: Chat[];
 }
 
 interface QuestionListProps {
@@ -42,7 +47,12 @@ export function QuestionList({
   const [time, setTime] = useState("");
 
   useEffect(() => {
-    let messageDate = new Date(data.updated_at);
+    let messageDate: Date;
+    if (data.chat.length > 0) {
+      messageDate = new Date(data.chat[data.chat.length - 1].created_at);
+    } else {
+      messageDate = new Date(data.updated_at);
+    }
     const updatedTime = getRelativeTime(messageDate);
     setTime(updatedTime);
   }, [data]);
@@ -50,7 +60,9 @@ export function QuestionList({
   return (
     <div onClick={onMobileClick}>
       <div
-        className="flex cursor-pointer items-center h-[70px] hover:bg-light-backgroundHover hover:dark:bg-dark-backgroundHover active:bg-light-backgroundActive active:dark:bg-dark-backgroundActive pl-2"
+        className={`flex cursor-pointer items-center h-[70px] hover:bg-light-backgroundHover hover:dark:bg-dark-backgroundHover  pl-2 ${
+          active && "bg-light-backgroundActive dark:bg-dark-backgroundActive"
+        }`}
         onClick={onClick}
       >
         <Image

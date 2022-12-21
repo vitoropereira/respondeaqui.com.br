@@ -10,6 +10,9 @@ export class PrismaQuestionRepository implements QuestionsRepository {
   async createQuestion({ content, userId }: QuestionProps) {
     const response = await prisma.question.create({
       data: { content, userId },
+      include: {
+        user: true,
+      },
     });
 
     return response;
@@ -26,6 +29,11 @@ export class PrismaQuestionRepository implements QuestionsRepository {
       },
       include: {
         user: true,
+        chat: {
+          orderBy: {
+            created_at: "desc",
+          },
+        },
       },
     });
 
@@ -34,11 +42,13 @@ export class PrismaQuestionRepository implements QuestionsRepository {
 
   async findAllQuestion() {
     const questions = await prisma.question.findMany({
-      orderBy: {
-        updated_at: "desc",
-      },
       include: {
         user: true,
+        chat: {
+          orderBy: {
+            created_at: "desc",
+          },
+        },
       },
     });
 

@@ -6,6 +6,7 @@ generator client {
 }
 
 datasource db {
+  //TODO: modificar para mysql
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
@@ -21,7 +22,8 @@ model User {
   created_at DateTime @default(now())
   updated_at DateTime @default(now())
 
-  Question Question[]
+  question Question[]
+  chat     Chat[]
 
   @@map("users")
 }
@@ -35,5 +37,21 @@ model Question {
   created_at DateTime @default(now())
   updated_at DateTime @default(now())
 
+  chat Chat[]
+
   @@map("questions")
+}
+
+model Chat {
+  id         String @id @default(uuid())
+  content    String
+  questionId String
+  userId     String
+
+  question Question @relation(fields: [questionId], references: [id])
+  user     User     @relation(fields: [userId], references: [id])
+
+  created_at DateTime @default(now())
+
+  @@map("chats")
 }

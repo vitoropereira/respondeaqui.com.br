@@ -10,7 +10,7 @@ import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { firebaseApp } from "../service/fireBase";
 import { User } from "@prisma/client";
 
-export interface UserProps extends User {}
+interface UserProps extends User {}
 
 interface AuthUserContextProps {
   currentUser: UserProps | undefined;
@@ -32,7 +32,7 @@ export function AuthUserContextProvider({
 }: AuthUserContextProviderProps) {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(undefined);
-  const [currentUser, setCurrentUser] = useState<UserProps | undefined>();
+  const [currentUser, setCurrentUser] = useState<User | undefined>();
 
   function loading() {
     setIsLoading(!isLoading);

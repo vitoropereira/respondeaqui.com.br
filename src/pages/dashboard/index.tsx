@@ -10,12 +10,17 @@ import { QuestionList } from "src/components/QuestionList";
 import { ChatWindow } from "src/components/ChatWindow";
 import { ChatIntro } from "src/components/ChatIntro";
 import { NewQuestion } from "src/components/NewQuestion";
-import {
-  AuthUserContext,
-  UserProps,
-} from "src/context/AuthUserContextProvider";
 import { Input } from "src/components/Input";
+import { AuthUserContext } from "src/context/AuthUserContextProvider";
 import { SignIn } from "phosphor-react";
+
+export interface Chat {
+  id: string;
+  content: string;
+  questionId: string;
+  userId: string;
+  created_at: Date;
+}
 
 interface QuestionLists {
   id: string;
@@ -24,6 +29,7 @@ interface QuestionLists {
   created_at: string;
   updated_at: string;
   user: User;
+  chat: Chat[];
 }
 
 interface User {
@@ -38,11 +44,9 @@ interface User {
 }
 
 function App() {
-  // const [chatList, setChatList] = useState([]);
-  const [activeQuestion, setActiveQuestion] = useState<string | undefined>(
-    undefined
-  );
-  const [user, setUser] = useState<UserProps>();
+  const [activeQuestion, setActiveQuestion] =
+    useState<QuestionLists>(undefined);
+  const [user, setUser] = useState<User>();
   const [showNewChat, setShowNewChat] = useState(false);
   const [isDarkTheme, setIsDarkTheme] = useState(true);
   const [themeMode, setThemeMode] = useState("");
@@ -54,6 +58,10 @@ function App() {
   const router = useRouter();
   const { currentUser, fetchUser, isLoading, loading } =
     useContext(AuthUserContext);
+
+  function handleWithSetMobileOpen() {
+    setMobileOpen(!mobileOpen);
+  }
 
   const handleNewChat = () => {
     setShowNewChat(true);
@@ -133,13 +141,13 @@ function App() {
   if (!user) {
     return <Loading />;
   }
-
+  //TODO: Verificar a Responsividade!!!
   return (
     <div
       className={`flex h-screen bg-light-backgroundSecond dark:bg-dark-backgroundSecond ${themeMode}`}
     >
       <div className="w-[35%] max-w-[415px] flex flex-col border-r border-r-light-border dark:border-r-dark-border">
-        <NewQuestion user={user} show={showNewChat} setShow={setShowNewChat} />
+        <NewQuestion show={showNewChat} setShow={setShowNewChat} />
 
         <header className="h-[60px] flex justify-between items-center px-4 py-0 max-[994px]:w-screen bg-light-backgroundSecond dark:bg-dark-backgroundSecond">
           <div className="flex justify-center items-center gap-2">
@@ -194,15 +202,19 @@ function App() {
 
         <div className="flex-1 bg-light-background dark:bg-dark-background overflow-y-auto max-[994px]:w-screen">
           {allQuestions &&
-            allQuestions.map((item) => (
-              <QuestionList
-                key={item.id}
-                data={item}
-                active={activeQuestion === item.id}
-                onClick={() => setActiveQuestion(item.id)}
-                onMobileClick={() => setMobileOpen(true)}
-              />
-            ))}
+            allQuestions.map((item) => {
+              console.log("item");
+              console.log(item);
+              return (
+                <QuestionList
+                  key={item.id}
+                  data={item}
+                  active={activeQuestion?.id === item.id}
+                  onClick={() => setActiveQuestion(item)}
+                  onMobileClick={() => setMobileOpen(true)}
+                />
+              );
+            })}
         </div>
       </div>
       <div className="flex-1 h-screen">
@@ -210,7 +222,7 @@ function App() {
           <ChatWindow
             user={user}
             data={activeQuestion}
-            setMobileOpen={setMobileOpen}
+            handleWithSetMobileOpen={handleWithSetMobileOpen}
             mobileOpen={mobileOpen}
           />
         )}
