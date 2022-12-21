@@ -39,8 +39,8 @@ interface User {
   signInMethod: string[];
   features: string[];
   avatarURL: string;
-  created_at: string;
-  updated_at: string;
+  created_at: Date;
+  updated_at: Date;
 }
 
 function App() {
@@ -203,8 +203,6 @@ function App() {
         <div className="flex-1 bg-light-background dark:bg-dark-background overflow-y-auto max-[994px]:w-screen">
           {allQuestions &&
             allQuestions.map((item) => {
-              console.log("item");
-              console.log(item);
               return (
                 <QuestionList
                   key={item.id}

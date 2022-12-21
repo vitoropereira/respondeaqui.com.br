@@ -55,8 +55,8 @@ interface User {
   signInMethod: string[];
   features: string[];
   avatarURL: string;
-  created_at: string;
-  updated_at: string;
+  created_at: Date;
+  updated_at: Date;
 }
 
 interface ChatWindowProps {

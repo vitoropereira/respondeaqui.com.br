@@ -10,10 +10,8 @@ import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { firebaseApp } from "../service/fireBase";
 import { User } from "@prisma/client";
 
-interface UserProps extends User {}
-
 interface AuthUserContextProps {
-  currentUser: UserProps | undefined;
+  currentUser: User | undefined;
   fetchUser: (email: string) => Promise<void>;
   isLoading: boolean;
   loading: () => void;
