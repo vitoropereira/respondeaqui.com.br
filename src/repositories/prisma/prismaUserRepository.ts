@@ -1,5 +1,5 @@
 import { User } from "@prisma/client";
-import { prisma } from "src/service/prisma";
+import prisma from "src/service/prisma";
 import { combineArrays } from "src/utils/generalFunctions";
 import { UsersRepository } from "../usersRepository";
 
@@ -38,6 +38,7 @@ export class PrismaUsersRepository implements UsersRepository {
         email,
       },
     });
+
     if (existUser) {
       return existUser;
     }

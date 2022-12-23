@@ -15,7 +15,8 @@ export class UserModel {
   constructor(private usersRepository: UsersRepository) {}
   async create(request: UserCreateData) {
     const userData = await this.validateUniqueEmail(request.email);
-
+    console.log("userData");
+    console.log(userData);
     if (userData) {
       const userUpdated = await this.updateUserData(userData, request);
       return userUpdated;
@@ -47,7 +48,8 @@ export class UserModel {
     const existUserWithEmail = await this.usersRepository.findUserByEmail(
       email
     );
-
+    console.log("existUserWithEmail");
+    console.log(existUserWithEmail);
     if (existUserWithEmail) {
       return existUserWithEmail;
     }

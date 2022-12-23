@@ -19,8 +19,10 @@ export default nextConnect({
 async function postHandler(request: RequestProps, response: NextApiResponse) {
   const prismaUsersRepository = new PrismaUsersRepository();
   const createUser = new UserModel(prismaUsersRepository);
-
   const newUser = await createUser.create(request.body);
+
+  console.log("newUser");
+  console.log(newUser);
 
   const secureOutputValues: User = authorization.filterOutput(
     newUser,
