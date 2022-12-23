@@ -1,16 +1,7 @@
-import {
-  useEffect,
-  useState,
-  useRef,
-  FormEvent,
-  useContext,
-  DetailedHTMLProps,
-  HTMLAttributes,
-} from "react";
+import { useEffect, useState, useRef, useContext } from "react";
 import { MessageItem } from "./MessageItem";
 import Picker from "@emoji-mart/react";
 
-import LogoutIcon from "@mui/icons-material/Logout";
 import InsertEmoticonIcon from "@mui/icons-material/InsertEmoticon";
 import CloseIcon from "@mui/icons-material/Close";
 import SendIcon from "@mui/icons-material/Send";
@@ -60,14 +51,12 @@ interface User {
 }
 
 interface ChatWindowProps {
-  user: User;
   data: QuestionLists;
   mobileOpen: boolean;
   handleWithSetMobileOpen: () => void;
 }
 
 export function ChatWindow({
-  user,
   data,
   mobileOpen,
   handleWithSetMobileOpen,
@@ -178,6 +167,7 @@ export function ChatWindow({
       if (response.status === 201) {
         setIsLoading(false);
         setList([...list, responseBody]);
+        //TODO: Atualizar question list.
         setText("");
         setEmojiOpen(false);
         return;
@@ -241,17 +231,6 @@ export function ChatWindow({
             {data.content}
           </div>
         </div>
-
-        <div className="flex items-center mr-4">
-          <div
-            className="w-10 h-10 rounded-full flex justify-center items-center cursor-pointer"
-            // onClick={logout}
-          >
-            <ToolTip tooltip="Logout">
-              <LogoutIcon style={{ color: "#919191" }} />
-            </ToolTip>
-          </div>
-        </div>
       </header>
 
       <div
@@ -306,7 +285,7 @@ export function ChatWindow({
           />
         </div>
         <div className="flex">
-          {text === "" && (
+          {/* {text === "" && (
             <div
               // onClick={handleMicClick}
               className="w-10 h-10 rounded-full flex justify-center items-center cursor-pointer"
@@ -315,15 +294,15 @@ export function ChatWindow({
                 style={{ color: listeningAudio ? "#126ECE" : "#919191" }}
               />
             </div>
-          )}
-          {text !== "" && (
-            <div
-              // onClick={handleSendClick}
-              className="w-10 h-10 rounded-full flex justify-center items-center cursor-pointer"
-            >
-              <SendIcon style={{ color: "#919191" }} />
-            </div>
-          )}
+          )} */}
+          {/* {text !== "" && ( */}
+          <div
+            onClick={handleSendClick}
+            className="w-10 h-10 rounded-full flex justify-center items-center cursor-pointer"
+          >
+            <SendIcon style={{ color: "#919191" }} />
+          </div>
+          {/* )} */}
         </div>
       </footer>
     </div>

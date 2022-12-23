@@ -79,7 +79,7 @@ export function QuestionList({
         >
           <div className="flex justify-between items-center w-full">
             <div className="text-base text-light-text dark:text-dark-text pl-1 flex flex-col justify-start items-start ">
-              <span>{limitText(data.content, 35)}</span>
+              <span>{limitText(data.content, 30)}</span>
               <span className="text-xs font-thin ml-1">
                 Por: {data.user.username}
               </span>
@@ -89,9 +89,14 @@ export function QuestionList({
             </div>
           </div>
           <div className="flex justify-between items-center w-full">
-            <div className="text-sm text-light-lastMessage dark:text-dark-lastMessage flex w-full mb-2">
-              <p className="overflow-hidden whitespace-nowrap overflow-ellipsis m-0">
-                {data.content}
+            <div className="text-[10px] text-light-lastMessage dark:text-dark-lastMessage flex w-full mb-2">
+              <p className="overflow-hidden whitespace-nowrap overflow-ellipsis ml-1">
+                {data.chat.length > 0 && data.userId === data.chat[0].userId
+                  ? "Você: "
+                  : ""}
+                {data.chat.length > 0
+                  ? limitText(data.chat[0].content, 25)
+                  : "..."}
               </p>
             </div>
           </div>

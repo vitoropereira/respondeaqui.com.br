@@ -3,6 +3,7 @@ import Image from "next/image";
 import { useRouter } from "next/router";
 import ChatIcon from "@mui/icons-material/Chat";
 import DarkModeIcon from "@mui/icons-material/DarkMode";
+import LogoutIcon from "@mui/icons-material/Logout";
 
 import { Loading } from "src/components/Loading";
 import { ToolTip } from "src/components/Tooltip";
@@ -11,7 +12,10 @@ import { ChatWindow } from "src/components/ChatWindow";
 import { ChatIntro } from "src/components/ChatIntro";
 import { NewQuestion } from "src/components/NewQuestion";
 import { Input } from "src/components/Input";
-import { AuthUserContext } from "src/context/AuthUserContextProvider";
+import {
+  AuthUserContext,
+  UserFilteredProps,
+} from "src/context/AuthUserContextProvider";
 import { SignIn } from "phosphor-react";
 
 export interface Chat {
@@ -46,7 +50,7 @@ interface User {
 function App() {
   const [activeQuestion, setActiveQuestion] =
     useState<QuestionLists>(undefined);
-  const [user, setUser] = useState<User>();
+  const [user, setUser] = useState<UserFilteredProps>();
   const [showNewChat, setShowNewChat] = useState(false);
   const [isDarkTheme, setIsDarkTheme] = useState(true);
   const [themeMode, setThemeMode] = useState("");
@@ -77,7 +81,7 @@ function App() {
     }
 
     if (!user) {
-      const localStorageContent = localStorage.getItem("user");
+      const localStorageContent = localStorage.getItem("respondeaqui:user");
       setUser(JSON.parse(localStorageContent));
     }
   }, [currentUser, router, user]);
@@ -179,7 +183,9 @@ function App() {
                   onClick={() => setIsDarkTheme(!isDarkTheme)}
                   className="w-10 h-10 rounded-[20px] flex justify-center items-center cursor-pointer"
                 >
-                  <DarkModeIcon style={{ color: "#919191" }} />
+                  <ToolTip tooltip="Tema Dark/Light">
+                    <DarkModeIcon style={{ color: "#919191" }} />
+                  </ToolTip>
                 </div>
 
                 <div
@@ -189,6 +195,14 @@ function App() {
                 >
                   <ToolTip tooltip="Clique para fazer uma nova pergunta!">
                     <ChatIcon style={{ color: "#919191" }} />
+                  </ToolTip>
+                </div>
+                <div
+                  className="w-10 h-10 rounded-full flex justify-center items-center cursor-pointer"
+                  // onClick={logout}
+                >
+                  <ToolTip tooltip="Logout">
+                    <LogoutIcon style={{ color: "#919191" }} />
                   </ToolTip>
                 </div>
               </>
@@ -216,7 +230,6 @@ function App() {
       <div className="flex-1 h-screen">
         {activeQuestion !== undefined && (
           <ChatWindow
-            user={user}
             data={activeQuestion}
             handleWithSetMobileOpen={handleWithSetMobileOpen}
             mobileOpen={mobileOpen}

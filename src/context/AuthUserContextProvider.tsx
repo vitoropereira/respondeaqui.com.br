@@ -10,8 +10,15 @@ import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { firebaseApp } from "../service/fireBase";
 import { User } from "@prisma/client";
 
+export interface UserFilteredProps {
+  id: string;
+  username: string;
+  avatarURL: string;
+  features: string[];
+}
+
 interface AuthUserContextProps {
-  currentUser: User | undefined;
+  currentUser: UserFilteredProps | undefined;
   fetchUser: (email: string) => Promise<void>;
   isLoading: boolean;
   loading: () => void;
@@ -30,7 +37,9 @@ export function AuthUserContextProvider({
 }: AuthUserContextProviderProps) {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(undefined);
-  const [currentUser, setCurrentUser] = useState<User | undefined>();
+  const [currentUser, setCurrentUser] = useState<
+    UserFilteredProps | undefined
+  >();
 
   function loading() {
     setIsLoading(!isLoading);
@@ -55,16 +64,18 @@ export function AuthUserContextProvider({
       if (response.status === 200) {
         const fetchedUser = responseBody as User;
 
-        // const cachedUserProperties = {
-        //   id: fetchedUser.id,
-        //   username: fetchedUser.username,
-        //   avatarUrl: fetchedUser.avatarURL,
-        //   features: fetchedUser.features,
+        const filteredUserData = {
+          id: fetchedUser.id,
+          username: fetchedUser.username,
+          avatarURL: fetchedUser.avatarURL,
+          features: fetchedUser.features,
+        };
 
-        // };
-        //TODO: Filtrar os dados que estão indo para o currentUser
-        setCurrentUser(fetchedUser);
-        localStorage.setItem("user", JSON.stringify(fetchedUser));
+        setCurrentUser(filteredUserData);
+        localStorage.setItem(
+          "respondeaqui:user",
+          JSON.stringify(filteredUserData)
+        );
       } else {
         setCurrentUser(null);
         localStorage.removeItem("user");
@@ -100,13 +111,13 @@ export function AuthUserContextProvider({
       };
       getUser(user?.email);
     });
+
     async function getUser(email: string) {
       await fetchUser(email);
     }
 
     return unsubscribe;
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [fetchUser]);
+  }, [auth, fetchUser]);
 
   return (
     <AuthUserContext.Provider
