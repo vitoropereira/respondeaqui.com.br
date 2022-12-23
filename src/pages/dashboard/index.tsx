@@ -1,4 +1,4 @@
-import { useState, useContext, useEffect, useMemo } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import ChatIcon from "@mui/icons-material/Chat";
@@ -17,20 +17,20 @@ import {
   UserFilteredProps,
 } from "src/context/AuthUserContextProvider";
 import { SignIn } from "phosphor-react";
-import { useSession } from "next-auth/react";
+import { useSession, signOut } from "next-auth/react";
 
 export interface Chat {
   id: string;
   content: string;
   questionId: string;
-  userId: string;
+  user_id: string;
   created_at: Date;
 }
 
 interface QuestionLists {
   id: string;
   content: string;
-  userId: string;
+  user_id: string;
   created_at: string;
   updated_at: string;
   user: User;
@@ -51,7 +51,6 @@ interface User {
 function App() {
   const [activeQuestion, setActiveQuestion] =
     useState<QuestionLists>(undefined);
-  const [user, setUser] = useState<UserFilteredProps>();
   const [showNewChat, setShowNewChat] = useState(false);
   const [isDarkTheme, setIsDarkTheme] = useState(true);
   const [themeMode, setThemeMode] = useState("");
@@ -63,8 +62,7 @@ function App() {
   const session = useSession();
   const router = useRouter();
 
-  const { currentUser, fetchUser, isLoading, loading } =
-    useContext(AuthUserContext);
+  const isSignedIn = session.status == "authenticated";
 
   function handleWithSetMobileOpen() {
     setMobileOpen(!mobileOpen);
@@ -73,29 +71,6 @@ function App() {
   const handleNewChat = () => {
     setShowNewChat(true);
   };
-
-  const handleMakeLogin = () => {
-    router.push("../login");
-  };
-
-  useEffect(() => {
-    if (currentUser) {
-      setUser(currentUser);
-    }
-
-    if (!user) {
-      const localStorageContent = localStorage.getItem("respondeaqui:user");
-      setUser(JSON.parse(localStorageContent));
-    }
-  }, [currentUser, router, user]);
-
-  useEffect(() => {
-    if (isDarkTheme) {
-      setThemeMode("dark");
-    } else {
-      setThemeMode("");
-    }
-  }, [isDarkTheme, themeMode]);
 
   async function getAllQuestion() {
     try {
@@ -111,20 +86,21 @@ function App() {
 
       const responseBody = await response.json();
       if (response.status === 200) {
-        loading();
         setAllQuestions(responseBody);
         return;
       }
 
       if (response.status === 400) {
         setErrorObject(responseBody);
-        loading();
+
         return;
       }
 
       if (response.status >= 401) {
         setGlobalErrorMessage(`${responseBody.message} ${responseBody.action}`);
-        loading();
+        setInterval(() => {
+          signOut();
+        }, 5000);
         return;
       }
     } catch (error) {
@@ -133,19 +109,32 @@ function App() {
       setGlobalErrorMessage(
         "Não foi possível se conectar ao Responde Aqui. Por favor, verifique sua conexão."
       );
-      loading();
     }
   }
-  console.log(session);
+
+  useEffect(() => {
+    if (!isSignedIn) {
+      router.push("../login");
+    }
+  }, [isSignedIn, router]);
+
+  useEffect(() => {
+    if (isDarkTheme) {
+      setThemeMode("dark");
+    } else {
+      setThemeMode("");
+    }
+  }, [isDarkTheme, themeMode]);
+
   useEffect(() => {
     getAllQuestion();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   //TODO: QUANDO REALMENTE NÃO TIVER USER E NÃO FOR APENAS ESPERANDO O CURRENTuSER
-  if (!user) {
+  if (!isSignedIn) {
     return <Loading />;
   }
+
   //TODO: Verificar a Responsividade!!!
   return (
     <div
@@ -156,60 +145,49 @@ function App() {
 
         <header className="h-[60px] flex justify-between items-center px-4 py-0 max-[994px]:w-screen bg-light-backgroundSecond dark:bg-dark-backgroundSecond">
           <div className="flex justify-center items-center gap-2">
-            {user.avatar_url ? (
+            {session.data.user.avatar_url ? (
               <Image
                 width={40}
                 height={40}
                 className="rounded-full cursor-pointer"
-                src={user.avatar_url}
-                alt={`Foto do usuário ${user.username}`}
+                src={session.data.user.avatar_url}
+                alt={`Foto do usuário ${session.data.user.username}`}
               />
             ) : (
               ""
             )}
 
             <p className="ml-1 text-light-text dark:text-dark-text">
-              {user.username}
+              {session.data.user.username}
             </p>
           </div>
           <div className="flex">
-            {!user ? (
-              <div
-                onClick={handleMakeLogin}
-                className="w-10 h-10 rounded-[20px] flex justify-center items-center cursor-pointer"
-              >
-                <SignIn size={32} color="#919191" />
-              </div>
-            ) : (
-              <>
-                <div
-                  onClick={() => setIsDarkTheme(!isDarkTheme)}
-                  className="w-10 h-10 rounded-[20px] flex justify-center items-center cursor-pointer"
-                >
-                  <ToolTip tooltip="Tema Dark/Light">
-                    <DarkModeIcon style={{ color: "#919191" }} />
-                  </ToolTip>
-                </div>
+            <div
+              onClick={() => setIsDarkTheme(!isDarkTheme)}
+              className="w-10 h-10 rounded-[20px] flex justify-center items-center cursor-pointer"
+            >
+              <ToolTip tooltip="Tema Dark/Light">
+                <DarkModeIcon style={{ color: "#919191" }} />
+              </ToolTip>
+            </div>
 
-                <div
-                  onClick={handleNewChat}
-                  className="w-10 h-10 rounded-[20px] flex justify-center items-center cursor-pointer"
-                  title="Fazer uma nova pergunta!"
-                >
-                  <ToolTip tooltip="Clique para fazer uma nova pergunta!">
-                    <ChatIcon style={{ color: "#919191" }} />
-                  </ToolTip>
-                </div>
-                <div
-                  className="w-10 h-10 rounded-full flex justify-center items-center cursor-pointer"
-                  // onClick={logout}
-                >
-                  <ToolTip tooltip="Logout">
-                    <LogoutIcon style={{ color: "#919191" }} />
-                  </ToolTip>
-                </div>
-              </>
-            )}
+            <div
+              onClick={handleNewChat}
+              className="w-10 h-10 rounded-[20px] flex justify-center items-center cursor-pointer"
+              title="Fazer uma nova pergunta!"
+            >
+              <ToolTip tooltip="Clique para fazer uma nova pergunta!">
+                <ChatIcon style={{ color: "#919191" }} />
+              </ToolTip>
+            </div>
+            <div
+              className="w-10 h-10 rounded-full flex justify-center items-center cursor-pointer"
+              onClick={() => signOut()}
+            >
+              <ToolTip tooltip="Logout">
+                <LogoutIcon style={{ color: "#919191" }} />
+              </ToolTip>
+            </div>
           </div>
         </header>
 

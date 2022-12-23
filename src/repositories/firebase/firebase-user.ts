@@ -6,7 +6,7 @@ import { UserRepository } from "../user-repository";
 import { db } from "../../service/fireBase";
 
 interface UserProps {
-  userId: string;
+  user_id: string;
   name: string;
   avatar: string;
   email: string;
@@ -17,7 +17,7 @@ export class FirebaseUserRepository implements UserRepository {
     try {
       const newId = uuidv4();
       const docRef = await addDoc(collection(db, "users"), {
-        userId: newId,
+        user_id: newId,
         name: user.name,
         avatar: user.avatar,
         email: user.email,

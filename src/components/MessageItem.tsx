@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 export interface Question {
   id: string;
   content: string;
-  userId: string;
+  user_id: string;
   created_at: Date;
   updated_at: Date;
 }
@@ -12,7 +12,7 @@ export interface ChatLists {
   id: string;
   content: string;
   questionId: string;
-  userId: string;
+  user_id: string;
   created_at: Date;
   user: User;
   question: Question;
@@ -48,7 +48,7 @@ export function MessageItem({ chatData }: MessageItemProps) {
       className="flex mb-3"
       style={{
         justifyContent:
-          chatData.user.id === chatData.question.userId
+          chatData.user.id === chatData.question.user_id
             ? "flex-end"
             : "flex-start",
       }}
@@ -57,7 +57,7 @@ export function MessageItem({ chatData }: MessageItemProps) {
         className="rounded-xl flex flex-col p-1 max-w-[90%]"
         style={{
           backgroundColor:
-            chatData.user.id === chatData.question.userId ? "#D9FDD3" : "#FFF",
+            chatData.user.id === chatData.question.user_id ? "#D9FDD3" : "#FFF",
         }}
       >
         <div className="text-sm mt-1 mr-10 mb-1 ml-1 text-light-textSecondary dark:text-dark-textSecondary">

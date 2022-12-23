@@ -3,17 +3,17 @@ import { PrismaChatRepository } from "src/repositories/prisma/prismaChatsReposit
 interface ChatsProps {
   content: string;
   questionId: string;
-  userId: string;
+  user_id: string;
 }
 
 export class Chats {
   constructor(private prismaChatRepository: PrismaChatRepository) {}
   async createChats(ChatsData: ChatsProps) {
-    const { content, userId, questionId } = ChatsData;
+    const { content, user_id, questionId } = ChatsData;
     try {
       const saveChats = await this.prismaChatRepository.createChat({
         content,
-        userId,
+        user_id,
         questionId,
       });
       return saveChats;

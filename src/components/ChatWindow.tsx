@@ -14,7 +14,7 @@ import { AuthUserContext } from "src/context/AuthUserContextProvider";
 export interface Question {
   id: string;
   content: string;
-  userId: string;
+  user_id: string;
   created_at: Date;
   updated_at: Date;
 }
@@ -23,7 +23,7 @@ export interface ChatLists {
   id: string;
   content: string;
   questionId: string;
-  userId: string;
+  user_id: string;
   created_at: Date;
   updated_at: Date;
   user: User;
@@ -33,7 +33,7 @@ export interface ChatLists {
 interface QuestionLists {
   id: string;
   content: string;
-  userId: string;
+  user_id: string;
   created_at: string;
   updated_at: string;
   user: User;
@@ -146,7 +146,7 @@ export function ChatWindow({
     try {
       const chat = {
         content: text,
-        userId: currentUser.id,
+        user_id: currentUser.id,
         questionId: data.id,
         features: currentUser.features,
       };

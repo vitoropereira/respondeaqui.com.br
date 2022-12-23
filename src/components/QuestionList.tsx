@@ -17,14 +17,14 @@ interface Chat {
   id: string;
   content: string;
   questionId: string;
-  userId: string;
+  user_id: string;
   created_at: Date;
 }
 
 interface QuestionLists {
   id: string;
   content: string;
-  userId: string;
+  user_id: string;
   created_at: string;
   updated_at: string;
   user: User;
@@ -91,7 +91,7 @@ export function QuestionList({
           <div className="flex justify-between items-center w-full">
             <div className="text-[10px] text-light-lastMessage dark:text-dark-lastMessage flex w-full mb-2">
               <p className="overflow-hidden whitespace-nowrap overflow-ellipsis ml-1">
-                {data.chat.length > 0 && data.userId === data.chat[0].userId
+                {data.chat.length > 0 && data.user_id === data.chat[0].user_id
                   ? "Você: "
                   : ""}
                 {data.chat.length > 0

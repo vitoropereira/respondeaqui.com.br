@@ -6,9 +6,10 @@ export function PrismaAdapter(): Adapter {
     async createUser(user) {
       const prismaUser = await prisma.user.create({
         data: {
-          username: user.name,
+          username: user.username,
           email: user.email,
-          avatar_url: user.image,
+          avatar_url: user.avatar_url,
+          features: ["create:user", "create:content"],
         },
       });
 

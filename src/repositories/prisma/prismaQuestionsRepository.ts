@@ -1,15 +1,15 @@
-import { prisma } from "src/service/prisma";
+import prisma from "src/service/prisma";
 import { QuestionsRepository } from "../questionsRepository";
 
 interface QuestionProps {
   content: string;
-  userId: string;
+  user_id: string;
 }
 
 export class PrismaQuestionRepository implements QuestionsRepository {
-  async createQuestion({ content, userId }: QuestionProps) {
+  async createQuestion({ content, user_id }: QuestionProps) {
     const response = await prisma.question.create({
-      data: { content, userId },
+      data: { content, user_id },
       include: {
         user: true,
       },
@@ -22,10 +22,10 @@ export class PrismaQuestionRepository implements QuestionsRepository {
     return false;
   }
 
-  async findQuestionByUserId(userId: string) {
+  async findQuestionByUserId(user_id: string) {
     const questions = await prisma.question.findMany({
       where: {
-        userId,
+        user_id,
       },
       include: {
         user: true,

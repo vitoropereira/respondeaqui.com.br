@@ -20,64 +20,8 @@ export default function Login() {
   const isSignedIn = session.status == "authenticated";
 
   const handleGoogleLogin = async () => {
-    console.log("aqui!!!");
+    setIsLoading(true);
     await signIn("google");
-    // setIsLoading(true);
-    // setErrorObject(undefined);
-    // const { user, credential } = await firebaseLoginRepository.googlePopup();
-    // const { email, displayName, photoURL } = user;
-
-    // if (user) {
-    //   const newUser = {
-    //     username: displayName,
-    //     avatar_url: photoURL,
-    //     email,
-    //     signInMethod: credential.signInMethod,
-    //     features: ["create:user"],
-    //   };
-
-    //   try {
-    //     const response = await fetch(`/api/v1/users`, {
-    //       method: "POST",
-    //       headers: {
-    //         Accept: "application/json",
-    //         "Content-Type": "application/json",
-    //       },
-    //       body: JSON.stringify(newUser),
-    //     });
-
-    //     setGlobalErrorMessage(undefined);
-
-    //     const responseBody = await response.json();
-
-    //     if (response.status === 201) {
-    //       fetchUser(newUser.email);
-    //       router.push("./dashboard");
-    //       return;
-    //     }
-
-    //     if (response.status === 400) {
-    //       setErrorObject(responseBody);
-    //       setIsLoading(false);
-    //       return;
-    //     }
-
-    //     if (response.status >= 401) {
-    //       setGlobalErrorMessage(
-    //         `${responseBody.message} ${responseBody.action}`
-    //       );
-    //       setIsLoading(false);
-    //       return;
-    //     }
-    //   } catch (error) {
-    //     console.log("error");
-    //     console.log(error);
-    //     setGlobalErrorMessage(
-    //       "Não foi possível se conectar ao Responde Aqui. Por favor, verifique sua conexão."
-    //     );
-    //     setIsLoading(false);
-    //   }
-    // }
   };
 
   useEffect(() => {

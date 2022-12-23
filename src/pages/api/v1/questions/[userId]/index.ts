@@ -11,11 +11,11 @@ export default nextConnect({
 }).get(getHandler);
 
 async function getHandler(request: NextApiRequest, response: NextApiResponse) {
-  const { userId } = request.query;
+  const { user_id } = request.query;
   const prismaQuestionRepository = new PrismaQuestionRepository();
   const questions = new Question(prismaQuestionRepository);
 
-  const res = await questions.getQuestionsByUserId(String(userId));
+  const res = await questions.getQuestionsByuser_id(String(user_id));
 
   return response.status(200).json(res);
 }

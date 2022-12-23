@@ -2,17 +2,17 @@ import { PrismaQuestionRepository } from "src/repositories/prisma/prismaQuestion
 
 interface QuestionProps {
   content: string;
-  userId: string;
+  user_id: string;
 }
 
 export class Question {
   constructor(private prismaQuestionRepository: PrismaQuestionRepository) {}
   async createQuestion(questionData: QuestionProps) {
-    const { content, userId } = questionData;
+    const { content, user_id } = questionData;
     try {
       const saveQuestion = await this.prismaQuestionRepository.createQuestion({
         content,
-        userId,
+        user_id,
       });
       return saveQuestion;
     } catch (e) {
@@ -25,10 +25,10 @@ export class Question {
     const questions = this.prismaQuestionRepository.findQuestionByText(text);
   }
 
-  async getQuestionsByUserId(userId: string) {
+  async getQuestionsByuser_id(user_id: string) {
     try {
       const userQuestions =
-        await this.prismaQuestionRepository.findQuestionByUserId(userId);
+        await this.prismaQuestionRepository.findQuestionByUserId(user_id);
       return userQuestions;
     } catch (e) {
       console.error("Error getQUestions: ", e);
