@@ -1,16 +1,16 @@
-import { prisma } from "src/service/prisma";
+import prisma from "src/service/prisma";
 import { ChatsRepository } from "../chatsRepository";
 
 interface ChatsProps {
   content: string;
-  questionId: string;
+  question_id: string;
   user_id: string;
 }
 
 export class PrismaChatRepository implements ChatsRepository {
-  async createChat({ content, questionId, user_id }: ChatsProps) {
+  async createChat({ content, question_id, user_id }: ChatsProps) {
     const response = await prisma.chat.create({
-      data: { content, questionId, user_id },
+      data: { content, question_id, user_id },
       include: {
         user: true,
         question: true,
@@ -20,10 +20,10 @@ export class PrismaChatRepository implements ChatsRepository {
     return response;
   }
 
-  async getChatsByQuestionsId(questionId: string) {
+  async getChatsByQuestionsId(question_id: string) {
     const response = await prisma.chat.findMany({
       where: {
-        questionId,
+        question_id,
       },
       orderBy: {
         created_at: "asc",

@@ -16,7 +16,7 @@ interface User {
 interface Chat {
   id: string;
   content: string;
-  questionId: string;
+  question_id: string;
   user_id: string;
   created_at: Date;
 }

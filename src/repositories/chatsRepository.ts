@@ -2,11 +2,11 @@ import { Chat } from "@prisma/client";
 
 interface ChatsProps {
   content: string;
-  questionId: string;
+  question_id: string;
   user_id: string;
 }
 
 export interface ChatsRepository {
-  createChat: ({ content, questionId, user_id }: ChatsProps) => Promise<Chat>;
-  getChatsByQuestionsId: (questionId: string) => Promise<Chat[]>;
+  createChat: ({ content, question_id, user_id }: ChatsProps) => Promise<Chat>;
+  getChatsByQuestionsId: (question_id: string) => Promise<Chat[]>;
 }

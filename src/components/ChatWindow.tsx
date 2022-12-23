@@ -10,6 +10,7 @@ import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import Image from "next/image";
 import { ToolTip } from "./Tooltip";
 import { AuthUserContext } from "src/context/AuthUserContextProvider";
+import { useSession } from "next-auth/react";
 
 export interface Question {
   id: string;
@@ -22,7 +23,7 @@ export interface Question {
 export interface ChatLists {
   id: string;
   content: string;
-  questionId: string;
+  question_id: string;
   user_id: string;
   created_at: Date;
   updated_at: Date;
@@ -69,8 +70,6 @@ export function ChatWindow({
   //   browserSupportsSpeechRecognition,
   // } = useSpeechRecognition();
 
-  const { currentUser } = useContext(AuthUserContext);
-
   const [emojiOpen, setEmojiOpen] = useState(false);
   const [text, setText] = useState("");
   const [listeningAudio, setListeningAudio] = useState(false);
@@ -80,8 +79,10 @@ export function ChatWindow({
   const [globalErrorMessage, setGlobalErrorMessage] = useState(undefined);
   const [errorObject, setErrorObject] = useState(undefined);
 
-  async function getChats(questionId: string) {
-    const response = await fetch(`/api/v1/chats/${questionId}`, {
+  const session = useSession();
+
+  async function getChats(question_id: string) {
+    const response = await fetch(`/api/v1/chats/${question_id}`, {
       method: "GET",
       headers: {
         Accept: "application/json",
@@ -146,9 +147,9 @@ export function ChatWindow({
     try {
       const chat = {
         content: text,
-        user_id: currentUser.id,
-        questionId: data.id,
-        features: currentUser.features,
+        user_id: session.data.user.id,
+        question_id: data.id,
+        features: session.data.user.features,
       };
 
       const response = await fetch(`/api/v1/chats`, {
@@ -163,7 +164,6 @@ export function ChatWindow({
       setGlobalErrorMessage(undefined);
 
       const responseBody = await response.json();
-
       if (response.status === 201) {
         setIsLoading(false);
         setList([...list, responseBody]);
@@ -185,8 +185,6 @@ export function ChatWindow({
         return;
       }
     } catch (error) {
-      console.log("error");
-      console.log(error);
       setGlobalErrorMessage(
         "Não foi possível se conectar ao Responde Aqui. Por favor, verifique sua conexão."
       );
@@ -239,6 +237,18 @@ export function ChatWindow({
       >
         {list &&
           list.map((item) => <MessageItem key={item.id} chatData={item} />)}
+        {errorObject && (
+          //TODO ajustar os erros com um componente mais bonito.
+          <p className="font-medium text-sm text-red-500">
+            {errorObject.message}
+          </p>
+        )}
+        {globalErrorMessage && (
+          //TODO ajustar os erros com um componente mais bonito.
+          <p className="font-medium text-sm text-red-500 text-ellipsis">
+            {globalErrorMessage}
+          </p>
+        )}
       </div>
 
       <div

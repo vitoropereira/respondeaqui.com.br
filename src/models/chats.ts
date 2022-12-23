@@ -2,19 +2,19 @@ import { PrismaChatRepository } from "src/repositories/prisma/prismaChatsReposit
 
 interface ChatsProps {
   content: string;
-  questionId: string;
+  question_id: string;
   user_id: string;
 }
 
 export class Chats {
   constructor(private prismaChatRepository: PrismaChatRepository) {}
   async createChats(ChatsData: ChatsProps) {
-    const { content, user_id, questionId } = ChatsData;
+    const { content, user_id, question_id } = ChatsData;
     try {
       const saveChats = await this.prismaChatRepository.createChat({
         content,
         user_id,
-        questionId,
+        question_id,
       });
       return saveChats;
     } catch (e) {
@@ -23,10 +23,10 @@ export class Chats {
     }
   }
 
-  async getChatsByQuestionsId(questionId: string) {
+  async getChatsByQuestionsId(question_id: string) {
     try {
       const getChats = await this.prismaChatRepository.getChatsByQuestionsId(
-        questionId
+        question_id
       );
       return getChats;
     } catch (e) {

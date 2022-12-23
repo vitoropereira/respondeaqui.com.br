@@ -9,6 +9,7 @@ import {
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { firebaseApp } from "../service/fireBase";
 import { User } from "@prisma/client";
+import { GetServerSideProps } from "next";
 
 export interface UserFilteredProps {
   id: string;
@@ -136,3 +137,9 @@ export function AuthUserContextProvider({
 export function useAuthUser() {
   return useContext(AuthUserContext);
 }
+
+export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
+  return {
+    props: {},
+  };
+};

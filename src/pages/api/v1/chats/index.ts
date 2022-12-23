@@ -25,6 +25,5 @@ async function postHandler(request: RequestProps, response: NextApiResponse) {
   const chats = new Chats(prismaChatRepository);
 
   const newChat = await chats.createChats(request.body);
-
   return response.status(201).json(newChat);
 }

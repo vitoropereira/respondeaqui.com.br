@@ -18,11 +18,14 @@ import {
 } from "src/context/AuthUserContextProvider";
 import { SignIn } from "phosphor-react";
 import { useSession, signOut } from "next-auth/react";
+import { GetServerSideProps } from "next";
+import { unstable_getServerSession } from "next-auth";
+import { buildNextAuthOptions } from "../api/auth/[...nextauth]";
 
 export interface Chat {
   id: string;
   content: string;
-  questionId: string;
+  question_id: string;
   user_id: string;
   created_at: Date;
 }
@@ -130,7 +133,6 @@ function App() {
     getAllQuestion();
   }, []);
 
-  //TODO: QUANDO REALMENTE NÃO TIVER USER E NÃO FOR APENAS ESPERANDO O CURRENTuSER
   if (!isSignedIn) {
     return <Loading />;
   }
@@ -145,7 +147,7 @@ function App() {
 
         <header className="h-[60px] flex justify-between items-center px-4 py-0 max-[994px]:w-screen bg-light-backgroundSecond dark:bg-dark-backgroundSecond">
           <div className="flex justify-center items-center gap-2">
-            {session.data.user.avatar_url ? (
+            {session.data?.user.avatar_url ? (
               <Image
                 width={40}
                 height={40}
@@ -224,3 +226,16 @@ function App() {
 }
 
 export default App;
+
+export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
+  const session = await unstable_getServerSession(
+    req,
+    res,
+    buildNextAuthOptions(req, res)
+  );
+  return {
+    props: {
+      session,
+    },
+  };
+};
