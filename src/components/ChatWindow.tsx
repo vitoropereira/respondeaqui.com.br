@@ -45,7 +45,7 @@ interface User {
   email: string;
   signInMethod: string[];
   features: string[];
-  avatarURL: string;
+  avatar_url: string;
   created_at: Date;
   updated_at: Date;
 }
@@ -223,7 +223,7 @@ export function ChatWindow({
             className="rounded-full ml-3 mr-2"
             width={40}
             height={40}
-            src={data.user.avatarURL}
+            src={data.user.avatar_url}
             alt=""
           />
           <div className="text-base text-light-text dark:text-dark-text pl-2">

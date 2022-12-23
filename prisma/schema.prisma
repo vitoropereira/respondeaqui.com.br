@@ -12,27 +12,59 @@ datasource db {
 }
 
 model User {
-  id           String   @id @default(uuid())
-  username     String
-  email        String   @unique
-  signInMethod String[] @default([])
-  features     String[] @default([])
-  avatarURL    String
+  id         String   @id @default(uuid())
+  username   String
+  email      String   @unique
+  features   String[] @default([])
+  avatar_url String
 
   created_at DateTime @default(now())
   updated_at DateTime @default(now())
 
-  question Question[]
-  chat     Chat[]
+  accounts  Account[]
+  sessions  Session[]
+  questions Question[]
+  chats     Chat[]
 
   @@map("users")
+}
+
+model Account {
+  id                  String  @id @default(cuid())
+  user_id             String
+  type                String
+  provider            String
+  provider_account_id String
+  refresh_token       String?
+  access_token        String?
+  expires_at          Int?
+  token_type          String?
+  scope               String?
+  id_token            String?
+  session_state       String?
+
+  user User @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@unique([provider, provider_account_id])
+  @@map("accounts")
+}
+
+model Session {
+  id            String   @id @default(cuid())
+  session_token String   @unique
+  user_id       String
+  expires       DateTime
+
+  user User @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@map("sessions")
 }
 
 model Question {
   id      String @id @default(uuid())
   content String
-  user    User   @relation(fields: [userId], references: [id])
-  userId  String
+  user    User   @relation(fields: [user_id], references: [id])
+  user_id String
 
   created_at DateTime @default(now())
   updated_at DateTime @default(now())
@@ -43,13 +75,13 @@ model Question {
 }
 
 model Chat {
-  id         String @id @default(uuid())
-  content    String
-  questionId String
-  userId     String
+  id          String @id @default(uuid())
+  content     String
+  question_id String
+  user_id     String
 
-  question Question @relation(fields: [questionId], references: [id])
-  user     User     @relation(fields: [userId], references: [id])
+  question Question @relation(fields: [question_id], references: [id])
+  user     User     @relation(fields: [user_id], references: [id])
 
   created_at DateTime @default(now())
 

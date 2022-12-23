@@ -8,7 +8,7 @@ interface User {
   email: string;
   signInMethod: string[];
   features: string[];
-  avatarURL: string;
+  avatar_url: string;
   created_at: Date;
   updated_at: Date;
 }
@@ -69,7 +69,7 @@ export function QuestionList({
           className="rounded-full ml-3"
           width="50px"
           height="50px"
-          src={data.user.avatarURL}
+          src={data.user.avatar_url}
           alt=""
         />
         <div

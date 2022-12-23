@@ -3,14 +3,14 @@ import { User } from "@prisma/client";
 interface UserProps {
   username: string;
   email: string;
-  avatarURL: string;
+  avatar_url: string;
   signInMethod: string[];
   features: string[];
 }
 
 export interface UsersRepository {
   createUser: ({
-    avatarURL,
+    avatar_url,
     email,
     username,
     signInMethod,

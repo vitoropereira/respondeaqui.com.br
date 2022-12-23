@@ -17,6 +17,7 @@ import {
   UserFilteredProps,
 } from "src/context/AuthUserContextProvider";
 import { SignIn } from "phosphor-react";
+import { useSession } from "next-auth/react";
 
 export interface Chat {
   id: string;
@@ -42,7 +43,7 @@ interface User {
   email: string;
   signInMethod: string[];
   features: string[];
-  avatarURL: string;
+  avatar_url: string;
   created_at: Date;
   updated_at: Date;
 }
@@ -59,7 +60,9 @@ function App() {
   const [globalErrorMessage, setGlobalErrorMessage] = useState(undefined);
   const [errorObject, setErrorObject] = useState(undefined);
 
+  const session = useSession();
   const router = useRouter();
+
   const { currentUser, fetchUser, isLoading, loading } =
     useContext(AuthUserContext);
 
@@ -133,7 +136,7 @@ function App() {
       loading();
     }
   }
-
+  console.log(session);
   useEffect(() => {
     getAllQuestion();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -153,12 +156,12 @@ function App() {
 
         <header className="h-[60px] flex justify-between items-center px-4 py-0 max-[994px]:w-screen bg-light-backgroundSecond dark:bg-dark-backgroundSecond">
           <div className="flex justify-center items-center gap-2">
-            {user.avatarURL ? (
+            {user.avatar_url ? (
               <Image
                 width={40}
                 height={40}
                 className="rounded-full cursor-pointer"
-                src={user.avatarURL}
+                src={user.avatar_url}
                 alt={`Foto do usuário ${user.username}`}
               />
             ) : (

@@ -5,6 +5,7 @@ import { Loading } from "src/components/Loading";
 import { useAuthUser } from "src/context/AuthUserContextProvider";
 
 import { FirebaseLoginRepository } from "../../repositories/firebase/firebase-login";
+import { signIn, useSession } from "next-auth/react";
 
 export default function Login() {
   const [darkMode, setDarkMode] = useState(true);
@@ -12,77 +13,78 @@ export default function Login() {
   const [isLoading, setIsLoading] = useState(false);
   const [errorObject, setErrorObject] = useState(undefined);
 
-  const { currentUser, fetchUser } = useAuthUser();
-
+  const session = useSession();
   const router = useRouter();
 
-  const firebaseLoginRepository = new FirebaseLoginRepository();
-  //TODO tratar error "FirebaseError: Firebase: Error (auth/popup-closed-by-user)." quando fecha a tela de login.
+  const hasAuthError = !!router.query.error;
+  const isSignedIn = session.status == "authenticated";
+
   const handleGoogleLogin = async () => {
-    setIsLoading(true);
-    setErrorObject(undefined);
-    const { user, credential } = await firebaseLoginRepository.googlePopup();
-    const { email, displayName, photoURL } = user;
+    console.log("aqui!!!");
+    await signIn("google");
+    // setIsLoading(true);
+    // setErrorObject(undefined);
+    // const { user, credential } = await firebaseLoginRepository.googlePopup();
+    // const { email, displayName, photoURL } = user;
 
-    if (user) {
-      const newUser = {
-        username: displayName,
-        avatarURL: photoURL,
-        email,
-        signInMethod: credential.signInMethod,
-        features: ["create:user"],
-      };
+    // if (user) {
+    //   const newUser = {
+    //     username: displayName,
+    //     avatar_url: photoURL,
+    //     email,
+    //     signInMethod: credential.signInMethod,
+    //     features: ["create:user"],
+    //   };
 
-      try {
-        const response = await fetch(`/api/v1/users`, {
-          method: "POST",
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(newUser),
-        });
+    //   try {
+    //     const response = await fetch(`/api/v1/users`, {
+    //       method: "POST",
+    //       headers: {
+    //         Accept: "application/json",
+    //         "Content-Type": "application/json",
+    //       },
+    //       body: JSON.stringify(newUser),
+    //     });
 
-        setGlobalErrorMessage(undefined);
+    //     setGlobalErrorMessage(undefined);
 
-        const responseBody = await response.json();
+    //     const responseBody = await response.json();
 
-        if (response.status === 201) {
-          fetchUser(newUser.email);
-          router.push("./dashboard");
-          return;
-        }
+    //     if (response.status === 201) {
+    //       fetchUser(newUser.email);
+    //       router.push("./dashboard");
+    //       return;
+    //     }
 
-        if (response.status === 400) {
-          setErrorObject(responseBody);
-          setIsLoading(false);
-          return;
-        }
+    //     if (response.status === 400) {
+    //       setErrorObject(responseBody);
+    //       setIsLoading(false);
+    //       return;
+    //     }
 
-        if (response.status >= 401) {
-          setGlobalErrorMessage(
-            `${responseBody.message} ${responseBody.action}`
-          );
-          setIsLoading(false);
-          return;
-        }
-      } catch (error) {
-        console.log("error");
-        console.log(error);
-        setGlobalErrorMessage(
-          "Não foi possível se conectar ao Responde Aqui. Por favor, verifique sua conexão."
-        );
-        setIsLoading(false);
-      }
-    }
+    //     if (response.status >= 401) {
+    //       setGlobalErrorMessage(
+    //         `${responseBody.message} ${responseBody.action}`
+    //       );
+    //       setIsLoading(false);
+    //       return;
+    //     }
+    //   } catch (error) {
+    //     console.log("error");
+    //     console.log(error);
+    //     setGlobalErrorMessage(
+    //       "Não foi possível se conectar ao Responde Aqui. Por favor, verifique sua conexão."
+    //     );
+    //     setIsLoading(false);
+    //   }
+    // }
   };
 
   useEffect(() => {
-    if (currentUser) {
-      fetchUser(currentUser.email);
+    if (isSignedIn) {
       router.push("../dashboard");
     }
-  }, [currentUser, fetchUser, router]);
+  }, [isSignedIn, router]);
 
   // const handleGithubLogin = async () => {
   //   let result = await loginFirebase.githubPopup();
@@ -140,12 +142,19 @@ export default function Login() {
               <button
                 className="border-none rounded-xl mt-3 cursor-pointer w-80 h-16 flex justify-center items-center gap-3 bg-red-600 hover:bg-red-800 md:w-72 md:h-16"
                 onClick={handleGoogleLogin}
+                // disabled={!isSignedIn}
               >
                 <GoogleLogo color="#fff" size={32} />
                 <span className="text-xl font-semibold text-white">
                   Entrar com Google
                 </span>
               </button>
+              {hasAuthError && (
+                <span className="text-red-600">
+                  Falha ao conectar ao Google, verifique se as permissões.
+                </span>
+              )}
+              <pre>{JSON.stringify(session)}</pre>
               {/* <button
                 className="border-none rounded-xl mt-3 cursor-pointer w-80 h-16 flex justify-center items-center gap-3 bg-gray-600 hover:bg-gray-800 md:w-72 md:h-16"
                 onClick={handleGithubLogin}

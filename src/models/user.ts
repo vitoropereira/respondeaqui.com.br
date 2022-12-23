@@ -6,7 +6,7 @@ import { combineArrays } from "src/utils/generalFunctions";
 interface UserCreateData {
   username: string;
   email: string;
-  avatarURL: string;
+  avatar_url: string;
   signInMethod: string[];
   features: string[];
 }
@@ -22,7 +22,7 @@ export class UserModel {
       return userUpdated;
     }
 
-    const { avatarURL, email, signInMethod, username, features } = request;
+    const { avatar_url, email, signInMethod, username, features } = request;
 
     const newUserFeatures = [
       "read:user",
@@ -34,7 +34,7 @@ export class UserModel {
     const newFeatures = combineArrays(features, newUserFeatures) as string[];
 
     const user = await this.usersRepository.createUser({
-      avatarURL,
+      avatar_url,
       email,
       signInMethod,
       username,

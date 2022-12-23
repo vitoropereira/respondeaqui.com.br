@@ -32,7 +32,7 @@ interface User {
   email: string;
   signInMethod: string[];
   features: string[];
-  avatarURL: string;
+  avatar_url: string;
   created_at: string;
   updated_at: string;
 }
@@ -220,7 +220,7 @@ export function NewQuestion({ show, setShow }: NewQuestionProps) {
                   height={50}
                   className="rounded-full mr-4"
                   alt="Imagem do usuário."
-                  src={item.user.avatarURL}
+                  src={item.user.avatar_url}
                 />
                 <div className="text-base text-light-text dark:text-dark-text pl-1 flex flex-col justify-start items-start ">
                   <span>{item.content}</span>

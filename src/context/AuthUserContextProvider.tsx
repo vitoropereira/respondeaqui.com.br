@@ -13,7 +13,7 @@ import { User } from "@prisma/client";
 export interface UserFilteredProps {
   id: string;
   username: string;
-  avatarURL: string;
+  avatar_url: string;
   features: string[];
 }
 
@@ -67,7 +67,7 @@ export function AuthUserContextProvider({
         const filteredUserData = {
           id: fetchedUser.id,
           username: fetchedUser.username,
-          avatarURL: fetchedUser.avatarURL,
+          avatar_url: fetchedUser.avatar_url,
           features: fetchedUser.features,
         };
 

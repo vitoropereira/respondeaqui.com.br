@@ -6,14 +6,14 @@ import { UsersRepository } from "../usersRepository";
 interface UserProps {
   username: string;
   email: string;
-  avatarURL: string;
+  avatar_url: string;
   signInMethod: string[];
   features: string[];
 }
 
 export class PrismaUsersRepository implements UsersRepository {
   async createUser({
-    avatarURL,
+    avatar_url,
     email,
     username,
     signInMethod,
@@ -24,7 +24,7 @@ export class PrismaUsersRepository implements UsersRepository {
         email,
         username,
         signInMethod,
-        avatarURL,
+        avatar_url,
         features,
       },
     });
@@ -47,7 +47,7 @@ export class PrismaUsersRepository implements UsersRepository {
   }
 
   async updateUserData(user: User, userData: UserProps) {
-    const { email, username, avatarURL, features } = userData;
+    const { email, username, avatar_url, features } = userData;
 
     const newFeatures = combineArrays(features, user.features) as string[];
 
@@ -55,7 +55,7 @@ export class PrismaUsersRepository implements UsersRepository {
       data: {
         username,
         email,
-        avatarURL,
+        avatar_url,
         features: newFeatures,
       },
       where: {
