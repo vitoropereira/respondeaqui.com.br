@@ -57,17 +57,19 @@ export function MessageItem({ chatData }: MessageItemProps) {
         justifyContent: isAuthor ? "flex-end" : "flex-start",
       }}
     >
-      {isAuthor ? (
-        ""
-      ) : (
-        <Image
-          width={40}
-          height={40}
-          className="rounded-[50%]"
-          src={chatData.user.avatar_url}
-          alt={`Foto do usuário ${chatData.user.username}`}
-        />
-      )}
+      <div>
+        {isAuthor ? (
+          ""
+        ) : (
+          <Image
+            width={40}
+            height={40}
+            className="rounded-[50%]"
+            src={chatData.user.avatar_url}
+            alt={`Foto do usuário ${chatData.user.username}`}
+          />
+        )}
+      </div>
 
       <div
         className={`flex flex-col p-1 max-w-[90%]  ${
@@ -86,17 +88,19 @@ export function MessageItem({ chatData }: MessageItemProps) {
           {time}
         </div>
       </div>
-      {isAuthor ? (
-        <Image
-          width={40}
-          height={40}
-          className="rounded-[50%]"
-          src={chatData.user.avatar_url}
-          alt={`Foto do usuário ${chatData.user.username}`}
-        />
-      ) : (
-        ""
-      )}
+      <div>
+        {isAuthor ? (
+          <Image
+            width={40}
+            height={40}
+            className="rounded-[50%]"
+            src={chatData.user.avatar_url}
+            alt={`Foto do usuário ${chatData.user.username}`}
+          />
+        ) : (
+          ""
+        )}
+      </div>
     </div>
   );
 }

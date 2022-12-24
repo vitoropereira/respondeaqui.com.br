@@ -195,9 +195,9 @@ export function ChatWindow({
     }
   };
 
-  // const handleBack = () => {
-  //   setMobileOpen(!mobileOpen);
-  // };
+  const handleBack = () => {
+    handleWithSetMobileOpen();
+  };
 
   // const logout = () => {
   //   window.location.reload();
@@ -216,7 +216,7 @@ export function ChatWindow({
         <div className="flex items-center cursor-pointer">
           <div
             className="hidden max-[994px]:flex max-[994px]:ml-0 max-[994px]:justify-center max-[994px]:items-center max-[994px]:cursor-point max-[994px]:transition-all ease-in"
-            // onClick={handleBack}
+            onClick={handleBack}
           >
             <ArrowBackIcon style={{ color: "#919191" }} />
           </div>

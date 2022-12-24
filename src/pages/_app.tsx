@@ -3,11 +3,11 @@ import { AppProps } from "next/app";
 import { SessionProvider } from "next-auth/react";
 import { ThemeContextProvider } from "../context/ThemeContextProvider";
 import { Session } from "next-auth";
-import useSWR, { SWRConfig } from "swr";
+import NextNProgress from "src/components/ProgressBar";
+import { SWRConfig } from "swr";
 
 import "../styles/globals.css";
-import "../styles/styles.css";
-import NextNProgress from "src/components/ProgressBar";
+// import "../styles/styles.css";
 
 async function SWRFetcher(resource, init) {
   const response = await fetch(resource, init);

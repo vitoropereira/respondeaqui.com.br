@@ -104,88 +104,89 @@ function App() {
 
   //TODO: Verificar a Responsividade!!!
   return (
-    <div
-      className={`flex h-screen bg-light-backgroundSecond dark:bg-dark-backgroundSecond ${themeMode}`}
-    >
-      <div className="w-[35%] max-w-[415px] flex flex-col border-r border-r-light-border dark:border-r-dark-border">
-        <NewQuestion show={showNewChat} setShow={setShowNewChat} />
+    <div className={`${themeMode}`}>
+      <div
+        className={`flex h-screen max-[994px]:w-full bg-light-backgroundSecond dark:bg-dark-backgroundSecond`}
+      >
+        <div className="min-[993px]:w-[35%] min-[993px]:max-w-[415px] max-[994px]:w-full flex flex-col border-r border-r-light-border dark:border-r-dark-border">
+          <NewQuestion show={showNewChat} setShow={setShowNewChat} />
 
-        <header className="h-[60px] flex justify-between items-center px-4 py-0 max-[994px]:w-screen bg-light-backgroundSecond dark:bg-dark-backgroundSecond">
-          <div className="flex justify-center items-center gap-2">
-            {session.data?.user.avatar_url ? (
-              <Image
-                width={40}
-                height={40}
-                className="rounded-full cursor-pointer"
-                src={session.data.user.avatar_url}
-                alt={`Foto do usuário ${session.data.user.username}`}
-              />
-            ) : (
-              ""
-            )}
-
-            <p className="ml-1 text-light-text dark:text-dark-text">
-              {session.data.user.username}
-            </p>
-          </div>
-          <div className="flex">
-            <div
-              onClick={() => setIsDarkTheme(!isDarkTheme)}
-              className="w-10 h-10 rounded-[20px] flex justify-center items-center cursor-pointer"
-            >
-              <ToolTip tooltip="Tema Dark/Light">
-                <DarkModeIcon style={{ color: "#919191" }} />
-              </ToolTip>
-            </div>
-
-            <div
-              onClick={handleNewChat}
-              className="w-10 h-10 rounded-[20px] flex justify-center items-center cursor-pointer"
-              title="Fazer uma nova pergunta!"
-            >
-              <ToolTip tooltip="Clique para fazer uma nova pergunta!">
-                <ChatIcon style={{ color: "#919191" }} />
-              </ToolTip>
-            </div>
-            <div
-              className="w-10 h-10 rounded-full flex justify-center items-center cursor-pointer"
-              onClick={() => signOut()}
-            >
-              <ToolTip tooltip="Logout">
-                <LogoutIcon style={{ color: "#919191" }} />
-              </ToolTip>
-            </div>
-          </div>
-        </header>
-
-        <Input placeholderText="Procurar por uma pergunta." icon={true} />
-
-        <div className="flex-1 bg-light-background dark:bg-dark-background overflow-y-auto max-[994px]:w-screen">
-          {/* //TODO: Atualizar em tempo real quando for criado uma nova question. */}
-          {allQuestions &&
-            allQuestions.map((item) => {
-              return (
-                <QuestionList
-                  key={item.id}
-                  data={item}
-                  active={activeQuestion?.id === item.id}
-                  onClick={() => setActiveQuestion(item)}
-                  onMobileClick={() => setMobileOpen(true)}
+          <header className="h-[60px] flex justify-between items-center px-4 py-0 max-[994px]:w-full bg-light-backgroundSecond dark:bg-dark-backgroundSecond">
+            <div className="flex justify-center items-center gap-2">
+              {session.data?.user.avatar_url ? (
+                <Image
+                  width={40}
+                  height={40}
+                  className="rounded-full cursor-pointer"
+                  src={session.data.user.avatar_url}
+                  alt={`Foto do usuário ${session.data.user.username}`}
                 />
-              );
-            })}
-        </div>
-      </div>
-      <div className="flex-1 h-screen">
-        {activeQuestion !== undefined && (
-          <ChatWindow
-            chatData={activeQuestion}
-            handleWithSetMobileOpen={handleWithSetMobileOpen}
-            mobileOpen={mobileOpen}
-          />
-        )}
+              ) : (
+                ""
+              )}
 
-        {activeQuestion === undefined && <ChatIntro />}
+              <p className="ml-1 text-light-text dark:text-dark-text">
+                {session.data.user.username}
+              </p>
+            </div>
+            <div className="flex">
+              <div
+                onClick={() => setIsDarkTheme(!isDarkTheme)}
+                className="w-10 h-10 rounded-[20px] flex justify-center items-center cursor-pointer"
+              >
+                <ToolTip tooltip="Tema Dark/Light">
+                  <DarkModeIcon style={{ color: "#919191" }} />
+                </ToolTip>
+              </div>
+
+              <div
+                onClick={handleNewChat}
+                className="w-10 h-10 rounded-[20px] flex justify-center items-center cursor-pointer"
+                title="Fazer uma nova pergunta!"
+              >
+                <ToolTip tooltip="Clique para fazer uma nova pergunta!">
+                  <ChatIcon style={{ color: "#919191" }} />
+                </ToolTip>
+              </div>
+              <div
+                className="w-10 h-10 rounded-full flex justify-center items-center cursor-pointer"
+                onClick={() => signOut()}
+              >
+                <ToolTip tooltip="Logout">
+                  <LogoutIcon style={{ color: "#919191" }} />
+                </ToolTip>
+              </div>
+            </div>
+          </header>
+
+          <Input placeholderText="Procurar por uma pergunta." icon={true} />
+
+          <div className="flex-1 bg-light-background dark:bg-dark-background overflow-y-auto max-[994px]:w-screen">
+            {allQuestions &&
+              allQuestions.map((item) => {
+                return (
+                  <QuestionList
+                    key={item.id}
+                    data={item}
+                    active={activeQuestion?.id === item.id}
+                    onClick={() => setActiveQuestion(item)}
+                    onMobileClick={() => setMobileOpen(true)}
+                  />
+                );
+              })}
+          </div>
+        </div>
+        <div className="flex-1 h-screen">
+          {activeQuestion !== undefined && (
+            <ChatWindow
+              chatData={activeQuestion}
+              handleWithSetMobileOpen={handleWithSetMobileOpen}
+              mobileOpen={mobileOpen}
+            />
+          )}
+
+          {activeQuestion === undefined && <ChatIntro />}
+        </div>
       </div>
     </div>
   );
