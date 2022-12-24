@@ -12,6 +12,7 @@ export default nextConnect({
 
 async function getHandler(request: NextApiRequest, response: NextApiResponse) {
   const { question_id } = request.query;
+
   const prismaChatRepository = new PrismaChatRepository();
   const chats = new Chats(prismaChatRepository);
 

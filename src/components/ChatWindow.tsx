@@ -1,6 +1,7 @@
 import { useEffect, useState, useRef, useContext } from "react";
 import { MessageItem } from "./MessageItem";
 import Picker from "@emoji-mart/react";
+import useSWR from "swr";
 
 import InsertEmoticonIcon from "@mui/icons-material/InsertEmoticon";
 import CloseIcon from "@mui/icons-material/Close";
@@ -52,13 +53,13 @@ interface User {
 }
 
 interface ChatWindowProps {
-  data: QuestionLists;
+  chatData: QuestionLists;
   mobileOpen: boolean;
   handleWithSetMobileOpen: () => void;
 }
 
 export function ChatWindow({
-  data,
+  chatData,
   mobileOpen,
   handleWithSetMobileOpen,
 }: ChatWindowProps) {
@@ -69,6 +70,7 @@ export function ChatWindow({
   //   resetTranscript,
   //   browserSupportsSpeechRecognition,
   // } = useSpeechRecognition();
+  const session = useSession();
 
   const [emojiOpen, setEmojiOpen] = useState(false);
   const [text, setText] = useState("");
@@ -78,25 +80,20 @@ export function ChatWindow({
   const [isLoading, setIsLoading] = useState(false);
   const [globalErrorMessage, setGlobalErrorMessage] = useState(undefined);
   const [errorObject, setErrorObject] = useState(undefined);
+  const [sendTExt, setSendTExt] = useState(true);
 
-  const session = useSession();
+  const { data, error } = useSWR<ChatLists[]>(`/api/v1/chats/${chatData.id}`, {
+    refreshInterval: 100,
+  });
 
   async function getChats(question_id: string) {
-    const response = await fetch(`/api/v1/chats/${question_id}`, {
-      method: "GET",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
-    });
-
-    const responseBody = await response.json();
-    setList(responseBody);
+    // const responseBody = await response.json();
+    // setList(responseBody);
   }
 
   useEffect(() => {
-    getChats(data.id);
-  }, [data.id]);
+    setList(data);
+  }, [data]);
 
   useEffect(() => {
     if (body.current) {
@@ -132,6 +129,13 @@ export function ChatWindow({
   // };
 
   const handleInputKeyUp = (e) => {
+    if (text.length > 2000) {
+      setSendTExt(false);
+      setErrorObject("Você digitou o máximo de 2000 caracteres.");
+      return;
+    }
+    setSendTExt(true);
+    setErrorObject(undefined);
     if (e.keyCode == 13) {
       handleSendClick();
     }
@@ -148,7 +152,7 @@ export function ChatWindow({
       const chat = {
         content: text,
         user_id: session.data.user.id,
-        question_id: data.id,
+        question_id: chatData.id,
         features: session.data.user.features,
       };
 
@@ -164,12 +168,14 @@ export function ChatWindow({
       setGlobalErrorMessage(undefined);
 
       const responseBody = await response.json();
+
       if (response.status === 201) {
         setIsLoading(false);
         setList([...list, responseBody]);
-        //TODO: Atualizar question list.
+
         setText("");
         setEmojiOpen(false);
+
         return;
       }
 
@@ -221,12 +227,12 @@ export function ChatWindow({
             className="rounded-full ml-3 mr-2"
             width={40}
             height={40}
-            src={data.user.avatar_url}
+            src={chatData.user.avatar_url}
             alt=""
           />
           <div className="text-base text-light-text dark:text-dark-text pl-2">
             <span className="text-lg font-bold"> Responda a pergunta:</span>{" "}
-            {data.content}
+            {chatData.content}
           </div>
         </div>
       </header>
@@ -237,16 +243,17 @@ export function ChatWindow({
       >
         {list &&
           list.map((item) => <MessageItem key={item.id} chatData={item} />)}
-        {errorObject && (
-          //TODO ajustar os erros com um componente mais bonito.
-          <p className="font-medium text-sm text-red-500">
-            {errorObject.message}
-          </p>
-        )}
+
         {globalErrorMessage && (
           //TODO ajustar os erros com um componente mais bonito.
           <p className="font-medium text-sm text-red-500 text-ellipsis">
             {globalErrorMessage}
+          </p>
+        )}
+        {errorObject && (
+          //TODO ajustar os erros com um componente mais bonito.
+          <p className="font-medium text-sm text-red-500">
+            {errorObject.message}
           </p>
         )}
       </div>
@@ -265,7 +272,11 @@ export function ChatWindow({
           perLine={25}
         />
       </div>
-
+      {errorObject && (
+        <div className="pl-3 bg-light-chatBackground dark:bg-dark-chatBackground">
+          <p className="font-medium text-sm text-red-500">{errorObject}</p>
+        </div>
+      )}
       <footer className="h-[62px] flex gap-[15px] items-center py-0 px-4 max-[994px]:w-screen bg-light-background dark:bg-dark-background">
         <div className="flex">
           <div
@@ -306,12 +317,14 @@ export function ChatWindow({
             </div>
           )} */}
           {/* {text !== "" && ( */}
-          <div
-            onClick={handleSendClick}
-            className="w-10 h-10 rounded-full flex justify-center items-center cursor-pointer"
-          >
-            <SendIcon style={{ color: "#919191" }} />
-          </div>
+          {sendTExt && (
+            <div
+              onClick={handleSendClick}
+              className="w-10 h-10 rounded-full flex justify-center items-center cursor-pointer"
+            >
+              <SendIcon style={{ color: "#919191" }} />
+            </div>
+          )}
           {/* )} */}
         </div>
       </footer>

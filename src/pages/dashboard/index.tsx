@@ -1,4 +1,7 @@
 import { useState, useEffect } from "react";
+import { useSession, signOut } from "next-auth/react";
+import { unstable_getServerSession } from "next-auth";
+import { GetServerSideProps } from "next";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import ChatIcon from "@mui/icons-material/Chat";
@@ -12,14 +15,7 @@ import { ChatWindow } from "src/components/ChatWindow";
 import { ChatIntro } from "src/components/ChatIntro";
 import { NewQuestion } from "src/components/NewQuestion";
 import { Input } from "src/components/Input";
-import {
-  AuthUserContext,
-  UserFilteredProps,
-} from "src/context/AuthUserContextProvider";
-import { SignIn } from "phosphor-react";
-import { useSession, signOut } from "next-auth/react";
-import { GetServerSideProps } from "next";
-import { unstable_getServerSession } from "next-auth";
+
 import { buildNextAuthOptions } from "../api/auth/[...nextauth]";
 
 export interface Chat {
@@ -196,6 +192,7 @@ function App() {
         <Input placeholderText="Procurar por uma pergunta." icon={true} />
 
         <div className="flex-1 bg-light-background dark:bg-dark-background overflow-y-auto max-[994px]:w-screen">
+          {/* //TODO: Atualizar em tempo real quando for criado uma nova question. */}
           {allQuestions &&
             allQuestions.map((item) => {
               return (
@@ -213,7 +210,7 @@ function App() {
       <div className="flex-1 h-screen">
         {activeQuestion !== undefined && (
           <ChatWindow
-            data={activeQuestion}
+            chatData={activeQuestion}
             handleWithSetMobileOpen={handleWithSetMobileOpen}
             mobileOpen={mobileOpen}
           />

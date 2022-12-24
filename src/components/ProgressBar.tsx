@@ -15,7 +15,7 @@ interface ProgressBarProps {
 }
 
 export default function NextNProgress({
-  color = "#f75a68",
+  color = "#1d2daa",
   startPosition = 0.3,
   stopDelayMs = 200,
   height = 3,

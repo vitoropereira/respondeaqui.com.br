@@ -3,9 +3,18 @@ import { AppProps } from "next/app";
 import { SessionProvider } from "next-auth/react";
 import { ThemeContextProvider } from "../context/ThemeContextProvider";
 import { Session } from "next-auth";
+import useSWR, { SWRConfig } from "swr";
 
 import "../styles/globals.css";
 import "../styles/styles.css";
+import NextNProgress from "src/components/ProgressBar";
+
+async function SWRFetcher(resource, init) {
+  const response = await fetch(resource, init);
+  const responseBody = await response.json();
+
+  return responseBody;
+}
 
 function MyApp({
   Component,
@@ -14,13 +23,20 @@ function MyApp({
   session: Session;
 }>) {
   return (
-    <SessionProvider session={pageProps.session}>
-      <ThemeContextProvider>
-        <AnimateSharedLayout>
-          <Component {...pageProps} />
-        </AnimateSharedLayout>
-      </ThemeContextProvider>
-    </SessionProvider>
+    <SWRConfig
+      value={{
+        fetcher: SWRFetcher,
+      }}
+    >
+      <SessionProvider session={pageProps.session}>
+        <ThemeContextProvider>
+          <AnimateSharedLayout>
+            <NextNProgress />
+            <Component {...pageProps} />
+          </AnimateSharedLayout>
+        </ThemeContextProvider>
+      </SessionProvider>
+    </SWRConfig>
   );
 }
 

@@ -9,7 +9,6 @@ import { signIn, useSession } from "next-auth/react";
 
 export default function Login() {
   const [darkMode, setDarkMode] = useState(true);
-  const [globalErrorMessage, setGlobalErrorMessage] = useState(undefined);
   const [isLoading, setIsLoading] = useState(false);
   const [errorObject, setErrorObject] = useState(undefined);
 
@@ -54,29 +53,17 @@ export default function Login() {
   return (
     <div className={`${darkMode && "dark"}`}>
       <div
-        className={`h-screen w-screen flex items-center justify-center pt-4 bg-white dark:bg-[#000]`}
+        className={`h-screen w-screen flex items-center justify-center pt-4bg-light-backgroundSecond dark:bg-dark-backgroundSecond`}
       >
         <div className="flex flex-col items-center justify-center">
-          <button
-            onClick={() => setDarkMode(!darkMode)}
-            className="absolute top-3 right-3 flex items-center p-4  transition ease-in duration-200 uppercase rounded-full hover:bg-gray-800 hover:text-white border-2 border-gray-900 focus:outline-none bg-white dark:bg-[#000]"
-          >
-            {darkMode ? (
-              <Moon size={32} color="#000" />
-            ) : (
-              <SunDim size={32} color="#ffc222" />
-            )}
-          </button>
           <div className="flex justify-center items-center">
-            <i>
-              <Chats size={80} color="#4ADF83" />
-            </i>
-            <h1 className="text-5xl font-semibold text-green-400 md:text-4xl">
+            <Chats className="text-brand-500" style={{ fontSize: "80px" }} />
+            <h1 className="text-3xl text-light-lastMessage dark:text-dark-lastMessage font-semibold mt-4 text-center">
               Responde aqui!
             </h1>
           </div>
 
-          <p className="font-medium text-xl dark:text-white text-black">
+          <p className="font-medium text-xl dark:text-white text-black mt-32">
             Faça login para continuar
           </p>
           {isLoading ? (
@@ -84,9 +71,9 @@ export default function Login() {
           ) : (
             <>
               <button
-                className="border-none rounded-xl mt-3 cursor-pointer w-80 h-16 flex justify-center items-center gap-3 bg-red-600 hover:bg-red-800 md:w-72 md:h-16"
+                className="border-none rounded-xl mt-4 cursor-pointer w-80 h-16 flex justify-center items-center gap-3 bg-red-600 hover:bg-red-800 md:w-72 md:h-16"
                 onClick={handleGoogleLogin}
-                // disabled={!isSignedIn}
+                disabled={isSignedIn}
               >
                 <GoogleLogo color="#fff" size={32} />
                 <span className="text-xl font-semibold text-white">
@@ -98,7 +85,6 @@ export default function Login() {
                   Falha ao conectar ao Google, verifique se as permissões.
                 </span>
               )}
-              <pre>{JSON.stringify(session)}</pre>
               {/* <button
                 className="border-none rounded-xl mt-3 cursor-pointer w-80 h-16 flex justify-center items-center gap-3 bg-gray-600 hover:bg-gray-800 md:w-72 md:h-16"
                 onClick={handleGithubLogin}

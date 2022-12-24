@@ -1,3 +1,5 @@
+import { useSession } from "next-auth/react";
+import Image from "next/image";
 import { useEffect, useState } from "react";
 
 export interface Question {
@@ -35,6 +37,9 @@ interface MessageItemProps {
 
 export function MessageItem({ chatData }: MessageItemProps) {
   const [time, setTime] = useState("");
+
+  const session = useSession();
+
   useEffect(() => {
     let d = new Date(chatData.created_at);
     let hours = String(d.getHours()).padStart(2, "0");
@@ -43,21 +48,35 @@ export function MessageItem({ chatData }: MessageItemProps) {
     setTime(`${hours}:${minutes}`);
   }, [chatData]);
 
+  const isAuthor = session.data.user.id === chatData.user_id;
+
   return (
     <div
-      className="flex mb-3"
+      className={`flex mb-3`}
       style={{
-        justifyContent:
-          chatData.user.id === chatData.question.user_id
-            ? "flex-end"
-            : "flex-start",
+        justifyContent: isAuthor ? "flex-end" : "flex-start",
       }}
     >
+      {isAuthor ? (
+        ""
+      ) : (
+        <Image
+          width={40}
+          height={40}
+          className="rounded-[50%]"
+          src={chatData.user.avatar_url}
+          alt={`Foto do usuário ${chatData.user.username}`}
+        />
+      )}
+
       <div
-        className="rounded-xl flex flex-col p-1 max-w-[90%]"
+        className={`flex flex-col p-1 max-w-[90%]  ${
+          isAuthor
+            ? "rounded-tl-xl rounded-bl-xl rounded-br-xl mr-3"
+            : "rounded-tr-xl rounded-br-xl rounded-bl-xl ml-3"
+        }`}
         style={{
-          backgroundColor:
-            chatData.user.id === chatData.question.user_id ? "#D9FDD3" : "#FFF",
+          backgroundColor: isAuthor ? "#D9FDD3" : "#FFF",
         }}
       >
         <div className="text-sm mt-1 mr-10 mb-1 ml-1 text-light-textSecondary dark:text-dark-textSecondary">
@@ -67,6 +86,17 @@ export function MessageItem({ chatData }: MessageItemProps) {
           {time}
         </div>
       </div>
+      {isAuthor ? (
+        <Image
+          width={40}
+          height={40}
+          className="rounded-[50%]"
+          src={chatData.user.avatar_url}
+          alt={`Foto do usuário ${chatData.user.username}`}
+        />
+      ) : (
+        ""
+      )}
     </div>
   );
 }
