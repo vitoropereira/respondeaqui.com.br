@@ -8,7 +8,7 @@ interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
 
 export function Input({ placeholderText, icon, ...rest }: InputProps) {
   return (
-    <div className="bg-light-background dark:bg-dark-background px-4 py-1 max-[994px]:w-screen">
+    <div className="bg-light-background dark:bg-dark-background px-4 py-1 ">
       <div
         className={`bg-light-backgroundSecond dark:bg-dark-backgroundSecond h-10 rounded-[10px] flex items-center ${
           icon ? "px-2" : "pr-2"

@@ -1,10 +1,10 @@
 import Confetti from "react-confetti";
 import { useRouter } from "next/router";
 import { useState, useEffect } from "react";
+import { GetStaticProps } from "next";
 
 import collaborators from "../../public/init/collaborators.json";
 import CollaboratorsCard from "../components/CollaboratorsCard";
-import { GetStaticProps } from "next";
 import Footer from "../components/Footer";
 import Header from "../components/Header";
 import Login from "./login";

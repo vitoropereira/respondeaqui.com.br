@@ -209,13 +209,20 @@ export function ChatWindow({
 
   return (
     <div
-      className="flex flex-col h-full overflow-hidden max-[994px]:fixed max-[994px]:top-0 max-[994px]:left-0 max-[994px]:flex-1 max-[994px]:max-w-full max-[994px]:w-screen max-[994px]:h-screen z-10 transition-all ease-in duration-75"
+      className="flex flex-col h-full overflow-hidden 
+      max-[994px]:fixed max-[994px]:top-0 max-[994px]:left-0 max-[994px]:flex-1 
+      max-[994px]:w-full max-[994px]:h-screen z-10 
+      transition-all ease-in duration-75"
       style={{ display: !mobileOpen ? "none" : "flex" }}
     >
-      <header className="h-[60px] flex justify-between items-center px-4 py-0 max-[994px]:w-screen bg-light-backgroundSecond dark:bg-dark-backgroundSecond">
+      <header
+        className="h-[60px] flex justify-between items-center px-4 py-0 
+        max-[994px]:w-full bg-light-backgroundSecond dark:bg-dark-backgroundSecond"
+      >
         <div className="flex items-center cursor-pointer">
           <div
-            className="hidden max-[994px]:flex max-[994px]:ml-0 max-[994px]:justify-center max-[994px]:items-center max-[994px]:cursor-point max-[994px]:transition-all ease-in"
+            className="hidden max-[994px]:flex max-[994px]:ml-0 max-[994px]:justify-center max-[994px]:items-center 
+            max-[994px]:cursor-point max-[994px]:transition-all ease-in"
             onClick={handleBack}
           >
             <ArrowBackIcon style={{ color: "#919191" }} />
@@ -272,7 +279,7 @@ export function ChatWindow({
           <p className="font-medium text-sm text-red-500">{errorObject}</p>
         </div>
       )}
-      <footer className="h-[62px] flex gap-[15px] items-center py-0 px-4 max-[994px]:w-screen bg-light-background dark:bg-dark-background">
+      <footer className="h-[62px] flex gap-[15px] items-center py-0 px-4 max-[994px]:w-full bg-light-background dark:bg-dark-background">
         <div className="flex">
           <div
             className="w-10 h-10 rounded-full flex justify-center items-center cursor-pointer"

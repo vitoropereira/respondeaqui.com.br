@@ -1,10 +1,8 @@
-import { Chats, GithubLogo, GoogleLogo, Moon, SunDim } from "phosphor-react";
+import { Chats, GithubLogo, GoogleLogo } from "phosphor-react";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import { Loading } from "src/components/Loading";
-import { useAuthUser } from "src/context/AuthUserContextProvider";
 
-import { FirebaseLoginRepository } from "../../repositories/firebase/firebase-login";
 import { signIn, useSession } from "next-auth/react";
 
 export default function Login() {

@@ -80,7 +80,7 @@ export function QuestionList({
           <div className="flex justify-between items-center w-full">
             <div className="text-base text-light-text dark:text-dark-text pl-1 flex flex-col justify-start items-start ">
               <span>{limitText(data.content, 30)}</span>
-              <span className="text-xs font-thin ml-1">
+              <span className="text-xs text-light-lastMessage dark:text-dark-lastMessage dark:font-thin ml-1">
                 Por: {data.user.username}
               </span>
             </div>

@@ -2,7 +2,11 @@ import { Chats } from "phosphor-react";
 
 export function ChatIntro() {
   return (
-    <div className="flex flex-col bg-light-backgroundSecond dark:bg-dark-backgroundSecond justify-center items-center h-full border-b-8 border-b-brand-500 max-[994px]:hidden">
+    <div
+      className="flex flex-col bg-light-backgroundSecond dark:bg-dark-backgroundSecond 
+      justify-center items-center h-full border-b-8 border-b-brand-500 
+      max-[994px]:hidden"
+    >
       <Chats className="text-brand-500" style={{ fontSize: "250px" }} />
       <h1 className="text-3xl text-light-lastMessage dark:text-dark-lastMessage font-semibold mt-4 text-center">
         Responde aqui!
