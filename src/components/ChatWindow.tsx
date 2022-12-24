@@ -86,14 +86,11 @@ export function ChatWindow({
     refreshInterval: 100,
   });
 
-  async function getChats(question_id: string) {
-    // const responseBody = await response.json();
-    // setList(responseBody);
-  }
-
   useEffect(() => {
-    setList(data);
-  }, [data]);
+    if (!error) {
+      setList(data);
+    }
+  }, [data, error]);
 
   useEffect(() => {
     if (body.current) {
@@ -245,13 +242,11 @@ export function ChatWindow({
           list.map((item) => <MessageItem key={item.id} chatData={item} />)}
 
         {globalErrorMessage && (
-          //TODO ajustar os erros com um componente mais bonito.
           <p className="font-medium text-sm text-red-500 text-ellipsis">
             {globalErrorMessage}
           </p>
         )}
         {errorObject && (
-          //TODO ajustar os erros com um componente mais bonito.
           <p className="font-medium text-sm text-red-500">
             {errorObject.message}
           </p>

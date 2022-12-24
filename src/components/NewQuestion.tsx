@@ -204,13 +204,11 @@ export function NewQuestion({ show, setShow }: NewQuestionProps) {
           </div>
 
           {errorObject && (
-            //TODO ajustar os erros com um componente mais bonito.
             <p className="font-medium text-sm text-red-500">
               {errorObject.message}
             </p>
           )}
           {globalErrorMessage && (
-            //TODO ajustar os erros com um componente mais bonito.
             <p className="font-medium text-sm text-red-500 text-ellipsis">
               {globalErrorMessage}
             </p>

@@ -50,7 +50,6 @@ export function AuthUserContextProvider({
 
   const fetchUser = useCallback(async (email: string) => {
     try {
-      //TODO descobrir o bad request
       const response = await fetch(userEndpoint, {
         method: "POST",
         headers: {
@@ -99,8 +98,6 @@ export function AuthUserContextProvider({
       setIsLoading(false);
     })();
   }, [fetchUser]);
-
-  //TODO PEGAR OS DADOS DO USUÁRIO NO BANCO DE DADOS E COLOCAR NO COOKIES VER HOOK useUSER
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {

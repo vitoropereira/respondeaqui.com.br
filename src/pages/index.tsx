@@ -1,4 +1,5 @@
 import Confetti from "react-confetti";
+import { useRouter } from "next/router";
 import { useState, useEffect } from "react";
 
 import collaborators from "../../public/init/collaborators.json";
@@ -6,6 +7,7 @@ import CollaboratorsCard from "../components/CollaboratorsCard";
 import { GetStaticProps } from "next";
 import Footer from "../components/Footer";
 import Header from "../components/Header";
+import Login from "./login";
 
 export interface OwnerProps {
   username: string;
@@ -18,6 +20,13 @@ interface PageProps {
 }
 
 export default function Page({ imagesUrls }: PageProps) {
+  return <Login />;
+
+  const router = useRouter();
+  useEffect(() => {
+    router.push("/login");
+  }, [router]);
+
   const [shuffledCollaborators, setShuffledCollaborators] = useState([]);
   const [confettiWidth, setConfettiWidth] = useState(0);
   const [confettiHeight, setConfettiHeight] = useState(0);

@@ -7,6 +7,7 @@ import { useRouter } from "next/router";
 import ChatIcon from "@mui/icons-material/Chat";
 import DarkModeIcon from "@mui/icons-material/DarkMode";
 import LogoutIcon from "@mui/icons-material/Logout";
+import useSWR from "swr";
 
 import { Loading } from "src/components/Loading";
 import { ToolTip } from "src/components/Tooltip";
@@ -58,6 +59,18 @@ function App() {
   const [globalErrorMessage, setGlobalErrorMessage] = useState(undefined);
   const [errorObject, setErrorObject] = useState(undefined);
 
+  const { data, error } = useSWR<QuestionLists[]>(`/api/v1/questions/`, {
+    refreshInterval: 1000,
+  });
+
+  useEffect(() => {
+    if (!error) {
+      setAllQuestions(data);
+    }
+    console.log(error);
+    // setGlobalErrorMessage(`${error.message} ${error.action}`);
+  }, [allQuestions, data, error]);
+
   const session = useSession();
   const router = useRouter();
 
@@ -70,46 +83,6 @@ function App() {
   const handleNewChat = () => {
     setShowNewChat(true);
   };
-
-  async function getAllQuestion() {
-    try {
-      const response = await fetch(`/api/v1/questions/`, {
-        method: "GET",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-        },
-      });
-
-      setGlobalErrorMessage(undefined);
-
-      const responseBody = await response.json();
-      if (response.status === 200) {
-        setAllQuestions(responseBody);
-        return;
-      }
-
-      if (response.status === 400) {
-        setErrorObject(responseBody);
-
-        return;
-      }
-
-      if (response.status >= 401) {
-        setGlobalErrorMessage(`${responseBody.message} ${responseBody.action}`);
-        setInterval(() => {
-          signOut();
-        }, 5000);
-        return;
-      }
-    } catch (error) {
-      console.log("error");
-      console.log(error);
-      setGlobalErrorMessage(
-        "Não foi possível se conectar ao Responde Aqui. Por favor, verifique sua conexão."
-      );
-    }
-  }
 
   useEffect(() => {
     if (!isSignedIn) {
@@ -124,10 +97,6 @@ function App() {
       setThemeMode("");
     }
   }, [isDarkTheme, themeMode]);
-
-  useEffect(() => {
-    getAllQuestion();
-  }, []);
 
   if (!isSignedIn) {
     return <Loading />;
