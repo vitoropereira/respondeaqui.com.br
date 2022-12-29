@@ -1,24 +1,18 @@
-import { useState, useEffect, FormEvent, ChangeEvent, useContext } from "react";
+import { useState, useEffect, FormEvent, ChangeEvent } from "react";
 import Image from "next/image";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-
-import { AuthUserContext } from "src/context/AuthUserContextProvider";
 
 import { Input } from "./Input";
 import { Loading } from "./Loading";
 import { useSession, signOut } from "next-auth/react";
+import { ShowErrors } from "./ShowErrors";
 
-interface QuestionProps {
-  content: string;
-  user_id: string;
-}
-
-interface NewQuestionProps {
+interface NewChatProps {
   show: boolean;
   setShow: (show: boolean) => void;
 }
 
-export interface QuestionLists {
+export interface ChatLists {
   id: string;
   content: string;
   user_id: string;
@@ -32,40 +26,37 @@ interface User {
   username: string;
   email: string;
   signInMethod: string[];
-  features: string[];
   avatar_url: string;
   created_at: string;
   updated_at: string;
 }
 
-export function NewQuestion({ show, setShow }: NewQuestionProps) {
-  const [newQuestion, setNewQuestion] = useState("");
-  const [listQuestion, setListQuestion] = useState<QuestionLists[]>();
+export function NewChat({ show, setShow }: NewChatProps) {
+  const [newChat, setNewChat] = useState("");
+  const [listChat, setListChat] = useState<ChatLists[]>();
   const [globalErrorMessage, setGlobalErrorMessage] = useState(undefined);
   const [isLoading, setIsLoading] = useState(false);
   const [errorObject, setErrorObject] = useState(undefined);
 
   const session = useSession();
 
-  const handleNewQuestionChange = async (
-    event: ChangeEvent<HTMLInputElement>
-  ) => {
+  const handleNewChatChange = async (event: ChangeEvent<HTMLInputElement>) => {
     event.target.setCustomValidity("");
-    setNewQuestion(event.target.value);
+    setNewChat(event.target.value);
   };
 
-  const handleCreateNewQuestion = async (event: FormEvent) => {
+  const handleCreateNewChat = async (event: FormEvent) => {
     setIsLoading(true);
     event.preventDefault();
 
     try {
       const fullQuestion = {
-        content: newQuestion,
+        content: newChat,
         user_id: session.data.user.id,
         features: session.data.user.features,
       };
 
-      const response = await fetch(`/api/v1/questions`, {
+      const response = await fetch(`/api/v1/chats`, {
         method: "POST",
         headers: {
           Accept: "application/json",
@@ -79,9 +70,9 @@ export function NewQuestion({ show, setShow }: NewQuestionProps) {
       const responseBody = await response.json();
 
       if (response.status === 201) {
-        setNewQuestion("");
+        setNewChat("");
         setIsLoading(false);
-        setListQuestion([responseBody, ...listQuestion]);
+        setListChat([responseBody, ...listChat]);
         return;
       }
 
@@ -113,10 +104,10 @@ export function NewQuestion({ show, setShow }: NewQuestionProps) {
     setShow(false);
   };
 
-  async function getAllQuestionByUser(user_id: string) {
+  async function getAllChatByUser(user_id: string) {
     setIsLoading(true);
     try {
-      const response = await fetch(`/api/v1/questions/${user_id}`, {
+      const response = await fetch(`/api/v1/chats/${user_id}`, {
         method: "GET",
         headers: {
           Accept: "application/json",
@@ -129,8 +120,10 @@ export function NewQuestion({ show, setShow }: NewQuestionProps) {
       const responseBody = await response.json();
 
       if (response.status === 200) {
+        console.log("responseBody");
+        console.log(responseBody);
         setIsLoading(false);
-        setListQuestion(responseBody);
+        setListChat(responseBody);
         return;
       }
 
@@ -156,7 +149,7 @@ export function NewQuestion({ show, setShow }: NewQuestionProps) {
   }
 
   useEffect(() => {
-    getAllQuestionByUser(session.data.user.id);
+    getAllChatByUser(session.data.user.id);
   }, [session.data.user.id]);
 
   return (
@@ -175,17 +168,17 @@ export function NewQuestion({ show, setShow }: NewQuestionProps) {
           <ArrowBackIcon style={{ color: "#FFF" }} />
         </div>
         <h2 className="text-lg h-10 leading-10 flex-1 font-bold text-white ml-5">
-          Suas Perguntas
+          Seus Chats
         </h2>
       </div>
       <div className="flex-1 overflow-y-auto min-h-48  max-h-40">
         <p className="px-4 py-2 pl-6 mt-1 text-base font-bold dark:text-dark-text text-light-text">
-          Enviar Nova Pergunta
+          Criar novo Chat
         </p>
         <Input
-          placeholderText="Crie uma nova pergunta!"
-          onChange={handleNewQuestionChange}
-          value={newQuestion}
+          placeholderText="Digite o tema do Chat."
+          onChange={handleNewChatChange}
+          value={newChat}
           icon={false}
         />
         <div className="px-4 py-1">
@@ -200,27 +193,19 @@ export function NewQuestion({ show, setShow }: NewQuestionProps) {
                         focus:outline-none 
                         rounded-lg "
               disabled={isLoading}
-              onClick={handleCreateNewQuestion}
+              onClick={handleCreateNewChat}
             >
-              {isLoading ? <Loading /> : "Enviar Pergunta"}
+              {isLoading ? <Loading size={8} /> : "Criar chat"}
             </button>
           </div>
 
-          {errorObject && (
-            <p className="font-medium text-sm text-red-500">
-              {errorObject.message}
-            </p>
-          )}
-          {globalErrorMessage && (
-            <p className="font-medium text-sm text-red-500 text-ellipsis">
-              {globalErrorMessage}
-            </p>
-          )}
+          {errorObject && <ShowErrors message={errorObject.message} />}
+          {globalErrorMessage && <ShowErrors message={globalErrorMessage} />}
         </div>
       </div>
       <div className="flex-1 overflow-y-auto">
-        {listQuestion &&
-          listQuestion.map((item) => {
+        {listChat &&
+          listChat.map((item) => {
             return (
               <div
                 className="flex items-center p-4 cursor-pointer hover:bg-light-backgroundHover dark:hover:bg-dark-backgroundHover"

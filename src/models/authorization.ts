@@ -1,6 +1,7 @@
 import { User } from "@prisma/client";
 import { ForbiddenError, ValidationError } from "errors";
 import { NextApiResponse } from "next";
+import { PrismaUsersRepository } from "src/repositories/prisma/prismaUserRepository";
 import { RequestProps } from "./controller";
 
 const availableFeatures = new Set([
@@ -40,15 +41,20 @@ const availableFeatures = new Set([
   "read:content:tabcoins",
 ]);
 
-function can(user: User, feature: string) {
+async function can(user: User, feature: string) {
+  const usersRepository = new PrismaUsersRepository();
+  const userFeatures = await usersRepository.getActiveFeaturesByUserId(user.id);
+
   validateUser(user);
   validateFeature(feature);
 
   let authorized = false;
 
-  if (user.features.includes(feature)) {
-    authorized = true;
-  }
+  userFeatures.map((item) => {
+    if (item.context === feature) {
+      authorized = true;
+    }
+  });
 
   return authorized;
 }

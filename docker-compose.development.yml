@@ -1,15 +1,17 @@
-version: '2.4'
+version: '3.1'
 services:
-  postgres_dev:
-    container_name: 'postgres-dev-responde'
-    image: 'postgres:14.1-alpine'
+  mysql_dev:
+    container_name: 'mysql-dev-responde'
+    image: 'mysql:latest'
     env_file:
       - .env
     ports:
-      - '54320:5432'
+      - '3306:3306'
     volumes:
-      - postgres_data:/data/postgres
+      - mysql_data:/data/mysql
     restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: password
   mailcatcher:
     container_name: mailcatcher-responde
     image: sj26/mailcatcher
@@ -20,4 +22,4 @@ services:
       - 1025:1025
       - 1080:1080
 volumes:
-  postgres_data:
+  mysql_data:

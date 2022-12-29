@@ -14,7 +14,7 @@ export default nextConnect({
   onError: controller.onErrorHandler,
 })
   .use(controller.injectRequestMetadata)
-  .post(authorization.canRequest("create:user"), postHandler);
+  .post(postHandler);
 
 async function postHandler(request: RequestProps, response: NextApiResponse) {
   const prismaUsersRepository = new PrismaUsersRepository();

@@ -12,48 +12,12 @@ import Image from "next/image";
 import { ToolTip } from "./Tooltip";
 import { AuthUserContext } from "src/context/AuthUserContextProvider";
 import { useSession } from "next-auth/react";
-
-export interface Question {
-  id: string;
-  content: string;
-  user_id: string;
-  created_at: Date;
-  updated_at: Date;
-}
-
-export interface ChatLists {
-  id: string;
-  content: string;
-  question_id: string;
-  user_id: string;
-  created_at: Date;
-  updated_at: Date;
-  user: User;
-  question: Question;
-}
-
-interface QuestionLists {
-  id: string;
-  content: string;
-  user_id: string;
-  created_at: string;
-  updated_at: string;
-  user: User;
-}
-
-interface User {
-  id: string;
-  username: string;
-  email: string;
-  signInMethod: string[];
-  features: string[];
-  avatar_url: string;
-  created_at: Date;
-  updated_at: Date;
-}
+import { UserProps } from "src/@types/userTypes";
+import { MessageProps } from "src/@types/messageTypes";
+import { ChatProps } from "src/@types/chatType";
 
 interface ChatWindowProps {
-  chatData: QuestionLists;
+  chatData: ChatProps;
   mobileOpen: boolean;
   handleWithSetMobileOpen: () => void;
 }
@@ -75,20 +39,26 @@ export function ChatWindow({
   const [emojiOpen, setEmojiOpen] = useState(false);
   const [text, setText] = useState("");
   const [listeningAudio, setListeningAudio] = useState(false);
-  const [list, setList] = useState<ChatLists[]>();
+  const [messageList, setMessageList] = useState<MessageProps[]>();
   const [users, setUsers] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [globalErrorMessage, setGlobalErrorMessage] = useState(undefined);
   const [errorObject, setErrorObject] = useState(undefined);
   const [sendTExt, setSendTExt] = useState(true);
 
-  const { data, error } = useSWR<ChatLists[]>(`/api/v1/chats/${chatData.id}`, {
-    refreshInterval: 100,
-  });
+  const { data, error } = useSWR<MessageProps[]>(
+    `/api/v1/messages/${chatData.id}`,
+    {
+      refreshInterval: 100,
+    }
+  );
+
+  console.log("data");
+  console.log(data);
 
   useEffect(() => {
     if (!error) {
-      setList(data);
+      setMessageList(data);
     }
   }, [data, error]);
 
@@ -99,7 +69,7 @@ export function ChatWindow({
           body.current.scrollHeight - body.current.offsetHeight;
       }
     }
-  }, [list]);
+  }, [messageList]);
 
   const handleEmojiClick = (e) => {
     setText(text + e.native);
@@ -146,20 +116,20 @@ export function ChatWindow({
     }
 
     try {
-      const chat = {
+      const message: MessageProps = {
         content: text,
         user_id: session.data.user.id,
-        question_id: chatData.id,
-        features: session.data.user.features,
+        chat_id: chatData.id,
+        content_type: "text",
       };
 
-      const response = await fetch(`/api/v1/chats`, {
+      const response = await fetch(`/api/v1/messages`, {
         method: "POST",
         headers: {
           Accept: "application/json",
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(chat),
+        body: JSON.stringify(message),
       });
 
       setGlobalErrorMessage(undefined);
@@ -168,7 +138,9 @@ export function ChatWindow({
 
       if (response.status === 201) {
         setIsLoading(false);
-        setList([...list, responseBody]);
+        console.log("responseBody");
+        console.log(responseBody);
+        setMessageList([...messageList, responseBody]);
 
         setText("");
         setEmojiOpen(false);
@@ -235,7 +207,7 @@ export function ChatWindow({
             alt=""
           />
           <div className="text-base text-light-text dark:text-dark-text pl-2">
-            <span className="text-lg font-bold"> Responda a pergunta:</span>{" "}
+            <span className="text-lg font-bold"> Tema do chat:</span>{" "}
             {chatData.content}
           </div>
         </div>
@@ -245,8 +217,10 @@ export function ChatWindow({
         className="flex-1 overflow-y-auto bg-light-chatBackground dark:bg-dark-chatBackground px-5 py-8 scrollbar"
         ref={body}
       >
-        {list &&
-          list.map((item) => <MessageItem key={item.id} chatData={item} />)}
+        {messageList &&
+          messageList.map((item) => (
+            <MessageItem key={item.id} messageData={item} />
+          ))}
 
         {globalErrorMessage && (
           <p className="font-medium text-sm text-red-500 text-ellipsis">

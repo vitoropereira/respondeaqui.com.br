@@ -1,11 +1,15 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import nextConnect from "next-connect";
 
+import { UserModel } from "src/models/user";
 import controller, { RequestProps } from "src/models/controller";
 import authorization from "src/models/authorization";
 
-import { PrismaChatRepository } from "src/repositories/prisma/prismaChatsRepository";
+import { User } from "@prisma/client";
+import { PrismaUsersRepository } from "src/repositories/prisma/prismaUserRepository";
+
 import { Chats } from "src/models/chats";
+import { PrismaChatsRepository } from "src/repositories/prisma/prismaChatsRepository";
 
 export default nextConnect({
   attachParams: true,
@@ -13,13 +17,23 @@ export default nextConnect({
   onError: controller.onErrorHandler,
 })
   .use(controller.injectRequestMetadata)
-  .post(authorization.canRequest("create:content"), postHandler);
+  .post(postHandler)
+  .get(getHandler);
 
-async function postHandler(req: RequestProps, res: NextApiResponse) {
-  const prismaChatRepository = new PrismaChatRepository();
-  const chats = new Chats(prismaChatRepository);
+async function postHandler(request: RequestProps, response: NextApiResponse) {
+  const prismaChatsRepository = new PrismaChatsRepository();
+  const chat = new Chats(prismaChatsRepository);
 
-  const newChat = await chats.createChats(req.body);
+  const newChat = await chat.createChat(request.body);
 
-  return res.status(201).json(newChat);
+  return response.status(201).json(newChat);
+}
+
+async function getHandler(request: RequestProps, response: NextApiResponse) {
+  const prismaChatsRepository = new PrismaChatsRepository();
+  const chat = new Chats(prismaChatsRepository);
+
+  const allChats = await chat.getAllChats();
+
+  return response.status(200).json(allChats);
 }

@@ -1,6 +1,6 @@
 import { User } from "@prisma/client";
 import prisma from "src/service/prisma";
-import { combineArrays } from "src/utils/generalFunctions";
+import { uniqueElements } from "src/utils/generalFunctions";
 import { UsersRepository } from "../usersRepository";
 
 interface UserProps {
@@ -12,20 +12,12 @@ interface UserProps {
 }
 
 export class PrismaUsersRepository implements UsersRepository {
-  async createUser({
-    avatar_url,
-    email,
-    username,
-    signInMethod,
-    features,
-  }: UserProps) {
+  async createUser({ avatar_url, email, username, features }: UserProps) {
     const user = await prisma.user.create({
       data: {
         email,
         username,
-        signInMethod,
         avatar_url,
-        features,
       },
     });
 
@@ -49,14 +41,11 @@ export class PrismaUsersRepository implements UsersRepository {
   async updateUserData(user: User, userData: UserProps) {
     const { email, username, avatar_url, features } = userData;
 
-    const newFeatures = combineArrays(features, user.features) as string[];
-
     const userUpdated = prisma.user.update({
       data: {
         username,
         email,
         avatar_url,
-        features: newFeatures,
       },
       where: {
         id: user.id,

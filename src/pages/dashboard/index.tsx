@@ -11,65 +11,48 @@ import LogoutIcon from "@mui/icons-material/Logout";
 
 import { Loading } from "src/components/Loading";
 import { ToolTip } from "src/components/Tooltip";
-import { QuestionList } from "src/components/QuestionList";
+import { ChatList } from "src/components/ChatList";
+import { ShowErrors } from "src/components/ShowErrors";
 import { ChatWindow } from "src/components/ChatWindow";
 import { ChatIntro } from "src/components/ChatIntro";
-import { NewQuestion } from "src/components/NewQuestion";
+import { NewChat } from "src/components/NewChat";
 import { Input } from "src/components/Input";
 
 import { buildNextAuthOptions } from "../api/auth/[...nextauth]";
+import { ChatProps } from "src/@types/chatType";
 
-export interface Chat {
-  id: string;
-  content: string;
-  question_id: string;
-  user_id: string;
-  created_at: Date;
-}
-
-interface QuestionLists {
-  id: string;
-  content: string;
-  user_id: string;
-  created_at: string;
-  updated_at: string;
-  user: User;
-  chat: Chat[];
-}
-
-interface User {
-  id: string;
-  username: string;
-  email: string;
-  signInMethod: string[];
-  features: string[];
-  avatar_url: string;
-  created_at: Date;
-  updated_at: Date;
-}
+type DataProp = ChatProps & {
+  name?: string;
+  message?: string;
+  action?: string;
+  statusCode?: number;
+  errorId?: string;
+  requestId?: string;
+};
 
 function App() {
-  const [activeQuestion, setActiveQuestion] =
-    useState<QuestionLists>(undefined);
+  const [activeChat, setActiveChat] = useState<ChatProps>(undefined);
   const [showNewChat, setShowNewChat] = useState(false);
   const [isDarkTheme, setIsDarkTheme] = useState(true);
   const [themeMode, setThemeMode] = useState("");
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [allQuestions, setAllQuestions] = useState<QuestionLists[]>();
-  const [globalErrorMessage, setGlobalErrorMessage] = useState(undefined);
-  const [errorObject, setErrorObject] = useState(undefined);
+  const [allChats, setAllChats] = useState<ChatProps[]>();
+  const [globalErrorMessage, setGlobalErrorMessage] =
+    useState<string>(undefined);
 
-  const { data, error } = useSWR<QuestionLists[]>(`/api/v1/questions/`, {
+  const { data } = useSWR<DataProp[]>(`/api/v1/chats/`, {
     refreshInterval: 1000,
   });
 
   useEffect(() => {
-    if (!error) {
-      setAllQuestions(data);
+    if (data) {
+      if (data[0]?.statusCode >= 400) {
+        setGlobalErrorMessage(`${data[0].message} ${data[0].action}`);
+        return;
+      }
+      setAllChats(data);
     }
-    console.log(error);
-    // setGlobalErrorMessage(`${error.message} ${error.action}`);
-  }, [allQuestions, data, error]);
+  }, [allChats, data]);
 
   const session = useSession();
   const router = useRouter();
@@ -99,10 +82,9 @@ function App() {
   }, [isDarkTheme, themeMode]);
 
   if (!isSignedIn) {
-    return <Loading />;
+    return <Loading size={12} />;
   }
 
-  //TODO: Verificar a Responsividade!!!
   return (
     <div
       className={`${themeMode} flex h-screen bg-light-backgroundSecond dark:bg-dark-backgroundSecond`}
@@ -112,7 +94,7 @@ function App() {
               flex flex-col border-r 
               border-r-light-border dark:border-r-dark-border"
       >
-        <NewQuestion show={showNewChat} setShow={setShowNewChat} />
+        <NewChat show={showNewChat} setShow={setShowNewChat} />
 
         <header className="h-[60px] flex justify-between items-center px-4 py-0 bg-light-backgroundSecond dark:bg-dark-backgroundSecond">
           <div className="flex justify-center items-center gap-2">
@@ -163,16 +145,17 @@ function App() {
         </header>
 
         <Input placeholderText="Procurar por uma pergunta." icon={true} />
+        {globalErrorMessage && <ShowErrors message={globalErrorMessage} />}
 
         <div className="flex-1 bg-light-background dark:bg-dark-background overflow-y-auto">
-          {allQuestions &&
-            allQuestions.map((item) => {
+          {allChats &&
+            allChats.map((item) => {
               return (
-                <QuestionList
+                <ChatList
                   key={item.id}
                   data={item}
-                  active={activeQuestion?.id === item.id}
-                  onClick={() => setActiveQuestion(item)}
+                  active={activeChat?.id === item.id}
+                  onClick={() => setActiveChat(item)}
                   onMobileClick={() => setMobileOpen(true)}
                 />
               );
@@ -181,15 +164,15 @@ function App() {
       </div>
 
       <div className="flex-1 h-screen">
-        {activeQuestion !== undefined && (
+        {activeChat !== undefined && (
           <ChatWindow
-            chatData={activeQuestion}
+            chatData={activeChat}
             handleWithSetMobileOpen={handleWithSetMobileOpen}
             mobileOpen={mobileOpen}
           />
         )}
 
-        {activeQuestion === undefined && <ChatIntro />}
+        {activeChat === undefined && <ChatIntro />}
       </div>
     </div>
   );

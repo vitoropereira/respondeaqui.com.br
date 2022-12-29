@@ -96,10 +96,11 @@ function onErrorHandler(
     errorLocationCode: error.errorLocationCode,
   });
 
+  const responseArray = [errorObject];
   // TODO: Understand why `snakeize` is not logging the
   // `stack` property of the error object.
 
-  return response.status(errorObject.statusCode).json(errorObject);
+  return response.status(errorObject.statusCode).json(responseArray);
 }
 
 export default Object.freeze({

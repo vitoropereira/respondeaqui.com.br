@@ -1,8 +1,8 @@
 import nextConnect from "next-connect";
 import { NextApiRequest, NextApiResponse } from "next";
 import controller from "src/models/controller";
-import { PrismaChatRepository } from "src/repositories/prisma/prismaChatsRepository";
-import { Chats } from "src/models/chats";
+import { Messages } from "src/models/Messages";
+import { PrismaMessageRepository } from "src/repositories/prisma/prismaMessageRepository";
 
 export default nextConnect({
   attachParams: true,
@@ -11,12 +11,12 @@ export default nextConnect({
 }).get(getHandler);
 
 async function getHandler(request: NextApiRequest, response: NextApiResponse) {
-  const { question_id } = request.query;
+  const { chatId } = request.query;
 
-  const prismaChatRepository = new PrismaChatRepository();
-  const chats = new Chats(prismaChatRepository);
+  const prismaMessageRepository = new PrismaMessageRepository();
+  const messages = new Messages(prismaMessageRepository);
 
-  const res = await chats.getChatsByQuestionsId(String(question_id));
+  const res = await messages.getMessagesByChatId(String(chatId));
 
   return response.status(200).json(res);
 }

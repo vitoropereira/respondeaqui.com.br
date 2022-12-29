@@ -1,55 +1,27 @@
 import Image from "next/image";
 import { useEffect, useState } from "react";
+import { ChatProps } from "src/@types/chatType";
 import { getRelativeTime, limitText } from "src/utils/generalFunctions";
 
-interface User {
-  id: string;
-  username: string;
-  email: string;
-  signInMethod: string[];
-  features: string[];
-  avatar_url: string;
-  created_at: Date;
-  updated_at: Date;
-}
-
-interface Chat {
-  id: string;
-  content: string;
-  question_id: string;
-  user_id: string;
-  created_at: Date;
-}
-
-interface QuestionLists {
-  id: string;
-  content: string;
-  user_id: string;
-  created_at: string;
-  updated_at: string;
-  user: User;
-  chat: Chat[];
-}
-
-interface QuestionListProps {
+interface ChatListProps {
   onClick: () => void;
   active: boolean;
-  data: QuestionLists;
+  data: ChatProps;
   onMobileClick: () => void;
 }
 
-export function QuestionList({
+export function ChatList({
   onClick,
   active,
   data,
   onMobileClick,
-}: QuestionListProps) {
+}: ChatListProps) {
   const [time, setTime] = useState("");
 
   useEffect(() => {
     let messageDate: Date;
-    if (data.chat.length > 0) {
-      messageDate = new Date(data.chat[data.chat.length - 1].created_at);
+    if (data.message.length > 0) {
+      messageDate = new Date(data.message[data.message.length - 1].created_at);
     } else {
       messageDate = new Date(data.updated_at);
     }
@@ -80,7 +52,7 @@ export function QuestionList({
           <div className="flex justify-between items-center w-full">
             <div className="text-base text-light-text dark:text-dark-text pl-1 flex flex-col justify-start items-start ">
               <span>{limitText(data.content, 30)}</span>
-              <span className="text-xs text-light-lastMessage dark:text-dark-lastMessage dark:font-thin ml-1">
+              <span className="text-xs text-light-lastMessage dark:text-dark-lastMessage font-mono ml-1">
                 Por: {data.user.username}
               </span>
             </div>
@@ -91,11 +63,12 @@ export function QuestionList({
           <div className="flex justify-between items-center w-full">
             <div className="text-[10px] text-light-lastMessage dark:text-dark-lastMessage flex w-full mb-2">
               <p className="overflow-hidden whitespace-nowrap overflow-ellipsis ml-1">
-                {data.chat.length > 0 && data.user_id === data.chat[0].user_id
+                {data.message.length > 0 &&
+                data.user_id === data.message[0].user_id
                   ? "Você: "
                   : ""}
-                {data.chat.length > 0
-                  ? limitText(data.chat[0].content, 25)
+                {data.message.length > 0
+                  ? limitText(data.message[0].content, 25)
                   : "..."}
               </p>
             </div>

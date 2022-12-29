@@ -1,36 +1,48 @@
-import { PrismaChatRepository } from "src/repositories/prisma/prismaChatsRepository";
+import { PrismaChatsRepository } from "src/repositories/prisma/prismaChatsRepository";
 
-interface ChatsProps {
+interface ChatProps {
   content: string;
-  question_id: string;
   user_id: string;
 }
 
 export class Chats {
-  constructor(private prismaChatRepository: PrismaChatRepository) {}
-  async createChats(ChatsData: ChatsProps) {
-    const { content, user_id, question_id } = ChatsData;
+  constructor(private prismaChatsRepository: PrismaChatsRepository) {}
+  async createChat(chatData: ChatProps) {
+    const { content, user_id } = chatData;
     try {
-      const saveChats = await this.prismaChatRepository.createChat({
+      const saveChat = await this.prismaChatsRepository.createChat({
         content,
         user_id,
-        question_id,
       });
-      return saveChats;
+      return saveChat;
     } catch (e) {
-      console.error("Error createChats: ", e);
+      console.error("Error createChat: ", e);
       return false;
     }
   }
 
-  async getChatsByQuestionsId(question_id: string) {
+  async filterChatsByText(text: string) {
+    const chats = this.prismaChatsRepository.findChatByText(text);
+  }
+
+  async getChatsByUserId(user_id: string) {
     try {
-      const getChats = await this.prismaChatRepository.getChatsByQuestionsId(
-        question_id
+      const userChats = await this.prismaChatsRepository.findChatByUserId(
+        user_id
       );
-      return getChats;
+      return userChats;
     } catch (e) {
-      console.error("Error createChats: ", e);
+      console.error("Error getChats: ", e);
+      return false;
+    }
+  }
+
+  async getAllChats() {
+    try {
+      const Chats = await this.prismaChatsRepository.findAllChats();
+      return Chats;
+    } catch (e) {
+      console.error("Error getChats: ", e);
       return false;
     }
   }

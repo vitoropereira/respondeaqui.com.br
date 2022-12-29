@@ -1,4 +1,4 @@
-import { User } from "@prisma/client";
+import { Feature, User } from "@prisma/client";
 
 interface UserProps {
   username: string;
@@ -13,7 +13,6 @@ export interface UsersRepository {
     avatar_url,
     email,
     username,
-    signInMethod,
     features,
   }: UserProps) => Promise<User>;
   findUserByEmail: (email: string) => Promise<User | undefined>;

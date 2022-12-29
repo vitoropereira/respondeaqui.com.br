@@ -3,6 +3,14 @@ export function combineArrays(arr1, arr2) {
   return [...new Set(combined)];
 }
 
+export function uniqueElements(array1, array2) {
+  const concatenatedArray = array1.concat(array2);
+
+  return concatenatedArray.filter(
+    (element, index) => concatenatedArray.indexOf(element) === index
+  );
+}
+
 export function limitText(text: string, size: number) {
   if (text.length > size) {
     return text.substr(0, size) + "...";
