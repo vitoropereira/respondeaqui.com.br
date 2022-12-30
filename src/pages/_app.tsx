@@ -1,20 +1,42 @@
 import { AnimateSharedLayout } from "framer-motion";
 import { AppProps } from "next/app";
-import { AuthUserContextProvider } from "../context/AuthUserContextProvider";
+import { SessionProvider } from "next-auth/react";
 import { ThemeContextProvider } from "../context/ThemeContextProvider";
+import { Session } from "next-auth";
+import NextNProgress from "src/components/ProgressBar";
+import { SWRConfig } from "swr";
 
 import "../styles/globals.css";
-import "../styles/styles.css";
+// import "../styles/styles.css";
 
-function MyApp({ Component, pageProps }: AppProps) {
+async function SWRFetcher(resource, init) {
+  const response = await fetch(resource, init);
+  const responseBody = await response.json();
+
+  return responseBody;
+}
+
+function MyApp({
+  Component,
+  pageProps,
+}: AppProps<{
+  session: Session;
+}>) {
   return (
-    <AuthUserContextProvider>
-      <ThemeContextProvider>
-        <AnimateSharedLayout>
-          <Component {...pageProps} />
-        </AnimateSharedLayout>
-      </ThemeContextProvider>
-    </AuthUserContextProvider>
+    <SWRConfig
+      value={{
+        fetcher: SWRFetcher,
+      }}
+    >
+      <SessionProvider session={pageProps.session}>
+        <ThemeContextProvider>
+          <AnimateSharedLayout>
+            <NextNProgress />
+            <Component {...pageProps} />
+          </AnimateSharedLayout>
+        </ThemeContextProvider>
+      </SessionProvider>
+    </SWRConfig>
   );
 }
 

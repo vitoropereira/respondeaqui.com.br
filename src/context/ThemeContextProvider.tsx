@@ -12,10 +12,8 @@ export function ThemeContextProvider({ children }) {
 
   const changeTheme = (theme: boolean) => {
     if (theme) {
-      console.log("changeTheme: ", mode);
       setMode("dark");
     } else {
-      console.log("changeTheme: ", mode);
       setMode("");
     }
   };

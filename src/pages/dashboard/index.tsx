@@ -1,63 +1,77 @@
-/* eslint-disable react-hooks/exhaustive-deps */
-import { useState, useContext, useEffect, useMemo } from "react";
+import { useState, useEffect } from "react";
+import { unstable_getServerSession } from "next-auth";
+import { useSession, signOut } from "next-auth/react";
+import { GetServerSideProps } from "next";
 import Image from "next/image";
 import { useRouter } from "next/router";
+import useSWR from "swr";
 import ChatIcon from "@mui/icons-material/Chat";
 import DarkModeIcon from "@mui/icons-material/DarkMode";
-import SearchIcon from "@mui/icons-material/Search";
+import LogoutIcon from "@mui/icons-material/Logout";
 
-import { ChatIntro } from "../../components/ChatIntro";
-import { ChatList } from "../../components/ChatList";
-import { ChatWindow } from "../../components/ChatWindow";
-import { Loading } from "../../components/Loading";
-import { NewChat } from "../../components/NewChat";
-import { ToolTip } from "../../components/Tooltip";
-import {
-  AuthUserContext,
-  UserProps,
-} from "../../context/AuthUserContextProvider";
+import { Loading } from "src/components/Loading";
+import { ToolTip } from "src/components/Tooltip";
+import { ChatList } from "src/components/ChatList";
+import { ShowErrors } from "src/components/ShowErrors";
+import { ChatWindow } from "src/components/ChatWindow";
+import { ChatIntro } from "src/components/ChatIntro";
+import { NewChat } from "src/components/NewChat";
+import { Input } from "src/components/Input";
+
+import { buildNextAuthOptions } from "../api/auth/[...nextauth]";
+import { ChatProps } from "src/@types/chatType";
+
+type DataProp = ChatProps & {
+  name?: string;
+  message?: string;
+  action?: string;
+  statusCode?: number;
+  errorId?: string;
+  requestId?: string;
+};
 
 function App() {
-  const [chatList, setChatList] = useState([]);
-  const [activeChat, setActiveChat] = useState({
-    chatId: undefined,
-  });
-  const [user, setUser] = useState<UserProps>();
+  const [activeChat, setActiveChat] = useState<ChatProps>(undefined);
   const [showNewChat, setShowNewChat] = useState(false);
   const [isDarkTheme, setIsDarkTheme] = useState(true);
   const [themeMode, setThemeMode] = useState("");
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
+  const [allChats, setAllChats] = useState<ChatProps[]>();
+  const [globalErrorMessage, setGlobalErrorMessage] =
+    useState<string>(undefined);
 
-  const { currentUser } = useContext(AuthUserContext);
+  const { data } = useSWR<DataProp[]>(`/api/v1/chats/`, {
+    refreshInterval: 1000,
+  });
+
+  useEffect(() => {
+    if (data) {
+      if (data[0]?.statusCode >= 400) {
+        setGlobalErrorMessage(`${data[0].message} ${data[0].action}`);
+        return;
+      }
+      setAllChats(data);
+    }
+  }, [allChats, data]);
+
+  const session = useSession();
   const router = useRouter();
+
+  const isSignedIn = session.status == "authenticated";
+
+  function handleWithSetMobileOpen() {
+    setMobileOpen(!mobileOpen);
+  }
 
   const handleNewChat = () => {
     setShowNewChat(true);
   };
 
-  const isAuthenticated = useMemo(() => {
-    if (currentUser) {
-      setIsLoading(false);
-      return true;
-    }
-  }, []);
-
   useEffect(() => {
-    console.log("currentUser");
-    console.log(currentUser);
-    if (isAuthenticated) {
-      const userData = {
-        id: currentUser?.id,
-        name: currentUser?.name,
-        avatar: currentUser?.avatar,
-      };
-
-      setUser(userData);
-    } else {
-      router.push("./login");
+    if (!isSignedIn) {
+      router.push("../login");
     }
-  }, [isAuthenticated]);
+  }, [isSignedIn, router]);
 
   useEffect(() => {
     if (isDarkTheme) {
@@ -67,55 +81,37 @@ function App() {
     }
   }, [isDarkTheme, themeMode]);
 
-  // const handleLoginData = async (user: UserProps) => {
-  //   // await Api.addUser(newUser);
-  //   setUser(user);
-  // };
-
-  // useEffect(() => {
-  //   let newUser = {
-  //     id: "3bfb0142-88a8-4c3e-955f-049a6da89d26",
-  //     name: "Vitor",
-  //     avatar: "https://avatars.githubusercontent.com/u/47868559?v=4",
-  //   };
-  //   // if (user !== null) {
-  //   //   let user = Api.onChatList(user.id, setChatList);
-  //   //   return user;
-  //   // }
-  //   handleLoginData(newUser);
-  // }, [user]);
-
-  if (isLoading || !user) {
-    return <Loading />;
+  if (!isSignedIn) {
+    return <Loading size={12} />;
   }
 
   return (
     <div
-      className={`flex h-screen bg-light-backgroundSecond dark:bg-dark-backgroundSecond ${themeMode}`}
+      className={`${themeMode} flex h-screen bg-light-backgroundSecond dark:bg-dark-backgroundSecond`}
     >
-      <div className="w-[35%] max-w-[415px] flex flex-col border-r border-r-light-border dark:border-r-dark-border">
-        <NewChat
-          chatList={chatList}
-          user={user}
-          show={showNewChat}
-          setShow={setShowNewChat}
-        />
-        <header className="h-[60px] flex justify-between items-center px-4 py-0 max-[994px]:w-screen bg-light-backgroundSecond dark:bg-dark-backgroundSecond">
+      <div
+        className="w-[35%] max-w-[415px] max-[994px]:w-full max-[994px]:max-w-full
+              flex flex-col border-r 
+              border-r-light-border dark:border-r-dark-border"
+      >
+        <NewChat show={showNewChat} setShow={setShowNewChat} />
+
+        <header className="h-[60px] flex justify-between items-center px-4 py-0 bg-light-backgroundSecond dark:bg-dark-backgroundSecond">
           <div className="flex justify-center items-center gap-2">
-            {user.avatar ? (
+            {session.data?.user.avatar_url ? (
               <Image
                 width={40}
                 height={40}
                 className="rounded-full cursor-pointer"
-                src={user.avatar}
-                alt={`Foto do usuário ${user.name}`}
+                src={session.data.user.avatar_url}
+                alt={`Foto do usuário ${session.data.user.username}`}
               />
             ) : (
               ""
             )}
 
             <p className="ml-1 text-light-text dark:text-dark-text">
-              {user.name}
+              {session.data.user.username}
             </p>
           </div>
           <div className="flex">
@@ -123,7 +119,9 @@ function App() {
               onClick={() => setIsDarkTheme(!isDarkTheme)}
               className="w-10 h-10 rounded-[20px] flex justify-center items-center cursor-pointer"
             >
-              <DarkModeIcon style={{ color: "#919191" }} />
+              <ToolTip tooltip="Tema Dark/Light">
+                <DarkModeIcon style={{ color: "#919191" }} />
+              </ToolTip>
             </div>
 
             <div
@@ -135,46 +133,62 @@ function App() {
                 <ChatIcon style={{ color: "#919191" }} />
               </ToolTip>
             </div>
+            <div
+              className="w-10 h-10 rounded-full flex justify-center items-center cursor-pointer"
+              onClick={() => signOut()}
+            >
+              <ToolTip tooltip="Logout">
+                <LogoutIcon style={{ color: "#919191" }} />
+              </ToolTip>
+            </div>
           </div>
         </header>
 
-        <div className="bg-light-background dark:bg-dark-background px-4 py-1  max-[994px]:w-screen">
-          <div className="bg-light-backgroundSecond dark:bg-dark-backgroundSecond h-10 rounded-[10px] flex items-center px-2 py-0">
-            <SearchIcon fontSize="small" style={{ color: "#919191" }} />
-            <input
-              type="search"
-              className="flex-1 border-0 outline-0 dark:border-0 dark:outline-0 rounded-[10px] -mr-2 bg-transparent ml-3 text-light-text dark:text-light-text"
-              placeholder="Procurar ou iniciar uma nova dúvida."
-            />
-          </div>
-        </div>
+        <Input placeholderText="Procurar por uma pergunta." icon={true} />
+        {globalErrorMessage && <ShowErrors message={globalErrorMessage} />}
 
-        <div className="flex-1 bg-light-background dark:bg-dark-background overflow-y-auto w-screen">
-          {chatList.map((item, key) => (
-            <ChatList
-              key={key}
-              data={item}
-              active={activeChat.chatId === chatList[key].chatId}
-              onClick={() => setActiveChat(chatList[key])}
-              onMobileClick={() => setMobileOpen(true)}
-            />
-          ))}
+        <div className="flex-1 bg-light-background dark:bg-dark-background overflow-y-auto">
+          {allChats &&
+            allChats.map((item) => {
+              return (
+                <ChatList
+                  key={item.id}
+                  data={item}
+                  active={activeChat?.id === item.id}
+                  onClick={() => setActiveChat(item)}
+                  onMobileClick={() => setMobileOpen(true)}
+                />
+              );
+            })}
         </div>
       </div>
+
       <div className="flex-1 h-screen">
-        {activeChat.chatId !== undefined && (
+        {activeChat !== undefined && (
           <ChatWindow
-            user={user}
-            data={activeChat}
-            setMobileOpen={setMobileOpen}
+            chatData={activeChat}
+            handleWithSetMobileOpen={handleWithSetMobileOpen}
             mobileOpen={mobileOpen}
           />
         )}
 
-        {activeChat.chatId === undefined && <ChatIntro />}
+        {activeChat === undefined && <ChatIntro />}
       </div>
     </div>
   );
 }
 
 export default App;
+
+export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
+  const session = await unstable_getServerSession(
+    req,
+    res,
+    buildNextAuthOptions(req, res)
+  );
+  return {
+    props: {
+      session,
+    },
+  };
+};
