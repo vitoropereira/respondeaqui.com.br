@@ -4,8 +4,10 @@ import { useRouter } from "next/router";
 import { Loading } from "src/components/Loading";
 
 import { signIn, useSession } from "next-auth/react";
+import Home from "..";
 
 export default function Login() {
+  return <Home />;
   const [darkMode, setDarkMode] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
   const [errorObject, setErrorObject] = useState(undefined);

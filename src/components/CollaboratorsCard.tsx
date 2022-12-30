@@ -2,7 +2,7 @@ import { motion } from "framer-motion";
 import { GetStaticProps } from "next";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { OwnerProps } from "../pages";
+import { OwnerProps } from "../pages/index_old";
 
 interface CollaboratorsCardProps {
   username: OwnerProps;
