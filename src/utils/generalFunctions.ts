@@ -86,3 +86,22 @@ export function getDaysDifference(date1: Date, date2: Date) {
 
   return diffDays;
 }
+
+export function createScrollingText(text: string, maxChars: number) {
+  if (text.length > maxChars) {
+    // Cria uma variável para armazenar a string em movimento
+    let scrollingText = "";
+
+    // Adiciona o texto original à string em movimento
+    scrollingText += text;
+
+    // Adiciona o texto original novamente à string em movimento, mas com um espaço em branco no início para criar o efeito de movimento
+    scrollingText += " " + text;
+
+    // Retorna a string em movimento
+    return scrollingText;
+  } else {
+    // Se o tamanho do texto for menor ou igual ao número de caracteres permitidos, retorna o texto sem modificações
+    return text;
+  }
+}

@@ -13,7 +13,7 @@ export default nextConnect({
   onError: controller.onErrorHandler,
 })
   .use(controller.injectRequestMetadata)
-  .post(authorization.canRequest("create:content"), postHandler);
+  .post(postHandler);
 
 async function postHandler(req: RequestProps, res: NextApiResponse) {
   const prismaMessageRepository = new PrismaMessageRepository();

@@ -1,7 +1,11 @@
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { ChatProps } from "src/@types/chatType";
-import { getRelativeTime, limitText } from "src/utils/generalFunctions";
+import {
+  createScrollingText,
+  getRelativeTime,
+  limitText,
+} from "src/utils/generalFunctions";
 
 interface ChatListProps {
   onClick: () => void;
