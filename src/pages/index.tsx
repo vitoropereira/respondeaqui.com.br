@@ -1,16 +1,13 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
-import { FiGithub, FiLogIn } from "react-icons/fi";
+import { Chats, GoogleLogo } from "phosphor-react";
+import { signIn, useSession } from "next-auth/react";
 
 import Head from "next/head";
-import { Chats, GithubLogo, GoogleLogo } from "phosphor-react";
-import Image from "next/image";
 
-import logo from "../../public/images/chats-96.png";
-import { signIn, useSession } from "next-auth/react";
 import { Loading } from "src/components/Loading";
 
-export default function Profile() {
+export default function Home() {
   const [isLoading, setIsLoading] = useState(false);
   const [errorObject, setErrorObject] = useState(undefined);
 
