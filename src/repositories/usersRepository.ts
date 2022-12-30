@@ -1,4 +1,4 @@
-import { Feature, User } from "@prisma/client";
+import { User } from "@prisma/client";
 
 interface UserProps {
   username: string;
