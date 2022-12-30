@@ -133,7 +133,7 @@ function filterOutput(user: User, feature: string, output: any) {
     filteredOutputValues = {
       id: output.id,
       username: output.username,
-      features: output.features,
+      // features: output.features,
       created_at: output.created_at,
       updated_at: output.updated_at,
     };
@@ -145,7 +145,7 @@ function filterOutput(user: User, feature: string, output: any) {
         id: output.id,
         username: output.username,
         email: output.email,
-        features: output.features,
+        // features: output.features,
         created_at: output.created_at,
         updated_at: output.updated_at,
       };
@@ -156,7 +156,7 @@ function filterOutput(user: User, feature: string, output: any) {
     filteredOutputValues = output.map((user: User) => ({
       id: user.id,
       username: user.username,
-      features: user.features,
+      // features: user.features,
       created_at: user.created_at,
       updated_at: user.updated_at,
     }));
@@ -215,12 +215,12 @@ function validateUser(user: User) {
     });
   }
 
-  if (!user.features || !Array.isArray(user.features)) {
-    throw new ValidationError({
-      message: `"user" não possui "features" ou não é um array.`,
-      action: `Contate o suporte informado o campo "errorId".`,
-    });
-  }
+  // if (!user.features || !Array.isArray(user.features)) {
+  //   throw new ValidationError({
+  //     message: `"user" não possui "features" ou não é um array.`,
+  //     action: `Contate o suporte informado o campo "errorId".`,
+  //   });
+  // }
 }
 
 function validateFeature(feature: string) {

@@ -53,7 +53,7 @@ export function NewChat({ show, setShow }: NewChatProps) {
       const fullQuestion = {
         content: newChat,
         user_id: session.data.user.id,
-        features: session.data.user.features,
+        // features: session.data.user.features,
       };
 
       const response = await fetch(`/api/v1/chats`, {

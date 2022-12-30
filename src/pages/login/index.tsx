@@ -65,7 +65,7 @@ export default function Login() {
             Faça login para continuar
           </p>
           {isLoading ? (
-            <Loading />
+            <Loading size={10} />
           ) : (
             <>
               <button

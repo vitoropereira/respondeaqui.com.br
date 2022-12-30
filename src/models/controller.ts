@@ -16,7 +16,7 @@ export interface RequestProps extends NextApiRequest {
   context: {
     requestId: string;
     clientIp: string;
-    features: string[];
+    // features: string[];
   };
 }
 
@@ -38,26 +38,26 @@ async function injectRequestMetadata(
   request.context = {
     ...request.context,
     requestId: uuidV4(),
-    clientIp: extractAnonymousIpFromRequest(request),
+    // clientIp: extractAnonymousIpFromRequest(request),
   };
 
-  function extractAnonymousIpFromRequest(request: NextApiRequest) {
-    let ip = request.headers["x-real-ip"] || request.socket.remoteAddress;
+  // function extractAnonymousIpFromRequest(request: NextApiRequest) {
+  //   let ip = request.headers["x-real-ip"] || request.socket.remoteAddress;
 
-    if (ip === "::1") {
-      ip = "127.0.0.1";
-    }
+  //   if (ip === "::1") {
+  //     ip = "127.0.0.1";
+  //   }
 
-    if (ip.substring(0, 7) == "::ffff:") {
-      ip = ip.substring(7);
-    }
+  //   if (ip.substring(0, 7) == "::ffff:") {
+  //     ip = ip.substring(7);
+  //   }
 
-    const ipParts = ip.split(".");
-    ipParts[3] = "0";
-    const anonymizedIp = ipParts.join(".");
+  //   const ipParts = ip.split(".");
+  //   ipParts[3] = "0";
+  //   const anonymizedIp = ipParts.join(".");
 
-    return anonymizedIp;
-  }
+  //   return anonymizedIp;
+  // }
 
   next();
 }

@@ -6,13 +6,9 @@ import useSWR from "swr";
 import InsertEmoticonIcon from "@mui/icons-material/InsertEmoticon";
 import CloseIcon from "@mui/icons-material/Close";
 import SendIcon from "@mui/icons-material/Send";
-import MicIcon from "@mui/icons-material/Mic";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import Image from "next/image";
-import { ToolTip } from "./Tooltip";
-import { AuthUserContext } from "src/context/AuthUserContextProvider";
 import { useSession } from "next-auth/react";
-import { UserProps } from "src/@types/userTypes";
 import { MessageProps } from "src/@types/messageTypes";
 import { ChatProps } from "src/@types/chatType";
 
