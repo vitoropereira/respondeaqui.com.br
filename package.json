@@ -9,7 +9,8 @@
     "services:stop": "docker-compose -f docker-compose.development.yml stop",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "vercel-build": "prisma generate && prisma migrate deploy && next build"
   },
   "dependencies": {
     "@emoji-mart/data": "^1.0.8",
