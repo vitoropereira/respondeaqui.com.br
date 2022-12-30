@@ -1,118 +1,88 @@
-import Confetti from "react-confetti";
+import React, { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/router";
-import { useState, useEffect } from "react";
-import { GetStaticProps } from "next";
+import { FiGithub, FiLogIn } from "react-icons/fi";
 
-import collaborators from "../../public/init/collaborators.json";
-import CollaboratorsCard from "../components/CollaboratorsCard";
-import Footer from "../components/Footer";
-import Header from "../components/Header";
-import Login from "./login";
+import Head from "next/head";
+import { Chats, GithubLogo, GoogleLogo } from "phosphor-react";
+import Image from "next/image";
 
-export interface OwnerProps {
-  username: string;
-  avatar_url: string;
-  html_url: string;
-}
+import logo from "../../public/images/chats-96.png";
+import { signIn, useSession } from "next-auth/react";
+import { Loading } from "src/components/Loading";
 
-interface PageProps {
-  imagesUrls: OwnerProps[];
-}
+export default function Profile() {
+  const [isLoading, setIsLoading] = useState(false);
+  const [errorObject, setErrorObject] = useState(undefined);
 
-export default function Page({ imagesUrls }: PageProps) {
-  return <Login />;
-
+  const session = useSession();
   const router = useRouter();
+
+  const hasAuthError = !!router.query.error;
+  const isSignedIn = session.status == "authenticated";
+
+  const handleGoogleLogin = async () => {
+    setIsLoading(true);
+    await signIn("google");
+  };
+
   useEffect(() => {
-    router.push("/login");
-  }, [router]);
-
-  const [shuffledCollaborators, setShuffledCollaborators] = useState([]);
-  const [confettiWidth, setConfettiWidth] = useState(0);
-  const [confettiHeight, setConfettiHeight] = useState(0);
-
-  useEffect(() => {
-    setShuffledCollaborators(shuffle(collaborators));
-
-    function handleResize() {
-      setConfettiWidth(window.screen.width);
-      setConfettiHeight(window.screen.height);
+    if (isSignedIn) {
+      router.push("../dashboard");
     }
-    window.addEventListener("resize", handleResize);
-    handleResize();
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
+  }, [isSignedIn, router]);
 
   return (
-    <>
-      <Header />
-      <Confetti
-        width={confettiWidth}
-        height={confettiHeight}
-        recycle={false}
-        numberOfPieces={800}
-        tweenDuration={15000}
-        gravity={0.15}
-      />
+    <div className="w-full h-screen p-4 bg-gradient-to-r from-blue-500 flex justify-between items-center">
+      <Head>
+        <title>Inicio | RespondeAqui</title>
+      </Head>
+      <Chats className="absolute text-[880px] text-white font-thin -rotate-12 opacity-20 max-[768px]:hidden" />
+      {/* {styles.content} */}
+      <div className="w-[50%} ml-[55%] grid max-[768px]:w-full max-[768px]:m-0">
+        <div className="flex justify-center items-center h-32">
+          <Chats style={{ fontSize: "80px" }} />
+          <h1 className="text-3xl font-semibold mt-4 text-center">
+            Responde aqui!
+          </h1>
+        </div>
+        <strong className="mt-20 mr-0 mb-8">Bem-vindo</strong>
 
-      <h1 className="text-2xl sm:text-4xl lg:text-5xl mt-2 md:mt-4 leading-none font-extrabold tracking-tight text-gray-100">
-        Os colaboradores deste projeto são:
-      </h1>
-
-      <p className="mt-3">
-        Este é um projeto desenvolvido para auxiliar pessoas a estudarem para
-        concurso. A metodologia utilizada é de apenas responder questões. Esta
-        página é uma homenagem a todos que em algum momento auxiliou este
-        projeto de alguma forma.
-      </p>
-
-      <div className="mt-10 md:mt-24 flex flex-wrap justify-center">
-        {imagesUrls.map((item) => {
-          return (
-            <CollaboratorsCard
-              key={item.username}
-              username={item}
-              layoutId={item.username}
-            />
-          );
-        })}
+        {/* {styles.title} */}
+        <div className="flex mb-4">
+          <GoogleLogo size={36} />
+          <span className="max-w-[220px] ml-4 mb-4 text-base font-medium">
+            Faça login com sua conta Google para iniciar.
+          </span>
+        </div>
+        {isLoading || session.status == "loading" ? (
+          <Loading size={10} />
+        ) : (
+          <>
+            <div className="max-w-[350px] p-2 flex justify-between rounded-md">
+              <button
+                className="border-none rounded-xl cursor-pointer w-80 h-16 flex justify-center items-center gap-3 bg-red-600 hover:bg-red-800 md:w-72 md:h-16"
+                onClick={handleGoogleLogin}
+                // disabled={isSignedIn}
+              >
+                <GoogleLogo color="#fff" size={32} />
+                <span className="text-xl font-semibold text-white">
+                  Entrar com Google
+                </span>
+              </button>
+              {hasAuthError && (
+                <span className="text-red-600">
+                  Falha ao conectar ao Google, verifique se as permissões.
+                </span>
+              )}
+            </div>
+          </>
+        )}
+        <span className="max-w-[400px] mt-10 text-lg max-[768px]:text-base">
+          Responde aqui é uma plataforma de discussão online onde é possível
+          conectar-se com outras pessoas e compartilhar ideias sobre assuntos de
+          interesse.
+        </span>
       </div>
-      <Footer />
-    </>
+    </div>
   );
 }
-
-function shuffle(arr) {
-  const newArr = arr.slice();
-  for (let i = newArr.length - 1; i > 0; i--) {
-    const rand = Math.floor(Math.random() * (i + 1));
-    [newArr[i], newArr[rand]] = [newArr[rand], newArr[i]];
-  }
-  return newArr;
-}
-
-export const getStaticProps: GetStaticProps = async () => {
-  const shuffleCollaborators = shuffle(collaborators);
-  const imagesUrls = [];
-
-  shuffleCollaborators.forEach(async (username: string) => {
-    try {
-      const response = await fetch(
-        `https://api.github.com/users/${username}/repos`
-      );
-
-      const data = await response.json();
-      imagesUrls[username] = {
-        username,
-        avatar_url: data[0].owner.avatar_url,
-        html_url: data[0].owner.html_url,
-      };
-    } catch (error) {
-      console.log(error, "shuffleCollaborators Mensagem de erro!!");
-    }
-  });
-
-  return {
-    props: { imagesUrls },
-  };
-};
