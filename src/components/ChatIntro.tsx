@@ -17,11 +17,6 @@ export function ChatIntro() {
         retirarem as próprias dúvidas. <br />
         Tudo em uma plataforma dinâmica e segura.
       </h2>
-
-      {/* <span className="text-light-textSecondary dark:text-dark-textSecondary fixed bottom-4 flex justify-center items-center">
-        <LockIcon style={{ fontSize: "18px" }} /> Protegido com a criptografia
-        de ponta a ponta
-      </span> */}
     </div>
   );
 }

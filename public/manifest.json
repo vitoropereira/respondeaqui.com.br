@@ -1,0 +1,17 @@
+{
+  "name": "RespondeAqui",
+  "short_name": "RespondeAqui",
+  "start_url": "/",
+  "display": "standalone",
+  "icons": [
+    {
+      "sizes": "57x57",
+      "src": "/chats-24.png"
+    },
+    {
+      "src": "/chats-24.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ]
+}

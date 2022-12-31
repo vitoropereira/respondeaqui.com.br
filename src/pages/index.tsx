@@ -1,9 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { useRouter } from "next/router";
+import Router, { useRouter } from "next/router";
 import { Chats, GoogleLogo } from "phosphor-react";
 import { signIn, useSession } from "next-auth/react";
-
-import Head from "next/head";
 
 import { Loading } from "src/components/Loading";
 
@@ -17,6 +15,10 @@ export default function Home() {
   const hasAuthError = !!router.query.error;
   const isSignedIn = session.status == "authenticated";
 
+  const handleIsLoading = () => {
+    setIsLoading(!isLoading);
+  };
+
   const handleGoogleLogin = async () => {
     setIsLoading(true);
     await signIn("google");
@@ -28,12 +30,11 @@ export default function Home() {
     }
   }, [isSignedIn, router]);
 
+  Router.events.on("routeChangeStart", handleIsLoading);
+
   return (
-    <div className="w-full h-screen p-4 bg-gradient-to-r from-blue-500 flex justify-between items-center">
-      <Head>
-        <title>Inicio | RespondeAqui</title>
-      </Head>
-      <Chats className="absolute text-[880px] text-white font-thin -rotate-12 opacity-20 max-[768px]:hidden" />
+    <div className="w-full h-screen overflow-y-hidden p-4 bg-gradient-to-r from-blue-500 flex justify-between items-center">
+      <Chats className="absolute overflow-y-hidden text-[560px] ml-28 -mt-10 text-white font-thin -rotate-12 opacity-20 max-[768px]:hidden -z-10" />
       {/* {styles.content} */}
       <div className="w-[50%} ml-[55%] grid max-[768px]:w-full max-[768px]:m-0">
         <div className="flex justify-center items-center h-32">
@@ -45,7 +46,7 @@ export default function Home() {
         <strong className="mt-20 mr-0 mb-8">Bem-vindo</strong>
 
         {/* {styles.title} */}
-        <div className="flex mb-4">
+        <div className="flex mb-4 z-10">
           <GoogleLogo size={36} />
           <span className="max-w-[220px] ml-4 mb-4 text-base font-medium">
             Faça login com sua conta Google para iniciar.

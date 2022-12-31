@@ -90,11 +90,9 @@ function App() {
       className={`${themeMode} flex h-screen bg-light-backgroundSecond dark:bg-dark-backgroundSecond`}
     >
       <div
-        className={`w-[35%] max-w-[415px]
-                  max-[994px]:fixed max-[994px]:w-screen max-[994px]:h-full
-                  max-[994px]:flex-1 max-[994px]:z-10
-                  flex flex-col 
-                  border-r border-r-light-border dark:border-r-dark-border`}
+        className="w-[35%] max-w-[415px] max-[994px]:w-full max-[994px]:max-w-full
+              flex flex-col border-r 
+              border-r-light-border dark:border-r-dark-border"
       >
         <NewChat show={showNewChat} setShow={setShowNewChat} />
 
@@ -149,7 +147,7 @@ function App() {
         <Input placeholderText="Procurar por uma pergunta." icon={true} />
         {globalErrorMessage && <ShowErrors message={globalErrorMessage} />}
 
-        <div className="flex-1 bg-light-background dark:bg-dark-background overflow-y-auto max-[994px]:w-screen">
+        <div className="flex-1 bg-light-background dark:bg-dark-background overflow-y-auto">
           {allChats &&
             allChats.map((item) => {
               return (
