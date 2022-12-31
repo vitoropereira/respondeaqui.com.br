@@ -33,7 +33,7 @@ type DataProp = ChatProps & {
 function App() {
   const [activeChat, setActiveChat] = useState<ChatProps>(undefined);
   const [showNewChat, setShowNewChat] = useState(false);
-  const [isDarkTheme, setIsDarkTheme] = useState(true);
+  const [isDarkTheme, setIsDarkTheme] = useState(false);
   const [themeMode, setThemeMode] = useState("");
   const [mobileOpen, setMobileOpen] = useState(false);
   const [allChats, setAllChats] = useState<ChatProps[]>();

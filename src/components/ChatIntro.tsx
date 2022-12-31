@@ -13,9 +13,10 @@ export function ChatIntro() {
       </h1>
 
       <h2 className="text-sm font-normal mt-5 leading-5 text-center text-light-textSecondary dark:text-dark-textSecondary ">
-        Aqui você consegue tirar suas dúvidas e ajudar outras pessoas a
-        retirarem as próprias dúvidas. <br />
-        Tudo em uma plataforma dinâmica e segura.
+        O RespondeAqui é a plataforma perfeita para discutir qualquer assunto
+        com outras pessoas interessadas. <br />
+        Conecte-se com outras pessoas e compartilhe suas experiências e ideias
+        no RespondeAqui.
       </h2>
     </div>
   );
