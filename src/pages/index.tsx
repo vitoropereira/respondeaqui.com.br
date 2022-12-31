@@ -1,9 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { useRouter } from "next/router";
+import Router, { useRouter } from "next/router";
 import { Chats, GoogleLogo } from "phosphor-react";
 import { signIn, useSession } from "next-auth/react";
-
-import Head from "next/head";
 
 import { Loading } from "src/components/Loading";
 
@@ -17,6 +15,10 @@ export default function Home() {
   const hasAuthError = !!router.query.error;
   const isSignedIn = session.status == "authenticated";
 
+  const handleIsLoading = () => {
+    setIsLoading(!isLoading);
+  };
+
   const handleGoogleLogin = async () => {
     setIsLoading(true);
     await signIn("google");
@@ -27,6 +29,8 @@ export default function Home() {
       router.push("../dashboard");
     }
   }, [isSignedIn, router]);
+
+  Router.events.on("routeChangeStart", handleIsLoading);
 
   return (
     <div className="w-full h-screen overflow-y-hidden p-4 bg-gradient-to-r from-blue-500 flex justify-between items-center">

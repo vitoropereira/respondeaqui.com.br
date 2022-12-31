@@ -165,7 +165,7 @@ function App() {
         </div>
       </div>
 
-      <div className="flex-1 h-screen hidden">
+      <div className="flex-1 h-screen">
         {activeChat !== undefined && (
           <ChatWindow
             chatData={activeChat}

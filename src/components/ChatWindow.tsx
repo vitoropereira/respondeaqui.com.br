@@ -49,9 +49,6 @@ export function ChatWindow({
     }
   );
 
-  console.log("data");
-  console.log(data);
-
   useEffect(() => {
     if (!error) {
       setMessageList(data);
@@ -177,11 +174,12 @@ export function ChatWindow({
 
   return (
     <div
-      className="flex flex-col h-full overflow-hidden 
+      className={`${
+        !mobileOpen ? "hidden" : "flex"
+      } flex-col h-full overflow-hidden 
       max-[994px]:fixed max-[994px]:top-0 max-[994px]:left-0 max-[994px]:flex-1 
       max-[994px]:w-full max-[994px]:h-screen z-10 
-      transition-all ease-in duration-75"
-      style={{ display: !mobileOpen ? "none" : "flex" }}
+      transition-all ease-in duration-75`}
     >
       <header
         className="h-[60px] flex justify-between items-center px-4 py-0 
