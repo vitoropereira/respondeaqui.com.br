@@ -98,7 +98,7 @@ function App() {
       >
         <NewChat show={showNewChat} setShow={setShowNewChat} />
 
-        <header className="h-[60px] flex justify-between items-center px-4 py-0 bg-light-backgroundSecond dark:bg-dark-backgroundSecond">
+        <header className="h-[60px] flex justify-between items-center px-4 py-0 bg-light-backgroundSecond dark:bg-dark-backgroundSecond max-[994px]:w-screen">
           <div className="flex justify-center items-center gap-2">
             {session.data?.user.avatar_url ? (
               <Image
