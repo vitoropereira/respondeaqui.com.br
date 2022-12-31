@@ -1,4 +1,5 @@
 import { AnimateSharedLayout } from "framer-motion";
+import Head from "next/head";
 import { AppProps } from "next/app";
 import { SessionProvider } from "next-auth/react";
 import { ThemeContextProvider } from "../context/ThemeContextProvider";
@@ -7,6 +8,7 @@ import NextNProgress from "src/components/ProgressBar";
 import { SWRConfig } from "swr";
 
 import "../styles/globals.css";
+import { DefaultHead } from "src/components/DefaultHeader";
 // import "../styles/styles.css";
 
 async function SWRFetcher(resource, init) {
@@ -23,20 +25,21 @@ function MyApp({
   session: Session;
 }>) {
   return (
-    <SWRConfig
-      value={{
-        fetcher: SWRFetcher,
-      }}
-    >
-      <SessionProvider session={pageProps.session}>
+    <SessionProvider session={pageProps.session}>
+      <DefaultHead />
+      <SWRConfig
+        value={{
+          fetcher: SWRFetcher,
+        }}
+      >
         <ThemeContextProvider>
           <AnimateSharedLayout>
             <NextNProgress />
             <Component {...pageProps} />
           </AnimateSharedLayout>
         </ThemeContextProvider>
-      </SessionProvider>
-    </SWRConfig>
+      </SWRConfig>
+    </SessionProvider>
   );
 }
 
