@@ -1,11 +1,10 @@
 import { motion } from "framer-motion";
-import { GetStaticProps } from "next";
 import Link from "next/link";
-import { useEffect, useState } from "react";
-import { OwnerProps } from "../pages/index_old";
+import { useState } from "react";
+import { UserProps } from "src/@types/userTypes";
 
 interface CollaboratorsCardProps {
-  username: OwnerProps;
+  username: UserProps;
   imagesUrls?: string;
   layoutId: string;
 }
