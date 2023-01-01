@@ -1,42 +1,24 @@
 import { User } from "@prisma/client";
 import { NextApiRequest } from "next";
+import { UserProps } from "src/@types/userTypes";
 import { UsersRepository } from "src/repositories/usersRepository";
 import { combineArrays } from "src/utils/generalFunctions";
 
-interface UserCreateData {
-  username: string;
-  email: string;
-  avatar_url: string;
-  signInMethod: string[];
-  features: string[];
-}
-
 export class UserModel {
   constructor(private usersRepository: UsersRepository) {}
-  async create(request: UserCreateData) {
+  async create(request: UserProps) {
     const userData = await this.validateUniqueEmail(request.email);
     if (userData) {
       const userUpdated = await this.updateUserData(userData.id, request);
       return userUpdated;
     }
 
-    const { avatar_url, email, signInMethod, username, features } = request;
-
-    const newUserFeatures = [
-      "read:user",
-      "read:content",
-      "update:content",
-      "create:content",
-    ];
-
-    const newFeatures = combineArrays(features, newUserFeatures) as string[];
+    const { avatar_url, email, username, tutorial_steps } = request;
 
     const user = await this.usersRepository.createUser({
       avatar_url,
       email,
-      signInMethod,
       username,
-      features: newFeatures,
     });
 
     return user;
@@ -53,7 +35,7 @@ export class UserModel {
     return undefined;
   }
 
-  async updateUserData(userId: string, request: UserCreateData) {
+  async updateUserData(userId: string, request: UserProps) {
     const updatedUser = await this.usersRepository.updateUserDataTutorial(
       userId,
       request
