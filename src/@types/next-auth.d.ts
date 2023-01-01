@@ -5,7 +5,7 @@ declare module "next-auth" {
     id: string;
     username: string;
     email: string;
-    features?: string[];
+    tutorial_steps?: number;
     avatar_url?: string;
   }
 
@@ -14,7 +14,7 @@ declare module "next-auth" {
       id: string;
       username: string;
       email: string;
-      features?: string[];
+      tutorial_steps?: number;
       avatar_url?: string;
     };
   }

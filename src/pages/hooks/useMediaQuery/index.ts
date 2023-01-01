@@ -15,8 +15,5 @@ export default function useMediaQuery(query: string) {
     return () => media.removeListener(listener);
   }, [matches, query]);
 
-  console.log("matches");
-  console.log(matches);
-
   return matches;
 }
