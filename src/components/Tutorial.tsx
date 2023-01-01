@@ -2,6 +2,8 @@ import { useSession } from "next-auth/react";
 import { ArrowBendLeftUp, ArrowBendRightUp } from "phosphor-react";
 import { useState, useEffect } from "react";
 import { UpdateUserProps } from "src/@types/userTypes";
+import ChatIcon from "@mui/icons-material/Chat";
+import DarkModeIcon from "@mui/icons-material/DarkMode";
 
 type Props = {
   text: string;
@@ -77,11 +79,23 @@ export function Tutorial({ text }: Props) {
     <div className="fixed top-0 left-0 right-0 bottom-0 bg-gray-500 opacity-80 flex flex-col items-center justify-center z-30">
       {session.data.user.tutorial_steps == 0 && (
         <>
+          {width < 993 && (
+            <ChatIcon
+              className="mt-3 ml-[250px] font-bold"
+              style={{ color: "#001", width: 50, height: 50 }}
+            />
+          )}
+          {width > 993 && (
+            <ChatIcon
+              className="mt-3 ml-[-700px] font-bold"
+              style={{ color: "#001", width: 50, height: 50 }}
+            />
+          )}
           <div
             className="w-full h-full flex items-start justify-start 
-          ml-[650px] mt-[50px]
-          max-[994px]:ml-[280px]
-          opacity-100"
+                      ml-[650px] mt-[30px]
+                      max-[994px]:ml-[280px] max-[994px]:mt-[20px]
+                      opacity-100"
           >
             {width > 993 && <ArrowBendLeftUp size={32} color="#1d2daa" />}
             <div className="flex flex-col justify-start items-start">
@@ -105,10 +119,22 @@ export function Tutorial({ text }: Props) {
       )}
       {session.data.user.tutorial_steps == 1 && (
         <>
+          {width > 993 && (
+            <DarkModeIcon
+              className="mt-3 ml-[-750px] font-bold"
+              style={{ color: "#001", width: 50, height: 50 }}
+            />
+          )}
+          {width < 993 && (
+            <DarkModeIcon
+              className="mt-3 ml-[200px] font-bold"
+              style={{ color: "#001", width: 50, height: 50 }}
+            />
+          )}
           <div
             className="w-full h-full flex items-start justify-start 
-              ml-[650px] mt-[50px]
-              max-[994px]:ml-[80px]
+              ml-[600px] mt-[10px]
+              max-[994px]:ml-[80px] max-[994px]:mt-[20px]
               opacity-100"
           >
             {width > 993 && <ArrowBendLeftUp size={32} color="#1d2daa" />}
