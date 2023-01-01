@@ -11,10 +11,11 @@ datasource db {
 }
 
 model User {
-  id         String @id @default(uuid())
-  username   String
-  email      String @unique
-  avatar_url String @db.Text
+  id             String @id @default(uuid())
+  username       String
+  email          String @unique
+  avatar_url     String @db.Text
+  tutorial_steps Int    @default(0)
 
   created_at DateTime @default(now())
   updated_at DateTime @default(now())

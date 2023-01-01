@@ -20,6 +20,7 @@ import { Input } from "src/components/Input";
 
 import { buildNextAuthOptions } from "../api/auth/[...nextauth]";
 import { ChatProps } from "src/@types/chatType";
+import { Tutorial } from "src/components/Tutorial";
 
 type DataProp = ChatProps & {
   name?: string;
@@ -56,6 +57,8 @@ function App() {
 
   const session = useSession();
   const router = useRouter();
+
+  const alreadyViewedTutorial = session.data.user.tutorial_steps;
 
   const isSignedIn = session.status == "authenticated";
 
@@ -97,6 +100,9 @@ function App() {
                   border-r border-r-light-border dark:border-r-dark-border`}
       >
         <NewChat show={showNewChat} setShow={setShowNewChat} />
+        {session.data.user.tutorial_steps <= 1 && (
+          <Tutorial text="Crie seu chat aqui!" />
+        )}
 
         <header className="h-[60px] flex justify-between items-center px-4 py-0 bg-light-backgroundSecond dark:bg-dark-backgroundSecond max-[994px]:w-screen">
           <div className="flex justify-center items-center gap-2">

@@ -1,20 +1,12 @@
 import { User } from "@prisma/client";
-
-interface UserProps {
-  username: string;
-  email: string;
-  avatar_url: string;
-  signInMethod: string[];
-  features: string[];
-}
+import { UpdateUserProps, UserProps } from "src/@types/userTypes";
 
 export interface UsersRepository {
-  createUser: ({
-    avatar_url,
-    email,
-    username,
-    features,
-  }: UserProps) => Promise<User>;
+  createUser: ({ avatar_url, email, username }: UserProps) => Promise<User>;
   findUserByEmail: (email: string) => Promise<User | undefined>;
-  updateUserData: (user: User, userData: UserProps) => Promise<User>;
+  findUserByUserId: (userId: string) => Promise<User | undefined>;
+  updateUserDataTutorial: (
+    userId: string,
+    userData: UpdateUserProps
+  ) => Promise<User>;
 }

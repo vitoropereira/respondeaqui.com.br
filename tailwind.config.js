@@ -11,6 +11,8 @@ module.exports = {
       },
       colors: {
         brand: {
+          100: "#a4abdd",
+          400: "#374add",
           500: "#1d2daa",
         },
         light: {

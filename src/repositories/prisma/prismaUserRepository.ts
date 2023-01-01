@@ -1,18 +1,10 @@
 import { User } from "@prisma/client";
+import { UpdateUserProps, UserProps } from "src/@types/userTypes";
 import prisma from "src/service/prisma";
-import { uniqueElements } from "src/utils/generalFunctions";
 import { UsersRepository } from "../usersRepository";
 
-interface UserProps {
-  username: string;
-  email: string;
-  avatar_url: string;
-  signInMethod: string[];
-  features: string[];
-}
-
 export class PrismaUsersRepository implements UsersRepository {
-  async createUser({ avatar_url, email, username, features }: UserProps) {
+  async createUser({ avatar_url, email, username }: UserProps) {
     const user = await prisma.user.create({
       data: {
         email,
@@ -38,17 +30,33 @@ export class PrismaUsersRepository implements UsersRepository {
     return undefined;
   }
 
-  async updateUserData(user: User, userData: UserProps) {
-    const { email, username, avatar_url, features } = userData;
+  async findUserByUserId(userId: string) {
+    const existUser = await prisma.user.findFirst({
+      where: {
+        id: userId,
+      },
+    });
 
-    const userUpdated = prisma.user.update({
+    if (existUser) {
+      return existUser;
+    }
+
+    return undefined;
+  }
+
+  async updateUserDataTutorial(userId: string, userData: UpdateUserProps) {
+    const { tutorial_steps } = userData;
+
+    const user = await this.findUserByUserId(userId);
+
+    const tutorialStepsLevel = user.tutorial_steps + tutorial_steps;
+
+    const userUpdated = await prisma.user.update({
       data: {
-        username,
-        email,
-        avatar_url,
+        tutorial_steps: tutorialStepsLevel,
       },
       where: {
-        id: user.id,
+        id: userId,
       },
     });
 

@@ -16,7 +16,7 @@ export class UserModel {
   async create(request: UserCreateData) {
     const userData = await this.validateUniqueEmail(request.email);
     if (userData) {
-      const userUpdated = await this.updateUserData(userData, request);
+      const userUpdated = await this.updateUserData(userData.id, request);
       return userUpdated;
     }
 
@@ -53,9 +53,9 @@ export class UserModel {
     return undefined;
   }
 
-  async updateUserData(user: User, request: UserCreateData) {
-    const updatedUser = await this.usersRepository.updateUserData(
-      user,
+  async updateUserData(userId: string, request: UserCreateData) {
+    const updatedUser = await this.usersRepository.updateUserDataTutorial(
+      userId,
       request
     );
 
