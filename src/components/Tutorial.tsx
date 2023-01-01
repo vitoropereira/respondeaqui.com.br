@@ -4,17 +4,21 @@ import { useState, useEffect } from "react";
 import { UpdateUserProps } from "src/@types/userTypes";
 import ChatIcon from "@mui/icons-material/Chat";
 import DarkModeIcon from "@mui/icons-material/DarkMode";
+import { Loading } from "./Loading";
+import { ShowErrors } from "./ShowErrors";
 
 type Props = {
-  text: string;
+  tutorialSteps: number;
+  handleMakeTutorial: (tutorialSteps: number) => void;
 };
 
-export function Tutorial({ text }: Props) {
+export function Tutorial({ tutorialSteps, handleMakeTutorial }: Props) {
   const [globalErrorMessage, setGlobalErrorMessage] =
     useState<string>(undefined);
   const [isLoading, setIsLoading] = useState(false);
-  const [tutorialSteps, setTutorialSteps] = useState<Number>(0);
-  const [width, setWidth] = useState(window.innerWidth);
+  const [makingTutorial, setMakingTutorial] = useState(tutorialSteps);
+
+  const [width, setWidth] = useState(null);
 
   const session = useSession();
 
@@ -23,16 +27,16 @@ export function Tutorial({ text }: Props) {
       setWidth(window.innerWidth);
     }
 
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
+    if (typeof window !== "undefined") {
+      setWidth(window.innerWidth);
+
+      window.addEventListener("resize", handleResize);
+      return () => window.removeEventListener("resize", handleResize);
+    }
   }, []);
 
   async function handleTutorial() {
     setIsLoading(true);
-
-    if (text === "") {
-      return;
-    }
 
     try {
       const userData: UpdateUserProps = {
@@ -51,6 +55,12 @@ export function Tutorial({ text }: Props) {
       setGlobalErrorMessage(undefined);
 
       const responseBody = await response.json();
+
+      if (response.status === 200) {
+        handleMakeTutorial(responseBody.tutorial_steps);
+        setMakingTutorial(responseBody.tutorial_steps);
+        setIsLoading(false);
+      }
 
       if (response.status === 400) {
         setGlobalErrorMessage(responseBody);
@@ -72,12 +82,13 @@ export function Tutorial({ text }: Props) {
   }
 
   useEffect(() => {
-    setTutorialSteps(session.data.user.tutorial_steps);
-  }, [session.data.user.tutorial_steps]);
+    handleMakeTutorial(session.data.user.tutorial_steps);
+  }, [handleMakeTutorial, session.data.user.tutorial_steps]);
 
   return (
     <div className="fixed top-0 left-0 right-0 bottom-0 bg-gray-500 opacity-80 flex flex-col items-center justify-center z-30">
-      {session.data.user.tutorial_steps == 0 && (
+      {isLoading && <Loading size={10} />}
+      {!isLoading && makingTutorial == 0 && (
         <>
           {width < 993 && (
             <ChatIcon
@@ -99,7 +110,7 @@ export function Tutorial({ text }: Props) {
           >
             {width > 993 && <ArrowBendLeftUp size={32} color="#1d2daa" />}
             <div className="flex flex-col justify-start items-start">
-              <p className="mt-3 text-2xl">{text}</p>
+              <p className="mt-3 text-2xl">Crie seu chat aqui!</p>
               <button
                 className="mt-3 ms-3 py-1 px-2  
                 bg-brand-500 dark:bg-light-chatBackground 
@@ -109,6 +120,7 @@ export function Tutorial({ text }: Props) {
                 focus:outline-none 
                 rounded-lg "
                 onClick={handleTutorial}
+                disabled={isLoading}
               >
                 Ok obrigado! 😁👌
               </button>
@@ -117,7 +129,7 @@ export function Tutorial({ text }: Props) {
           </div>
         </>
       )}
-      {session.data.user.tutorial_steps == 1 && (
+      {!isLoading && makingTutorial == 1 && (
         <>
           {width > 993 && (
             <DarkModeIcon
@@ -152,6 +164,7 @@ export function Tutorial({ text }: Props) {
                 focus:outline-none 
                 rounded-lg "
                 onClick={handleTutorial}
+                disabled={isLoading}
               >
                 Assim ficou ótimo! Obrigado! 😁
               </button>
@@ -160,6 +173,7 @@ export function Tutorial({ text }: Props) {
           </div>
         </>
       )}
+      {globalErrorMessage && <ShowErrors message={globalErrorMessage} />}
     </div>
   );
 }

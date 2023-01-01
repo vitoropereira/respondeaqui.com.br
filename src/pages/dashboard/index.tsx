@@ -40,6 +40,7 @@ function App() {
   const [allChats, setAllChats] = useState<ChatProps[]>();
   const [globalErrorMessage, setGlobalErrorMessage] =
     useState<string>(undefined);
+  const [tutorialSteps, setTutorialSteps] = useState<number>(0);
 
   const { data } = useSWR<DataProp[]>(`/api/v1/chats/`, {
     refreshInterval: 1000,
@@ -58,8 +59,6 @@ function App() {
   const session = useSession();
   const router = useRouter();
 
-  const alreadyViewedTutorial = session.data.user.tutorial_steps;
-
   const isSignedIn = session.status == "authenticated";
 
   function handleWithSetMobileOpen() {
@@ -68,6 +67,10 @@ function App() {
 
   const handleNewChat = () => {
     setShowNewChat(true);
+  };
+
+  const handleMakeTutorial = (tutorialSteps: number) => {
+    setTutorialSteps(tutorialSteps);
   };
 
   useEffect(() => {
@@ -100,8 +103,11 @@ function App() {
                   border-r border-r-light-border dark:border-r-dark-border`}
       >
         <NewChat show={showNewChat} setShow={setShowNewChat} />
-        {session.data.user.tutorial_steps <= 1 && (
-          <Tutorial text="Crie seu chat aqui!" />
+        {tutorialSteps <= 1 && (
+          <Tutorial
+            tutorialSteps={tutorialSteps}
+            handleMakeTutorial={handleMakeTutorial}
+          />
         )}
 
         <header className="h-[60px] flex justify-between items-center px-4 py-0 bg-light-backgroundSecond dark:bg-dark-backgroundSecond max-[994px]:w-screen">
