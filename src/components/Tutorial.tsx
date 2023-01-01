@@ -1,5 +1,5 @@
 import { useSession } from "next-auth/react";
-import { ArrowBendLeftUp } from "phosphor-react";
+import { ArrowBendLeftUp, ArrowBendRightUp } from "phosphor-react";
 import { useState, useEffect } from "react";
 import { UpdateUserProps } from "src/@types/userTypes";
 
@@ -12,8 +12,18 @@ export function Tutorial({ text }: Props) {
     useState<string>(undefined);
   const [isLoading, setIsLoading] = useState(false);
   const [tutorialSteps, setTutorialSteps] = useState<Number>(0);
+  const [width, setWidth] = useState(window.innerWidth);
 
   const session = useSession();
+
+  useEffect(() => {
+    function handleResize() {
+      setWidth(window.innerWidth);
+    }
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   async function handleTutorial() {
     setIsLoading(true);
@@ -39,9 +49,6 @@ export function Tutorial({ text }: Props) {
       setGlobalErrorMessage(undefined);
 
       const responseBody = await response.json();
-
-      console.log("responseBody");
-      console.log(responseBody);
 
       if (response.status === 400) {
         setGlobalErrorMessage(responseBody);
@@ -70,8 +77,13 @@ export function Tutorial({ text }: Props) {
     <div className="fixed top-0 left-0 right-0 bottom-0 bg-gray-500 opacity-80 flex flex-col items-center justify-center z-30">
       {session.data.user.tutorial_steps == 0 && (
         <>
-          <div className="w-full h-full flex items-start justify-start ml-[650px] mt-[50px] opacity-100">
-            <ArrowBendLeftUp size={32} color="#1d2daa" />
+          <div
+            className="w-full h-full flex items-start justify-start 
+          ml-[650px] mt-[50px]
+          max-[994px]:ml-[280px]
+          opacity-100"
+          >
+            {width > 993 && <ArrowBendLeftUp size={32} color="#1d2daa" />}
             <div className="flex flex-col justify-start items-start">
               <p className="mt-3 text-2xl">{text}</p>
               <button
@@ -87,16 +99,23 @@ export function Tutorial({ text }: Props) {
                 Ok obrigado! 😁👌
               </button>
             </div>
+            {width < 993 && <ArrowBendRightUp size={32} color="#1d2daa" />}
           </div>
         </>
       )}
       {session.data.user.tutorial_steps == 1 && (
         <>
-          <div className="w-full h-full flex items-start justify-start ml-[570px] mt-[50px] opacity-100">
-            <ArrowBendLeftUp size={32} color="#1d2daa" />
+          <div
+            className="w-full h-full flex items-start justify-start 
+              ml-[650px] mt-[50px]
+              max-[994px]:ml-[80px]
+              opacity-100"
+          >
+            {width > 993 && <ArrowBendLeftUp size={32} color="#1d2daa" />}
             <div className="flex flex-col justify-start items-start">
-              <p className="mt-3 text-2xl">
-                Aqui você consegue ajustar o tema. 🌙 🌞
+              <p className="mt-3 text-2xl w-[250px]">
+                Aqui você consegue ajustar o tema.
+                <br /> 🌙 🌞
               </p>
               <button
                 className="mt-3 ms-3 py-1 px-2  
@@ -111,6 +130,7 @@ export function Tutorial({ text }: Props) {
                 Assim ficou ótimo! Obrigado! 😁
               </button>
             </div>
+            {width < 993 && <ArrowBendRightUp size={32} color="#1d2daa" />}
           </div>
         </>
       )}
