@@ -1,5 +1,5 @@
 import { User } from "@prisma/client";
-import { UpdateUserProps, UserProps } from "src/@types/userTypes";
+import { UpdateUserProps, UserProps } from "app/@types/userTypes";
 import prisma from "src/service/prisma";
 import { UsersRepository } from "../usersRepository";
 

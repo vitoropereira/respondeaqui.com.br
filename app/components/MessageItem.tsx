@@ -1,7 +1,7 @@
 import { useSession } from "next-auth/react";
 import Image from "next/image";
 import { useEffect, useState } from "react";
-import { MessageProps } from "src/@types/messageTypes";
+import { MessageProps } from "app/@types/messageTypes";
 
 interface MessageItemProps {
   messageData: MessageProps;

@@ -9,8 +9,8 @@ import SendIcon from "@mui/icons-material/Send";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import Image from "next/image";
 import { useSession } from "next-auth/react";
-import { MessageProps } from "src/@types/messageTypes";
-import { ChatProps } from "src/@types/chatType";
+import { MessageProps } from "app/@types/messageTypes";
+import { ChatProps } from "app/@types/chatType";
 
 interface ChatWindowProps {
   chatData: ChatProps;

@@ -1,7 +1,7 @@
 import { useSession } from "next-auth/react";
 import { ArrowBendLeftUp, ArrowBendRightUp } from "phosphor-react";
 import { useState, useEffect } from "react";
-import { UpdateUserProps } from "src/@types/userTypes";
+import { UpdateUserProps } from "app/@types/userTypes";
 import ChatIcon from "@mui/icons-material/Chat";
 import DarkModeIcon from "@mui/icons-material/DarkMode";
 import { Loading } from "./Loading";

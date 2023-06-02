@@ -19,8 +19,11 @@ import { NewChat } from "src/components/NewChat";
 import { Input } from "src/components/Input";
 
 import { buildNextAuthOptions } from "../api/auth/[...nextauth]";
-import { ChatProps } from "src/@types/chatType";
-import { Tutorial } from "src/components/Tutorial";
+import { ChatProps } from "app/@types/chatType";
+import webserver from "src/service/webserver";
+import { UserProps } from "app/@types/userTypes";
+
+const webserverHost = webserver.getHost();
 
 type DataProp = ChatProps & {
   name?: string;
@@ -31,16 +34,24 @@ type DataProp = ChatProps & {
   requestId?: string;
 };
 
-function App() {
-  const [activeChat, setActiveChat] = useState<ChatProps>(undefined);
+interface DashboardProps {
+  sessions: UserProps;
+  receivedActivatedChat: ChatProps;
+}
+
+function Dashboard({ sessions, receivedActivatedChat }: DashboardProps) {
+  console.log("receivedActivatedChat");
+  console.log(receivedActivatedChat);
+  const [activeChat, setActiveChat] = useState<ChatProps>(
+    receivedActivatedChat
+  );
   const [showNewChat, setShowNewChat] = useState(false);
-  const [isDarkTheme, setIsDarkTheme] = useState(false);
+  const [isDarkTheme, setIsDarkTheme] = useState(true);
   const [themeMode, setThemeMode] = useState("");
   const [mobileOpen, setMobileOpen] = useState(false);
   const [allChats, setAllChats] = useState<ChatProps[]>();
   const [globalErrorMessage, setGlobalErrorMessage] =
     useState<string>(undefined);
-  const [tutorialSteps, setTutorialSteps] = useState<number>(0);
 
   const { data } = useSWR<DataProp[]>(`/api/v1/chats/`, {
     refreshInterval: 1000,
@@ -69,14 +80,6 @@ function App() {
     setShowNewChat(true);
   };
 
-  const handleShowChat = (chatId: string) => {
-    router.push(`dashboard/${chatId}`);
-  };
-
-  const handleMakeTutorial = (tutorialSteps: number) => {
-    setTutorialSteps(tutorialSteps);
-  };
-
   useEffect(() => {
     if (!isSignedIn) {
       router.push("../login");
@@ -100,21 +103,13 @@ function App() {
       className={`${themeMode} flex h-screen bg-light-backgroundSecond dark:bg-dark-backgroundSecond`}
     >
       <div
-        className={`w-[35%] max-w-[415px]
-                  max-[994px]:fixed max-[994px]:w-screen max-[994px]:h-full
-                  max-[994px]:flex-1 max-[994px]:z-10
-                  flex flex-col 
-                  border-r border-r-light-border dark:border-r-dark-border`}
+        className="w-[35%] max-w-[415px] max-[994px]:w-full max-[994px]:max-w-full
+              flex flex-col border-r 
+              border-r-light-border dark:border-r-dark-border"
       >
         <NewChat show={showNewChat} setShow={setShowNewChat} />
-        {tutorialSteps <= 1 && (
-          <Tutorial
-            tutorialSteps={tutorialSteps}
-            handleMakeTutorial={handleMakeTutorial}
-          />
-        )}
 
-        <header className="h-[60px] flex justify-between items-center px-4 py-0 bg-light-backgroundSecond dark:bg-dark-backgroundSecond max-[994px]:w-screen">
+        <header className="h-[60px] flex justify-between items-center px-4 py-0 bg-light-backgroundSecond dark:bg-dark-backgroundSecond">
           <div className="flex justify-center items-center gap-2">
             {session.data?.user.avatar_url ? (
               <Image
@@ -165,7 +160,7 @@ function App() {
         <Input placeholderText="Procurar por uma pergunta." icon={true} />
         {globalErrorMessage && <ShowErrors message={globalErrorMessage} />}
 
-        <div className="flex-1 bg-light-background dark:bg-dark-background overflow-y-auto max-[994px]:w-screen">
+        <div className="flex-1 bg-light-background dark:bg-dark-background overflow-y-auto">
           {allChats &&
             allChats.map((item) => {
               return (
@@ -173,7 +168,7 @@ function App() {
                   key={item.id}
                   data={item}
                   active={activeChat?.id === item.id}
-                  onClick={() => handleShowChat(item.id)}
+                  onClick={() => setActiveChat(item)}
                   onMobileClick={() => setMobileOpen(true)}
                 />
               );
@@ -196,17 +191,38 @@ function App() {
   );
 }
 
-export default App;
+export default Dashboard;
 
-export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
-  const session = await unstable_getServerSession(
+export const getServerSideProps: GetServerSideProps = async ({
+  req,
+  res,
+  params,
+}) => {
+  const { chatId } = params;
+
+  const sessions = await unstable_getServerSession(
     req,
     res,
     buildNextAuthOptions(req, res)
   );
+
+  console.log(webserverHost);
+
+  const response = await fetch(`${webserverHost}/api/v1/messages/${chatId}`, {
+    method: "GET",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+    },
+  });
+
+  const receivedActivatedChat = await response.json();
+  console.log("receivedActivatedChat");
+  console.log(receivedActivatedChat);
   return {
     props: {
-      session,
+      sessions,
+      receivedActivatedChat,
     },
   };
 };

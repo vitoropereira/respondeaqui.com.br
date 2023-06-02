@@ -1,6 +1,6 @@
 import Image from "next/image";
 import { useEffect, useState } from "react";
-import { ChatProps } from "src/@types/chatType";
+import { ChatProps } from "app/@types/chatType";
 import {
   createScrollingText,
   getRelativeTime,

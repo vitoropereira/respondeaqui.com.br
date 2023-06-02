@@ -1,6 +1,6 @@
 import { User } from "@prisma/client";
 import { NextApiRequest } from "next";
-import { UserProps } from "src/@types/userTypes";
+import { UserProps } from "app/@types/userTypes";
 import { UsersRepository } from "src/repositories/usersRepository";
 import { combineArrays } from "src/utils/generalFunctions";
 

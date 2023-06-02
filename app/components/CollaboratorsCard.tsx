@@ -1,7 +1,7 @@
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { useState } from "react";
-import { UserProps } from "src/@types/userTypes";
+import { UserProps } from "app/@types/userTypes";
 
 interface CollaboratorsCardProps {
   username: UserProps;

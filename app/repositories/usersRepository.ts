@@ -1,5 +1,5 @@
 import { User } from "@prisma/client";
-import { UpdateUserProps, UserProps } from "src/@types/userTypes";
+import { UpdateUserProps, UserProps } from "app/@types/userTypes";
 
 export interface UsersRepository {
   createUser: ({ avatar_url, email, username }: UserProps) => Promise<User>;
