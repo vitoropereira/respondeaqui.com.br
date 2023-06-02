@@ -1,21 +1,22 @@
+'use client'
 // Original code from: https://github.com/apal21/nextjs-progressbar
 
-import Router from "next/router";
-import NProgress from "nprogress";
-import { useEffect } from "react";
+import Router from 'next/router'
+import NProgress from 'nprogress'
+import { useEffect } from 'react'
 
 interface ProgressBarProps {
-  color?: string;
-  startPosition?: number;
-  stopDelayMs?: number;
-  height?: number;
-  showOnShallow?: boolean;
-  options?: any;
-  nonce?: any;
+  color?: string
+  startPosition?: number
+  stopDelayMs?: number
+  height?: number
+  showOnShallow?: boolean
+  options?: any
+  nonce?: any
 }
 
 export default function NextNProgress({
-  color = "#1d2daa",
+  color = '#1d2daa',
   startPosition = 0.3,
   stopDelayMs = 200,
   height = 3,
@@ -24,37 +25,37 @@ export default function NextNProgress({
   nonce,
 }: ProgressBarProps) {
   useEffect(() => {
-    let timer = null;
+    const timer = null
 
     if (options) {
-      NProgress.configure(options);
+      NProgress.configure(options)
     }
 
     const routeChangeStart = (_, { shallow }) => {
       if (!shallow || showOnShallow) {
-        NProgress.set(startPosition);
-        NProgress.start();
+        NProgress.set(startPosition)
+        NProgress.start()
       }
-    };
+    }
 
     const routeChangeEnd = (_, { shallow }) => {
       if (!shallow || showOnShallow) {
-        if (timer) clearTimeout(timer);
-        timer = setTimeout(() => {
-          NProgress.done(true);
-        }, stopDelayMs);
+        if (timer) clearTimeout(timer)
+        setTimeout(() => {
+          NProgress.done(true)
+        }, stopDelayMs)
       }
-    };
+    }
 
-    Router.events.on("routeChangeStart", routeChangeStart);
-    Router.events.on("routeChangeComplete", routeChangeEnd);
-    Router.events.on("routeChangeError", routeChangeEnd);
+    Router.events.on('routeChangeStart', routeChangeStart)
+    Router.events.on('routeChangeComplete', routeChangeEnd)
+    Router.events.on('routeChangeError', routeChangeEnd)
     return () => {
-      Router.events.off("routeChangeStart", routeChangeStart);
-      Router.events.off("routeChangeComplete", routeChangeEnd);
-      Router.events.off("routeChangeError", routeChangeEnd);
-    };
-  }, [options, showOnShallow, startPosition, stopDelayMs]);
+      Router.events.off('routeChangeStart', routeChangeStart)
+      Router.events.off('routeChangeComplete', routeChangeEnd)
+      Router.events.off('routeChangeError', routeChangeEnd)
+    }
+  }, [options, showOnShallow, startPosition, stopDelayMs])
 
   return (
     <style nonce={nonce}>{`
@@ -125,5 +126,5 @@ export default function NextNProgress({
                 }
             }
         `}</style>
-  );
+  )
 }

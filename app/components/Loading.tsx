@@ -1,18 +1,17 @@
-import { CircleNotch } from "phosphor-react";
+import { TbCircleDotted } from 'react-icons/tb'
 
-interface LoadingProps {
-  size: number;
+interface LoaderProps {
+  size: number
 }
 
-export function Loading({ size }: LoadingProps) {
+export function Loader({ size }: LoaderProps) {
   return (
     <div
       className={`w-${size} h-${size} flex items-center justify-center overflow-hidden`}
     >
-      <CircleNotch
-        weight="bold"
-        className={`w-${size} h-${size} text-brand-500 animate-spin`}
+      <TbCircleDotted
+        className={`w-${size} h-${size} animate-spin text-brand-500`}
       />
     </div>
-  );
+  )
 }
