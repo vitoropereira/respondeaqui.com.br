@@ -69,6 +69,10 @@ function App() {
     setShowNewChat(true);
   };
 
+  const handleShowChat = (chatId: string) => {
+    router.push(`dashboard/${chatId}`);
+  };
+
   const handleMakeTutorial = (tutorialSteps: number) => {
     setTutorialSteps(tutorialSteps);
   };
@@ -169,7 +173,7 @@ function App() {
                   key={item.id}
                   data={item}
                   active={activeChat?.id === item.id}
-                  onClick={() => setActiveChat(item)}
+                  onClick={() => handleShowChat(item.id)}
                   onMobileClick={() => setMobileOpen(true)}
                 />
               );

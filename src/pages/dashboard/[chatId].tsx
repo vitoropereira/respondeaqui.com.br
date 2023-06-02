@@ -20,6 +20,10 @@ import { Input } from "src/components/Input";
 
 import { buildNextAuthOptions } from "../api/auth/[...nextauth]";
 import { ChatProps } from "src/@types/chatType";
+import webserver from "src/service/webserver";
+import { UserProps } from "src/@types/userTypes";
+
+const webserverHost = webserver.getHost();
 
 type DataProp = ChatProps & {
   name?: string;
@@ -30,8 +34,17 @@ type DataProp = ChatProps & {
   requestId?: string;
 };
 
-function App() {
-  const [activeChat, setActiveChat] = useState<ChatProps>(undefined);
+interface DashboardProps {
+  sessions: UserProps;
+  receivedActivatedChat: ChatProps;
+}
+
+function Dashboard({ sessions, receivedActivatedChat }: DashboardProps) {
+  console.log("receivedActivatedChat");
+  console.log(receivedActivatedChat);
+  const [activeChat, setActiveChat] = useState<ChatProps>(
+    receivedActivatedChat
+  );
   const [showNewChat, setShowNewChat] = useState(false);
   const [isDarkTheme, setIsDarkTheme] = useState(true);
   const [themeMode, setThemeMode] = useState("");
@@ -178,17 +191,38 @@ function App() {
   );
 }
 
-export default App;
+export default Dashboard;
 
-export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
-  const session = await unstable_getServerSession(
+export const getServerSideProps: GetServerSideProps = async ({
+  req,
+  res,
+  params,
+}) => {
+  const { chatId } = params;
+
+  const sessions = await unstable_getServerSession(
     req,
     res,
     buildNextAuthOptions(req, res)
   );
+
+  console.log(webserverHost);
+
+  const response = await fetch(`${webserverHost}/api/v1/messages/${chatId}`, {
+    method: "GET",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+    },
+  });
+
+  const receivedActivatedChat = await response.json();
+  console.log("receivedActivatedChat");
+  console.log(receivedActivatedChat);
   return {
     props: {
-      session,
+      sessions,
+      receivedActivatedChat,
     },
   };
 };
