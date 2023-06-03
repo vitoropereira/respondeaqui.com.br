@@ -5,6 +5,7 @@ import RegisterModal from './components/modals/RegisterModal'
 import './globals.css'
 
 import { ReactNode } from 'react'
+import ToasterProvider from './providers/ToasterProvider'
 
 export const metadata = {
   title: 'Responde Aqui',
@@ -20,6 +21,7 @@ export default async function RootLayout({
     <html>
       <body className="h-screen">
         <ClientOnly>
+          <ToasterProvider />
           <NextNProgress />
           <LoginModal />
           <RegisterModal />
