@@ -2,7 +2,6 @@
 
 import { useCallback, useState } from 'react'
 import axios from 'axios'
-import { AiFillGithub } from 'react-icons/ai'
 import { FcGoogle } from 'react-icons/fc'
 import { signIn } from 'next-auth/react'
 import { toast } from 'react-hot-toast'
@@ -58,7 +57,7 @@ const RegisterModal = () => {
 
   const bodyContent = (
     <div className="flex flex-col gap-4">
-      <Heading title="Welcome to Airbnb" subtitle="Create an account!" />
+      <Heading title="Bem vindo ao Responde Aqui!" subtitle="Crie uma conta!" />
       <Input
         id="email"
         label="Email"
@@ -96,12 +95,6 @@ const RegisterModal = () => {
         icon={FcGoogle}
         onClick={() => signIn('google')}
       />
-      <Button
-        outline
-        label="Continue with Github"
-        icon={AiFillGithub}
-        onClick={() => signIn('github')}
-      />
       <div
         className="
           mt-4 
@@ -111,7 +104,7 @@ const RegisterModal = () => {
         "
       >
         <p>
-          Already have an account?
+          Já possui uma conta?
           <span
             onClick={onToggle}
             className="
@@ -121,7 +114,7 @@ const RegisterModal = () => {
             "
           >
             {' '}
-            Log in
+            Faça o Login
           </span>
         </p>
       </div>
