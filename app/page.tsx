@@ -1,16 +1,14 @@
 'use client'
 
-import React, { useState } from 'react'
-import { signIn } from 'next-auth/react'
 import { FaGoogle, FaComments } from 'react-icons/fa'
+import useLoginModal from './hooks/useLoginModal'
 
 export default function Home() {
-  const [isLoading, setIsLoading] = useState(false)
-  const [errorObject, setErrorObject] = useState(undefined)
+  const loginModal = useLoginModal()
 
-  const handleGoogleLogin = async () => {
-    setIsLoading(true)
-    await signIn('google')
+  const handleLogin = () => {
+    console.log('entrei')
+    loginModal.onOpen()
   }
 
   return (
@@ -28,21 +26,18 @@ export default function Home() {
 
         {/* {styles.title} */}
         <div className="z-10 mb-4 flex">
-          <FaGoogle size={36} />
           <span className="mb-4 ml-4 max-w-[220px] text-base font-medium">
-            Faça login com sua conta Google para iniciar.
+            Faça login com sua conta para iniciar.
           </span>
         </div>
 
         <div className="flex max-w-[350px] justify-between rounded-md p-2">
           <button
             className="flex h-16 w-80 cursor-pointer items-center justify-center gap-3 rounded-xl border-none bg-red-600 hover:bg-red-800 md:h-16 md:w-72"
-            onClick={handleGoogleLogin}
-            // disabled={isSignedIn}
+            onClick={handleLogin}
           >
-            <FaGoogle color="#fff" size={32} />
             <span className="text-xl font-semibold text-white">
-              Entrar com Google
+              Fazer login
             </span>
           </button>
           {/* {hasAuthError && (

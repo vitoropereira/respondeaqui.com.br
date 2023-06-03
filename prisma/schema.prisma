@@ -6,16 +6,19 @@ generator client {
 }
 
 datasource db {
-  provider = "mysql"
-  url      = env("DATABASE_URL")
+  provider     = "mysql"
+  url          = env("DATABASE_URL")
+  relationMode = "prisma"
 }
 
 model User {
-  id             String @id @default(uuid())
-  username       String
-  email          String @unique
-  avatar_url     String @db.Text
-  tutorial_steps Int    @default(0)
+  id             String    @id @default(uuid())
+  name           String
+  email          String?   @unique
+  emailVerified  DateTime?
+  hashedPassword String?
+  avatar_url     String?   @db.Text
+  tutorial_steps Int       @default(0)
 
   created_at DateTime @default(now())
   updated_at DateTime @default(now())
@@ -45,6 +48,7 @@ model Account {
   user User @relation(fields: [user_id], references: [id], onDelete: Cascade)
 
   @@unique([provider, provider_account_id])
+  @@index([user_id])
   @@map("accounts")
 }
 
@@ -56,6 +60,7 @@ model Session {
 
   user User @relation(fields: [user_id], references: [id], onDelete: Cascade)
 
+  @@index([user_id])
   @@map("sessions")
 }
 
@@ -70,6 +75,7 @@ model Chat {
   user    User      @relation(fields: [user_id], references: [id])
   message Message[]
 
+  @@index([user_id])
   @@map("chats")
 }
 
@@ -86,5 +92,7 @@ model Message {
 
   created_at DateTime @default(now())
 
+  @@index([chat_id])
+  @@index([user_id])
   @@map("messages")
 }
