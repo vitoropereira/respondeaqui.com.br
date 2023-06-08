@@ -1,16 +1,11 @@
-export interface UserProps {
-  id?: string
-  username: string
-  email: string
-  avatar_url?: string
-  tutorial_steps?: number
-  created_at?: Date
-  updated_at?: Date
-}
+import { User } from 'next-auth'
 
-export interface UpdateUserProps {
-  username?: string
-  email?: string
-  avatar_url?: string
+export type SafeUser = Omit<
+  User,
+  'createdAt' | 'updatedAt' | 'emailVerified' | 'favorite'
+> & {
   tutorial_steps?: number
+  createdAt: string
+  updatedAt: string
+  emailVerified: string | null
 }

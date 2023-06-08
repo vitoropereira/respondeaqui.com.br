@@ -32,6 +32,15 @@ const LoginModal = () => {
     },
   })
 
+  const handleGoogleLogin = async () => {
+    const login = await signIn('google', {
+      callbackUrl: '/dashboard',
+    })
+    console.log(login)
+    toast.success('Logged in')
+    loginModal.onClose()
+  }
+
   const onSubmit: SubmitHandler<FieldValues> = (data) => {
     setIsLoading(true)
 
@@ -39,6 +48,8 @@ const LoginModal = () => {
       ...data,
       redirect: false,
     }).then((callback) => {
+      console.log('callback')
+      console.log(callback)
       setIsLoading(false)
 
       if (callback?.ok) {
@@ -88,7 +99,7 @@ const LoginModal = () => {
         outline
         label="Continuar com Google"
         icon={FcGoogle}
-        onClick={() => signIn('google')}
+        onClick={handleGoogleLogin}
       />
       <div
         className="

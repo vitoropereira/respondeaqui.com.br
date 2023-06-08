@@ -6,12 +6,12 @@ import { Input } from './Input'
 import { useSession, signOut } from 'next-auth/react'
 import { ShowErrors } from './ShowErrors'
 import Loading from '../loading'
-import { UserProps } from '../@types/userTypes'
+import { SafeUser } from '../@types/userTypes'
 
 interface NewChatProps {
   show: boolean
   setShow: (show: boolean) => void
-  currentUser: UserProps
+  currentUser: SafeUser | null
 }
 
 export interface ChatLists {
@@ -20,7 +20,7 @@ export interface ChatLists {
   user_id: string
   created_at: string
   updated_at: string
-  user: UserProps
+  user: SafeUser | null
 }
 
 // interface User {
@@ -50,6 +50,10 @@ export function NewChat({ show, setShow, currentUser }: NewChatProps) {
     event.preventDefault()
 
     try {
+      if (!currentUser) {
+        throw new Error('Usuário não esta logado.')
+      }
+
       const fullQuestion = {
         content: newChat,
         user_id: currentUser.id,
@@ -154,8 +158,10 @@ export function NewChat({ show, setShow, currentUser }: NewChatProps) {
   }
 
   useEffect(() => {
-    getAllChatByUser(currentUser.id)
-  }, [currentUser.id])
+    if (currentUser) {
+      getAllChatByUser(currentUser.id)
+    }
+  }, [currentUser])
 
   return (
     <div
@@ -216,17 +222,28 @@ export function NewChat({ show, setShow, currentUser }: NewChatProps) {
                 className="flex cursor-pointer items-center p-4 hover:bg-light-backgroundHover dark:hover:bg-dark-backgroundHover"
                 key={item.id}
               >
-                <Image
-                  width={50}
-                  height={50}
-                  className="mr-4 rounded-full"
-                  alt="Imagem do usuário."
-                  src={item.user.avatar_url!}
-                />
+                {item.user && item.user.image ? (
+                  <Image
+                    width={50}
+                    height={50}
+                    className="mr-4 rounded-full"
+                    alt="Imagem do usuário."
+                    src={item.user.image}
+                  />
+                ) : (
+                  <Image
+                    width={50}
+                    height={50}
+                    className="mr-4 rounded-full"
+                    alt="Imagem do usuário."
+                    src="./chats-96.png"
+                  />
+                )}
+
                 <div className="flex flex-col items-start justify-start pl-1 text-base text-light-text dark:text-dark-text ">
                   <span>{item.content}</span>
                   <span className="ml-1 text-xs font-thin">
-                    {item.user.username}
+                    {item.user && item.user.name}
                   </span>
                 </div>
               </div>

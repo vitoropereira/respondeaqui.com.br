@@ -1,7 +1,7 @@
 import { useSession } from 'next-auth/react'
 import { FaArrowAltCircleRight, FaArrowAltCircleLeft } from 'react-icons/fa'
 import { useState, useEffect } from 'react'
-import { UpdateUserProps, UserProps } from 'app/@types/userTypes'
+import { SafeUser } from 'app/@types/userTypes'
 import ChatIcon from '@mui/icons-material/Chat'
 import DarkModeIcon from '@mui/icons-material/DarkMode'
 import { ShowErrors } from './ShowErrors'
@@ -10,7 +10,7 @@ import Loading from '../loading'
 type Props = {
   tutorialSteps: number
   handleMakeTutorial: (tutorialSteps: number | undefined) => void
-  currentUser: UserProps
+  currentUser: SafeUser | null
 }
 
 export default function Tutorial({
@@ -23,8 +23,6 @@ export default function Tutorial({
   const [makingTutorial, setMakingTutorial] = useState(tutorialSteps)
 
   const [width, setWidth] = useState<number | undefined>(undefined)
-
-  const session = useSession()
 
   useEffect(() => {
     function handleResize() {
@@ -43,10 +41,13 @@ export default function Tutorial({
     setIsLoading(true)
 
     try {
-      const userData: UpdateUserProps = {
-        tutorial_steps: 1,
+      if (!currentUser) {
+        throw new Error('Usuário não esta logado.')
       }
 
+      const userData = {
+        tutorial_steps: 1,
+      }
       const response = await fetch(`/api/v1/user/${currentUser.id}`, {
         method: 'POST',
         headers: {
@@ -86,8 +87,10 @@ export default function Tutorial({
   }
 
   useEffect(() => {
-    handleMakeTutorial(currentUser.tutorial_steps)
-  }, [currentUser.tutorial_steps, handleMakeTutorial])
+    if (currentUser) {
+      handleMakeTutorial(currentUser.tutorial_steps)
+    }
+  }, [currentUser, handleMakeTutorial])
 
   return (
     <div className="fixed bottom-0 left-0 right-0 top-0 z-30 flex flex-col items-center justify-center bg-gray-500 opacity-80">
