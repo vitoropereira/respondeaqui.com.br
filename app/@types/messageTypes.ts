@@ -1,11 +1,11 @@
-import { User } from "@prisma/client";
+import { UserProps } from './userTypes'
 
 export interface MessageProps {
-  id?: string;
-  content: string;
-  content_type: "text" | "image";
-  chat_id: string;
-  user_id: string;
-  user?: User;
-  created_at?: Date;
+  id?: string
+  content: string
+  content_type: 'text' | 'image'
+  chat_id: string
+  user_id: string
+  user?: UserProps
+  created_at?: Date
 }

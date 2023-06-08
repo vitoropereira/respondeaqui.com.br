@@ -13,8 +13,8 @@
     "vercel-build": "prisma generate && prisma migrate deploy && next build"
   },
   "dependencies": {
-    "@emoji-mart/data": "^1.0.8",
-    "@emoji-mart/react": "^1.0.1",
+    "@emoji-mart/data": "^1.1.2",
+    "@emoji-mart/react": "^1.1.1",
     "@emotion/react": "^11.10.5",
     "@emotion/styled": "^11.10.5",
     "@headlessui/react": "^1.6.0",
@@ -26,7 +26,7 @@
     "axios": "^0.27.2",
     "bcrypt": "^5.1.0",
     "date-fns": "^2.29.3",
-    "emoji-mart": "^5.3.3",
+    "emoji-mart": "^5.5.2",
     "firebase": "^9.14.0",
     "framer-motion": "^4.1.17",
     "html2canvas": "^1.4.1",
@@ -42,7 +42,7 @@
     "react-hook-form": "^7.44.3",
     "react-hot-toast": "^2.4.1",
     "react-icons": "^4.9.0",
-    "swr": "^2.0.0",
+    "swr": "^2.1.5",
     "uuid": "^9.0.0",
     "zod": "^3.20.2",
     "zustand": "^4.3.8"

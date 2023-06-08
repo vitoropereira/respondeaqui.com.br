@@ -2,6 +2,7 @@
 
 import { FaGoogle, FaComments } from 'react-icons/fa'
 import useLoginModal from './hooks/useLoginModal'
+import Logo from './components/Logo'
 
 export default function Home() {
   const loginModal = useLoginModal()
@@ -14,32 +15,7 @@ export default function Home() {
   return (
     <div className="flex h-screen w-full items-center justify-between bg-gradient-to-r from-blue-500 p-4 text-zinc-100 overflow-y-hidden">
       {/* <FaComments className="absolute -z-10 -mt-10 ml-28 -rotate-12 text-[560px] font-thin text-white opacity-20 overflow-y-hidden max-[768px]:hidden" /> */}
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        width="1em"
-        height="1em"
-        fill="currentColor"
-        viewBox="0 0 256 256"
-        className="absolute -z-10 -mt-10 ml-28 -rotate-12 text-[560px] font-thin text-white opacity-20 overflow-y-hidden max-[768px]:hidden"
-      >
-        <rect width="256" height="256" fill="none"></rect>
-        <path
-          d="M71.6,144,32,176V48a8,8,0,0,1,8-8H168a8,8,0,0,1,8,8v88a8,8,0,0,1-8,8Z"
-          fill="none"
-          stroke="currentColor"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth="16"
-        ></path>
-        <path
-          d="M80,144v40a8,8,0,0,0,8,8h96.4L224,224V96a8,8,0,0,0-8-8H176"
-          fill="none"
-          stroke="currentColor"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth="16"
-        ></path>
-      </svg>
+      <Logo />
       {/* {styles.content} */}
       <div className="w-[50%} ml-[55%] grid max-[768px]:m-0 max-[768px]:w-full">
         <div className="flex h-32 items-center justify-center">

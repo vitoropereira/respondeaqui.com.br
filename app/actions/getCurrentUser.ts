@@ -1,7 +1,7 @@
 import { getServerSession } from 'next-auth/next'
 
 import { authOptions } from '@/pages/api/auth/[...nextauth]'
-import prisma from '@/app/libs/prismadb'
+import prisma from '../service/prisma'
 
 export async function getSession() {
   return await getServerSession(authOptions)
@@ -19,9 +19,6 @@ export default async function getCurrentUser() {
       where: {
         email: session.user.email as string,
       },
-      include: {
-        favorite: true,
-      },
     })
 
     if (!currentUser) {
@@ -30,10 +27,9 @@ export default async function getCurrentUser() {
 
     return {
       ...currentUser,
-      createdAt: currentUser.createdAt.toISOString(),
-      updatedAt: currentUser.updatedAt.toISOString(),
+      createdAt: currentUser.created_at.toISOString(),
+      updatedAt: currentUser.updated_at.toISOString(),
       emailVerified: currentUser.emailVerified?.toISOString() || null,
-      favoriteIds: currentUser.favorite || null,
     }
   } catch (error: any) {
     return null
