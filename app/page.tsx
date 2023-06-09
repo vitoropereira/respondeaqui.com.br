@@ -8,7 +8,6 @@ export default function Home() {
   const loginModal = useLoginModal()
 
   const handleLogin = () => {
-    console.log('entrei')
     loginModal.onOpen()
   }
 
