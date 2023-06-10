@@ -1,11 +1,11 @@
-import prisma from "src/service/prisma";
-import { MessagesRepository } from "../messagesRepository";
+import prisma from '@/app/service/prisma'
+import { MessagesRepository } from '../messagesRepository'
 
 interface messagesProps {
-  content: string;
-  chat_id: string;
-  user_id: string;
-  content_type: "text" | "image";
+  content: string
+  chat_id: string
+  user_id: string
+  content_type: 'text' | 'image'
 }
 
 export class PrismaMessageRepository implements MessagesRepository {
@@ -21,9 +21,9 @@ export class PrismaMessageRepository implements MessagesRepository {
         user: true,
         chat: true,
       },
-    });
+    })
 
-    return response;
+    return response
   }
 
   async getMessagesByChatId(chat_id: string) {
@@ -32,14 +32,14 @@ export class PrismaMessageRepository implements MessagesRepository {
         chat_id,
       },
       orderBy: {
-        created_at: "asc",
+        created_at: 'asc',
       },
       include: {
         user: true,
         chat: true,
       },
-    });
+    })
 
-    return response;
+    return response
   }
 }

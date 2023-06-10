@@ -1,20 +1,17 @@
-import firebase from "firebase/compat/app";
-import { LoginRepository } from "../login-repository";
-
-import "firebase/compat/auth";
-
-import { firebaseApp } from "../../service/fireBase";
+import firebase from 'firebase/compat'
+import { LoginRepository } from '../login-repository'
+import { firebaseApp } from '@/app/service/fireBase'
 
 export class FirebaseLoginRepository implements LoginRepository {
   async googlePopup() {
-    const provider = new firebase.auth.GoogleAuthProvider();
-    let result = await firebaseApp.auth().signInWithPopup(provider);
-    return result;
+    const provider = new firebase.auth.GoogleAuthProvider()
+    const result = await firebaseApp.auth().signInWithPopup(provider)
+    return result
   }
 
   async githubPopup() {
-    const provider = new firebase.auth.GithubAuthProvider();
-    let result = await firebaseApp.auth().signInWithPopup(provider);
-    return result;
+    const provider = new firebase.auth.GithubAuthProvider()
+    const result = await firebaseApp.auth().signInWithPopup(provider)
+    return result
   }
 }
