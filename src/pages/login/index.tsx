@@ -1,33 +1,33 @@
-import { Chats, GithubLogo, GoogleLogo } from "phosphor-react";
-import { useState, useEffect } from "react";
-import { useRouter } from "next/router";
-import { Loading } from "src/components/Loading";
+import { Chats, GithubLogo, GoogleLogo } from 'phosphor-react'
+import { useState, useEffect } from 'react'
+import { useRouter } from 'next/router'
+import { Loading } from 'src/components/Loading'
 
-import { signIn, useSession } from "next-auth/react";
-import Home from "..";
+import { signIn, useSession } from 'next-auth/react'
+import Home from '..'
 
 export default function Login() {
-  return <Home />;
-  const [darkMode, setDarkMode] = useState(true);
-  const [isLoading, setIsLoading] = useState(false);
-  const [errorObject, setErrorObject] = useState(undefined);
+  return <Home />
+  const [darkMode, setDarkMode] = useState(true)
+  const [isLoading, setIsLoading] = useState(false)
+  const [errorObject, setErrorObject] = useState(undefined)
 
-  const session = useSession();
-  const router = useRouter();
+  const session = useSession()
+  const router = useRouter()
 
-  const hasAuthError = !!router.query.error;
-  const isSignedIn = session.status == "authenticated";
+  const hasAuthError = !!router.query.error
+  const isSignedIn = session.status == 'authenticated'
 
   const handleGoogleLogin = async () => {
-    setIsLoading(true);
-    await signIn("google");
-  };
+    setIsLoading(true)
+    await signIn('google')
+  }
 
   useEffect(() => {
     if (isSignedIn) {
-      router.push("../dashboard");
+      router.push('../dashboard')
     }
-  }, [isSignedIn, router]);
+  }, [isSignedIn, router])
 
   // const handleGithubLogin = async () => {
   //   let result = await loginFirebase.githubPopup();
@@ -51,19 +51,19 @@ export default function Login() {
   // }
 
   return (
-    <div className={`${darkMode && "dark"}`}>
+    <div className={`${darkMode && 'dark'}`}>
       <div
-        className={`h-screen w-screen flex items-center justify-center pt-4bg-light-backgroundSecond dark:bg-dark-backgroundSecond`}
+        className={`pt-4bg-light-backgroundSecond flex h-screen w-screen items-center justify-center dark:bg-dark-backgroundSecond`}
       >
         <div className="flex flex-col items-center justify-center">
-          <div className="flex justify-center items-center">
-            <Chats className="text-brand-500" style={{ fontSize: "80px" }} />
-            <h1 className="text-3xl text-light-lastMessage dark:text-dark-lastMessage font-semibold mt-4 text-center">
+          <div className="flex items-center justify-center">
+            <Chats className="text-brand-500" style={{ fontSize: '80px' }} />
+            <h1 className="mt-4 text-center text-3xl font-semibold text-light-lastMessage dark:text-dark-lastMessage">
               Responde aqui!
             </h1>
           </div>
 
-          <p className="font-medium text-xl dark:text-white text-black mt-32">
+          <p className="mt-32 text-xl font-medium text-black dark:text-white">
             Faça login para continuar
           </p>
           {isLoading ? (
@@ -71,7 +71,7 @@ export default function Login() {
           ) : (
             <>
               <button
-                className="border-none rounded-xl mt-4 cursor-pointer w-80 h-16 flex justify-center items-center gap-3 bg-red-600 hover:bg-red-800 md:w-72 md:h-16"
+                className="mt-4 flex h-16 w-80 cursor-pointer items-center justify-center gap-3 rounded-xl border-none bg-red-600 hover:bg-red-800 md:h-16 md:w-72"
                 onClick={handleGoogleLogin}
                 disabled={isSignedIn}
               >
@@ -96,12 +96,12 @@ export default function Login() {
           )}
 
           {errorObject && (
-            <h1 className="font-medium text-xl dark:text-white text-black">
+            <h1 className="text-xl font-medium text-black dark:text-white">
               {errorObject.message}
             </h1>
           )}
         </div>
       </div>
     </div>
-  );
+  )
 }

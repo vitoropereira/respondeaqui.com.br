@@ -1,9 +1,9 @@
-import prisma from "src/service/prisma";
-import { ChatsRepository } from "../chatsRepository";
+import prisma from 'src/service/prisma'
+import { ChatsRepository } from '../chatsRepository'
 
 interface ChatProps {
-  content: string;
-  user_id: string;
+  content: string
+  user_id: string
 }
 
 export class PrismaChatsRepository implements ChatsRepository {
@@ -13,13 +13,13 @@ export class PrismaChatsRepository implements ChatsRepository {
       include: {
         user: true,
       },
-    });
+    })
 
-    return response;
+    return response
   }
 
   async findChatByText(text: string) {
-    return false;
+    return false
   }
 
   async findChatByUserId(user_id: string) {
@@ -31,13 +31,13 @@ export class PrismaChatsRepository implements ChatsRepository {
         user: true,
         message: {
           orderBy: {
-            created_at: "desc",
+            created_at: 'desc',
           },
         },
       },
-    });
+    })
 
-    return Chats;
+    return Chats
   }
 
   async findAllChats() {
@@ -46,12 +46,12 @@ export class PrismaChatsRepository implements ChatsRepository {
         user: true,
         message: {
           orderBy: {
-            created_at: "desc",
+            created_at: 'desc',
           },
         },
       },
-    });
+    })
 
-    return Chats;
+    return Chats
   }
 }

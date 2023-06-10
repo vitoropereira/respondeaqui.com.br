@@ -1,55 +1,60 @@
-import { NextApiRequest, NextApiResponse, NextPageContext } from "next";
-import NextAuth, { NextAuthOptions } from "next-auth";
-import GoogleProvider, { GoogleProfile } from "next-auth/providers/google";
-import { PrismaAdapter } from "src/service/auth/prisma-adapter";
+import bcrypt from 'bcrypt'
+import NextAuth, { AuthOptions } from 'next-auth'
+import CredentialsProvider from 'next-auth/providers/credentials'
 
-export function buildNextAuthOptions(
-  req: NextApiRequest | NextPageContext["req"],
-  res: NextApiResponse | NextPageContext["res"]
-): NextAuthOptions {
-  return {
-    adapter: PrismaAdapter(),
-    providers: [
-      GoogleProvider({
-        clientId: process.env.GOOGLE_CLIENT_ID ?? "",
-        clientSecret: process.env.GOOGLE_CLIENT_SECRET ?? "",
-        authorization: {
-          params: {
-            scope:
-              "https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile",
-          },
-        },
-        profile(profile: GoogleProfile) {
-          return {
-            id: profile.sub,
-            username: profile.name,
-            email: profile.email,
-            avatar_url: profile.picture,
-          };
-        },
-      }),
-    ],
-    callbacks: {
-      async signIn({ account }) {
-        if (
-          !account?.scope?.includes(
-            "https://www.googleapis.com/auth/userinfo.email"
-          )
-        ) {
-          return "/login?error=permissions";
+import GoogleProvider from 'next-auth/providers/google'
+import { PrismaAdapter } from '@next-auth/prisma-adapter'
+import prisma from '@/src/service/prisma'
+
+export const authOptions: AuthOptions = {
+  adapter: PrismaAdapter(prisma),
+  providers: [
+    GoogleProvider({
+      clientId: process.env.GOOGLE_CLIENT_ID as string,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
+    }),
+    CredentialsProvider({
+      name: 'credentials',
+      credentials: {
+        email: { label: 'email', type: 'text' },
+        password: { label: 'password', type: 'password' },
+      },
+      async authorize(credentials) {
+        if (!credentials?.email || !credentials?.password) {
+          throw new Error('Credenciais invalidas.')
         }
-        return true;
+
+        const user = await prisma.user.findUnique({
+          where: {
+            email: credentials.email,
+          },
+        })
+
+        if (!user || !user?.hashedPassword) {
+          throw new Error('Credenciais invalidas.')
+        }
+
+        const isCorrectPassword = await bcrypt.compare(
+          credentials.password,
+          user.hashedPassword,
+        )
+
+        if (!isCorrectPassword) {
+          throw new Error('Credenciais invalidas.')
+        }
+
+        return user
       },
-      async session({ session, user }) {
-        return {
-          ...session,
-          user,
-        };
-      },
-    },
-  };
+    }),
+  ],
+  pages: {
+    signIn: '/',
+  },
+  debug: process.env.NODE_ENV === 'development',
+  session: {
+    strategy: 'jwt',
+  },
+  secret: process.env.NEXTAUTH_SECRET,
 }
 
-export default async function auth(req: NextApiRequest, res: NextApiResponse) {
-  return await NextAuth(req, res, buildNextAuthOptions(req, res));
-}
+export default NextAuth(authOptions)

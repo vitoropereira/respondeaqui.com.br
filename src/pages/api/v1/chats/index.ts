@@ -1,39 +1,32 @@
-import { NextApiRequest, NextApiResponse } from "next";
-import nextConnect from "next-connect";
+import { NextApiResponse } from 'next'
 
-import { UserModel } from "src/models/user";
-import controller, { RequestProps } from "src/models/controller";
-import authorization from "src/models/authorization";
+import { RequestProps } from 'src/models/controller'
 
-import { User } from "@prisma/client";
-import { PrismaUsersRepository } from "src/repositories/prisma/prismaUserRepository";
+import { Chats } from 'src/models/chats'
+import { PrismaChatsRepository } from 'src/repositories/prisma/prismaChatsRepository'
 
-import { Chats } from "src/models/chats";
-import { PrismaChatsRepository } from "src/repositories/prisma/prismaChatsRepository";
+export default async function handler(
+  request: RequestProps,
+  response: NextApiResponse,
+) {
+  if (request.method === 'POST') {
+    const prismaChatsRepository = new PrismaChatsRepository()
 
-export default nextConnect({
-  attachParams: true,
-  onNoMatch: controller.onNoMatchHandler,
-  onError: controller.onErrorHandler,
-})
-  .use(controller.injectRequestMetadata)
-  .post(postHandler)
-  .get(getHandler);
+    console.log('request.body')
+    console.log(request.body)
 
-async function postHandler(request: RequestProps, response: NextApiResponse) {
-  const prismaChatsRepository = new PrismaChatsRepository();
-  const chat = new Chats(prismaChatsRepository);
+    const newChat = await prismaChatsRepository.createChat(request.body)
+    return response.status(201).json(newChat)
+  }
 
-  const newChat = await chat.createChat(request.body);
+  if (request.method === 'GET') {
+    const prismaChatsRepository = new PrismaChatsRepository()
+    const chat = new Chats(prismaChatsRepository)
 
-  return response.status(201).json(newChat);
-}
+    const allChats = await chat.getAllChats()
 
-async function getHandler(request: RequestProps, response: NextApiResponse) {
-  const prismaChatsRepository = new PrismaChatsRepository();
-  const chat = new Chats(prismaChatsRepository);
+    return response.status(200).json(allChats)
+  }
 
-  const allChats = await chat.getAllChats();
-
-  return response.status(200).json(allChats);
+  return response.status(405)
 }
