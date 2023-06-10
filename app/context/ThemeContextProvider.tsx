@@ -1,26 +1,26 @@
-import { createContext, useState } from "react";
+import { createContext, useState } from 'react'
 
 interface ThemeContextProps {
-  mode: "" | "dark";
-  changeTheme: (theme: boolean) => void;
+  mode: '' | 'dark'
+  changeTheme: (theme: boolean) => void
 }
 
-export const ThemeContext = createContext({} as ThemeContextProps);
+export const ThemeContext = createContext({} as ThemeContextProps)
 
 export function ThemeContextProvider({ children }) {
-  const [mode, setMode] = useState("");
+  const [mode, setMode] = useState<'' | 'dark'>('')
 
   const changeTheme = (theme: boolean) => {
     if (theme) {
-      setMode("dark");
+      setMode('dark')
     } else {
-      setMode("");
+      setMode('')
     }
-  };
+  }
 
   return (
-    <ThemeContext.Provider value={{ mode: "", changeTheme }}>
+    <ThemeContext.Provider value={{ mode, changeTheme }}>
       {children}
     </ThemeContext.Provider>
-  );
+  )
 }

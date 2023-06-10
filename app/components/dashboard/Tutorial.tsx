@@ -1,3 +1,5 @@
+'use client'
+
 import { FaArrowAltCircleRight, FaArrowAltCircleLeft } from 'react-icons/fa'
 import { useState, useEffect } from 'react'
 import { SafeUser } from 'app/@types/userTypes'
@@ -8,15 +10,10 @@ import { ShowErrors } from '../ShowErrors'
 
 type Props = {
   tutorialSteps: number
-  handleMakeTutorial: (tutorialSteps: number | undefined) => void
   currentUser: SafeUser
 }
 
-export default function Tutorial({
-  tutorialSteps,
-  handleMakeTutorial,
-  currentUser,
-}: Props) {
+export default function Tutorial({ tutorialSteps, currentUser }: Props) {
   const [globalErrorMessage, setGlobalErrorMessage] = useState<string>('')
   const [isLoading, setIsLoading] = useState(false)
   const [makingTutorial, setMakingTutorial] = useState(tutorialSteps)
@@ -62,7 +59,6 @@ export default function Tutorial({
       const responseBody = await response.json()
 
       if (response.status === 200) {
-        handleMakeTutorial(responseBody.tutorial_steps)
         setMakingTutorial(responseBody.tutorial_steps)
         setIsLoading(false)
       }
@@ -88,12 +84,6 @@ export default function Tutorial({
       setIsLoading(false)
     }
   }
-
-  useEffect(() => {
-    if (currentUser) {
-      handleMakeTutorial(currentUser.tutorial_steps)
-    }
-  }, [currentUser, handleMakeTutorial])
 
   return (
     <div className="fixed bottom-0 left-0 right-0 top-0 z-30 flex flex-col items-center justify-center bg-gray-500 opacity-80">

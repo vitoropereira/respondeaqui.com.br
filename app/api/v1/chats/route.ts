@@ -1,6 +1,15 @@
 import { PrismaChatsRepository } from '@/app/repositories/prisma/prismaChatsRepository'
 import { NextResponse } from 'next/server'
 
+export async function GET(request: Request) {
+  console.log('entrei aqui!!!! ')
+  const prismaChatsRepository = new PrismaChatsRepository()
+
+  const allChats = await prismaChatsRepository.findAllChats()
+
+  return NextResponse.json(allChats)
+}
+
 export async function POST(request: Request) {
   const prismaChatsRepository = new PrismaChatsRepository()
 
@@ -9,12 +18,4 @@ export async function POST(request: Request) {
   const newChat = await prismaChatsRepository.createChat(body)
 
   return NextResponse.json(newChat)
-}
-
-export async function GET() {
-  const prismaChatsRepository = new PrismaChatsRepository()
-
-  const allChats = await prismaChatsRepository.findAllChats()
-
-  return NextResponse.json(allChats)
 }

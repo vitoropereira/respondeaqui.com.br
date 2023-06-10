@@ -1,8 +1,5 @@
-'use client'
-
 import { useState, useEffect } from 'react'
 import Image from 'next/image'
-import { useRouter } from 'next/router'
 import useSWR from 'swr'
 import ChatIcon from '@mui/icons-material/Chat'
 import DarkModeIcon from '@mui/icons-material/DarkMode'
@@ -18,6 +15,7 @@ import { Input } from '../Input'
 import { ChatList } from './ChatList'
 import { ChatWindow } from './ChatWindow'
 import { ChatIntro } from './ChatIntro'
+import Chats from './Chats'
 
 type DataProp = ChatProps & {
   name?: string
@@ -42,12 +40,8 @@ async function Dashboard({ currentUser }: DashboardProps) {
   const [globalErrorMessage, setGlobalErrorMessage] = useState<string>('')
   const [tutorialSteps, setTutorialSteps] = useState<number>(0)
 
-  const { data } = useSWR<DataProp[]>(`/api/v1/chats/`, {
-    refreshInterval: 1000,
-  })
+  // const { data } = useSWR<DataProp[]>('/api/v1/chats/')
 
-  console.log('data -----')
-  console.log(data)
   // useEffect(() => {
   //   if (data) {
   //     if (data[0].statusCode >= 400) {
@@ -155,18 +149,7 @@ async function Dashboard({ currentUser }: DashboardProps) {
         {globalErrorMessage && <ShowErrors message={globalErrorMessage} />}
 
         <div className="flex-1 overflow-y-auto bg-light-background dark:bg-dark-background max-[994px]:w-screen">
-          {allChats &&
-            allChats.map((item) => {
-              return (
-                <ChatList
-                  key={item.id}
-                  data={item}
-                  active={activeChat?.id === item.id}
-                  onClick={() => setActiveChat(item)}
-                  onMobileClick={() => setMobileOpen(true)}
-                />
-              )
-            })}
+          <Chats />
         </div>
       </div>
 
