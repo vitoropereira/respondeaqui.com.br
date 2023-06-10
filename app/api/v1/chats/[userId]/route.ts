@@ -1,0 +1,16 @@
+import { PrismaChatsRepository } from '@/app/repositories/prisma/prismaChatsRepository'
+import { NextResponse } from 'next/server'
+
+interface IParams {
+  userId: string
+}
+
+export async function GET({ params }: { params: IParams }) {
+  const { userId } = params
+
+  const prismaChatsRepository = new PrismaChatsRepository()
+
+  const res = await prismaChatsRepository.findChatByUserId(userId)
+
+  return NextResponse.json(res)
+}
