@@ -129,8 +129,6 @@ export function NewChat({ show, setShow, currentUser }: NewChatProps) {
       const responseBody = await response.json()
 
       if (response.status === 200) {
-        console.log('responseBody')
-        console.log(responseBody)
         setIsLoading(false)
         setListChat(responseBody)
         return

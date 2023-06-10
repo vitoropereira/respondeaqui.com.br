@@ -48,8 +48,6 @@ const LoginModal = () => {
       ...data,
       redirect: false,
     }).then((callback) => {
-      console.log('callback')
-      console.log(callback)
       setIsLoading(false)
 
       if (callback?.ok) {

@@ -11,7 +11,7 @@ export async function POST(request: Request) {
   return NextResponse.json(newChat)
 }
 
-export async function GET(request: Request) {
+export async function GET() {
   const prismaChatsRepository = new PrismaChatsRepository()
 
   const allChats = await prismaChatsRepository.findAllChats()

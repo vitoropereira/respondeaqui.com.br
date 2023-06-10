@@ -46,6 +46,8 @@ async function Dashboard({ currentUser }: DashboardProps) {
     refreshInterval: 1000,
   })
 
+  console.log('data -----')
+  console.log(data)
   // useEffect(() => {
   //   if (data) {
   //     if (data[0].statusCode >= 400) {

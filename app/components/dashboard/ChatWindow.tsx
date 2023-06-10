@@ -140,8 +140,7 @@ export function ChatWindow({
 
       if (response.status === 201) {
         setIsLoading(false)
-        console.log('responseBody')
-        console.log(responseBody)
+
         setMessageList([...messageList, responseBody])
 
         setText('')
