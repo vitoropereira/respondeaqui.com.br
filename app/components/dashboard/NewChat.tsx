@@ -1,12 +1,16 @@
+'use client'
+
 import { useState, useEffect, FormEvent, ChangeEvent } from 'react'
 import Image from 'next/image'
 import ArrowBackIcon from '@mui/icons-material/ArrowBack'
+import useNewChatOpen from '@/app/hooks/useNewChatOpen'
 
-import { useSession, signOut } from 'next-auth/react'
+import { signOut } from 'next-auth/react'
 import { SafeUser } from '@/app/@types/userTypes'
 import { Input } from '../Input'
 import Loading from '@/app/loading'
 import { ShowErrors } from '../ShowErrors'
+import ClientOnly from '../ClientOnly'
 
 interface NewChatProps {
   show: boolean
@@ -23,22 +27,14 @@ export interface ChatLists {
   user: SafeUser | null
 }
 
-// interface User {
-//   id: string
-//   username: string
-//   email: string
-//   signInMethod: string[]
-//   avatar_url: string
-//   created_at: string
-//   updated_at: string
-// }
-
 export function NewChat({ show, setShow, currentUser }: NewChatProps) {
   const [newChat, setNewChat] = useState('')
   const [listChat, setListChat] = useState<ChatLists[]>([])
   const [globalErrorMessage, setGlobalErrorMessage] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const [errorObject, setErrorObject] = useState('')
+
+  const { onClose } = useNewChatOpen()
 
   const handleNewChatChange = async (event: ChangeEvent<HTMLInputElement>) => {
     event.target.setCustomValidity('')
@@ -162,92 +158,94 @@ export function NewChat({ show, setShow, currentUser }: NewChatProps) {
   }, [currentUser])
 
   return (
-    <div
-      className="fixed bottom-0 left-0 top-0 z-10 flex 
-      w-[35%] max-w-[415px] flex-col
-      border-r-[1px] border-r-light-border 
-      bg-light-background transition-all ease-linear dark:border-r-dark-border dark:bg-dark-background max-[994px]:h-full max-[994px]:w-full"
-      style={{ left: show ? 0 : -420 }}
-    >
-      <div className="flex items-center bg-brand-500 pb-[15px] pl-[15px] pr-[15px] pt-[10px]">
-        <div
-          onClick={handleClose}
-          className="flex h-10 w-10 cursor-pointer items-center justify-center"
-        >
-          <ArrowBackIcon style={{ color: '#FFF' }} />
+    <ClientOnly>
+      <div
+        className="fixed bottom-0 left-0 top-0 z-10 flex 
+        w-[35%] max-w-[415px] flex-col
+        border-r-[1px] border-r-light-border 
+        bg-light-background transition-all ease-linear dark:border-r-dark-border dark:bg-dark-background max-[994px]:h-full max-[994px]:w-full"
+        style={{ left: show ? 0 : -420 }}
+      >
+        <div className="flex items-center bg-brand-500 pb-[15px] pl-[15px] pr-[15px] pt-[10px]">
+          <div
+            onClick={onClose}
+            className="flex h-10 w-10 cursor-pointer items-center justify-center"
+          >
+            <ArrowBackIcon style={{ color: '#FFF' }} />
+          </div>
+          <h2 className="ml-5 h-10 flex-1 text-lg font-bold leading-10 text-white">
+            Seus Chats
+          </h2>
         </div>
-        <h2 className="ml-5 h-10 flex-1 text-lg font-bold leading-10 text-white">
-          Seus Chats
-        </h2>
-      </div>
-      <div className="min-h-48 max-h-40 flex-1  overflow-y-auto">
-        <p className="mt-1 px-4 py-2 pl-6 text-base font-bold text-light-text dark:text-dark-text">
-          Criar novo Chat
-        </p>
-        <Input
-          placeholderText="Digite o tema do Chat."
-          onChange={handleNewChatChange}
-          value={newChat}
-          icon={false}
-        />
-        <div className="px-4 py-1">
-          <div className="flex h-10 items-center rounded-[10px] px-1 py-0">
-            <button
-              type="submit"
-              className="w-full rounded-lg bg-brand-500 
+        <div className="min-h-48 max-h-40 flex-1  overflow-y-auto">
+          <p className="mt-1 px-4 py-2 pl-6 text-base font-bold text-light-text dark:text-dark-text">
+            Criar novo Chat
+          </p>
+          <Input
+            placeholderText="Digite o tema do Chat."
+            onChange={handleNewChatChange}
+            value={newChat}
+            icon={false}
+          />
+          <div className="px-4 py-1">
+            <div className="flex h-10 items-center rounded-[10px] px-1 py-0">
+              <button
+                type="submit"
+                className="w-full rounded-lg bg-brand-500 
                         px-2 py-1 
                         text-center text-base 
                         font-semibold text-dark-text  
                         shadow-md transition duration-200 ease-in hover:bg-dark-backgroundHover focus:outline-none dark:bg-light-chatBackground 
                         dark:text-light-text 
                         dark:hover:bg-light-backgroundHover "
-              disabled={isLoading}
-              onClick={handleCreateNewChat}
-            >
-              {isLoading ? <Loading /> : 'Criar chat'}
-            </button>
-          </div>
+                disabled={isLoading}
+                onClick={handleCreateNewChat}
+              >
+                {isLoading ? <Loading /> : 'Criar chat'}
+              </button>
+            </div>
 
-          {errorObject && <ShowErrors message={errorObject} />}
-          {globalErrorMessage && <ShowErrors message={globalErrorMessage} />}
+            {errorObject && <ShowErrors message={errorObject} />}
+            {globalErrorMessage && <ShowErrors message={globalErrorMessage} />}
+          </div>
+        </div>
+        <div className="flex-1 overflow-y-auto">
+          {listChat &&
+            listChat.map((item) => {
+              return (
+                <div
+                  className="flex cursor-pointer items-center p-4 hover:bg-light-backgroundHover dark:hover:bg-dark-backgroundHover"
+                  key={item.id}
+                >
+                  {item.user && item.user.image ? (
+                    <Image
+                      width={50}
+                      height={50}
+                      className="mr-4 rounded-full"
+                      alt="Imagem do usuário."
+                      src={item.user.image}
+                    />
+                  ) : (
+                    <Image
+                      width={50}
+                      height={50}
+                      className="mr-4 rounded-full"
+                      alt="Imagem do usuário."
+                      src="./chats-96.png"
+                    />
+                  )}
+
+                  <div className="flex flex-col items-start justify-start pl-1 text-base text-light-text dark:text-dark-text ">
+                    <span>{item.content}</span>
+                    <span className="ml-1 text-xs font-thin">
+                      {item.user && item.user.name}
+                    </span>
+                  </div>
+                </div>
+              )
+            })}
         </div>
       </div>
-      <div className="flex-1 overflow-y-auto">
-        {listChat &&
-          listChat.map((item) => {
-            return (
-              <div
-                className="flex cursor-pointer items-center p-4 hover:bg-light-backgroundHover dark:hover:bg-dark-backgroundHover"
-                key={item.id}
-              >
-                {item.user && item.user.image ? (
-                  <Image
-                    width={50}
-                    height={50}
-                    className="mr-4 rounded-full"
-                    alt="Imagem do usuário."
-                    src={item.user.image}
-                  />
-                ) : (
-                  <Image
-                    width={50}
-                    height={50}
-                    className="mr-4 rounded-full"
-                    alt="Imagem do usuário."
-                    src="./chats-96.png"
-                  />
-                )}
-
-                <div className="flex flex-col items-start justify-start pl-1 text-base text-light-text dark:text-dark-text ">
-                  <span>{item.content}</span>
-                  <span className="ml-1 text-xs font-thin">
-                    {item.user && item.user.name}
-                  </span>
-                </div>
-              </div>
-            )
-          })}
-      </div>
-    </div>
+    </ClientOnly>
   )
 }

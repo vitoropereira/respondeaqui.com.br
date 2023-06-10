@@ -18,16 +18,13 @@ const DashboardHeader = async ({ currentUser }: DashboardHeaderProps) => {
   const { isOpen, onClose, onOpen } = useNewChatOpen()
 
   const handleThemeContext = () => {
-    console.log('mode handleThemeContext')
-    console.log(mode)
     if (mode === '') {
       onChangeThemeToDark()
       return
     }
     onChangeThemeToLight()
   }
-  console.log('mode')
-  console.log(mode)
+
   const handleNewChat = () => {
     if (isOpen) {
       onClose()

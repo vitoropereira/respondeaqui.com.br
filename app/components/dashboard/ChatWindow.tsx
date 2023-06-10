@@ -1,11 +1,9 @@
-'use cliente'
+interface ChatWindowProps {
+  activeChatId:string
+}
 
-import { useState } from 'react'
-
-interface ChatWindowProps {}
-
-export function ChatWindow({}: ChatWindowProps) {
-  
+export default async function ChatWindow({activeChatId}: ChatWindowProps) {
+  const chatData = await 
 
   activeChat !== undefined && (
     <ChatWindow
