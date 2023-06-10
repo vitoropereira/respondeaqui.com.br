@@ -2,7 +2,7 @@ import { User } from 'next-auth'
 
 export type SafeUser = Omit<
   User,
-  'createdAt' | 'updatedAt' | 'emailVerified' | 'favorite'
+  'createdAt' | 'updatedAt' | 'emailVerified'
 > & {
   tutorial_steps?: number
   createdAt: string

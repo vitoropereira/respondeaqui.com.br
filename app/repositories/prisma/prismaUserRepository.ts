@@ -1,19 +1,18 @@
-import { User } from "@prisma/client";
-import { UpdateUserProps, UserProps } from "app/@types/userTypes";
-import prisma from "src/service/prisma";
-import { UsersRepository } from "../usersRepository";
+import { SafeUser } from '@/app/@types/userTypes'
+import { CreateUserProps, UsersRepository } from '../usersRepository'
+import prisma from '@/app/service/prisma'
 
 export class PrismaUsersRepository implements UsersRepository {
-  async createUser({ avatar_url, email, username }: UserProps) {
+  async createUser({ image, email, name }: CreateUserProps) {
     const user = await prisma.user.create({
       data: {
         email,
-        username,
-        avatar_url,
+        name,
+        image,
       },
-    });
+    })
 
-    return user;
+    return user
   }
 
   async findUserByEmail(email: string) {
@@ -21,13 +20,13 @@ export class PrismaUsersRepository implements UsersRepository {
       where: {
         email,
       },
-    });
+    })
 
     if (existUser) {
-      return existUser;
+      return existUser
     }
 
-    return undefined;
+    return undefined
   }
 
   async findUserByUserId(userId: string) {
@@ -35,21 +34,42 @@ export class PrismaUsersRepository implements UsersRepository {
       where: {
         id: userId,
       },
-    });
+    })
 
     if (existUser) {
-      return existUser;
+      return existUser
     }
 
-    return undefined;
+    return undefined
   }
 
-  async updateUserDataTutorial(userId: string, userData: UpdateUserProps) {
-    const { tutorial_steps } = userData;
+  async updateUserData(userId: string, userData: SafeUser) {
+    const user = await this.findUserByUserId(userId)
 
-    const user = await this.findUserByUserId(userId);
+    if (!user) {
+      return undefined
+    }
 
-    const tutorialStepsLevel = user.tutorial_steps + tutorial_steps;
+    const userUpdated = await prisma.user.update({
+      data: userData,
+      where: {
+        id: userId,
+      },
+    })
+
+    if (userUpdated) {
+      return userUpdated
+    }
+  }
+
+  async updateUserDataTutorial(userId: string, tutorialSteps: number) {
+    const user = await this.findUserByUserId(userId)
+
+    if (!user) {
+      return undefined
+    }
+
+    const tutorialStepsLevel = user.tutorial_steps + tutorialSteps
 
     const userUpdated = await prisma.user.update({
       data: {
@@ -58,10 +78,10 @@ export class PrismaUsersRepository implements UsersRepository {
       where: {
         id: userId,
       },
-    });
+    })
 
     if (userUpdated) {
-      return userUpdated;
+      return userUpdated
     }
   }
 }

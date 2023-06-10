@@ -4,6 +4,7 @@ import getCurrentUser from '../actions/getCurrentUser'
 import ClientOnly from '../components/ClientOnly'
 import { ChatProps } from '../@types/chatType'
 import Dashboard from '../components/dashboard/Dashboard'
+import Home from '../page'
 
 type DataProp = ChatProps & {
   name?: string
@@ -17,11 +18,8 @@ type DataProp = ChatProps & {
 const App = async () => {
   const currentUser = await getCurrentUser()
 
-  const router = useRouter()
-
   if (!currentUser) {
-    router.push('../')
-    return
+    return <Home />
   }
 
   return (
