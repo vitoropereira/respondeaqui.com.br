@@ -1,12 +1,12 @@
-import { User } from "@prisma/client";
-import { UpdateUserProps, UserProps } from "src/@types/userTypes";
+import { User } from '@prisma/client'
+import { SafeUser } from '../@types/next-auth'
 
 export interface UsersRepository {
-  createUser: ({ avatar_url, email, username }: UserProps) => Promise<User>;
-  findUserByEmail: (email: string) => Promise<User | undefined>;
-  findUserByUserId: (userId: string) => Promise<User | undefined>;
+  createUser: ({ image, email, name }: SafeUser) => Promise<User>
+  findUserByEmail: (email: string) => Promise<User | undefined>
+  findUserByUserId: (userId: string) => Promise<User | undefined>
   updateUserDataTutorial: (
     userId: string,
-    userData: UpdateUserProps
-  ) => Promise<User>;
+    userData: SafeUser,
+  ) => Promise<User | undefined>
 }
