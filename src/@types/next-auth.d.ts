@@ -24,10 +24,10 @@ declare module 'next-auth' {
   export interface Session {
     user: {
       id: string
-      username: string
+      name: string
       email: string
       tutorial_steps?: number
-      avatar_url?: string
+      image?: string
     }
   }
 }

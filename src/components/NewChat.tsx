@@ -8,11 +8,12 @@ import { useSession, signOut } from 'next-auth/react'
 import { ShowErrors } from './ShowErrors'
 import { SafeUser } from '../@types/next-auth'
 import { useRouter } from 'next/router'
+import { User } from 'next-auth'
 
 interface NewChatProps {
   show: boolean
   setShow: (show: boolean) => void
-  currentUser: SafeUser
+  currentUser: User
 }
 
 export interface ChatLists {

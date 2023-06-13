@@ -55,6 +55,7 @@ function App() {
   }, [allChats, data])
 
   const session = useSession()
+
   const router = useRouter()
 
   const isSignedIn = session.status === 'authenticated'
@@ -85,6 +86,10 @@ function App() {
     return <Loading size={12} />
   }
 
+  if (!session.data || (session.data && !session.data.user)) {
+    return <Loading size={32} />
+  }
+
   return (
     <div
       className={`${themeMode} flex h-screen bg-light-backgroundSecond dark:bg-dark-backgroundSecond`}
@@ -94,24 +99,28 @@ function App() {
               border-r border-r-light-border dark:border-r-dark-border 
               max-[994px]:w-full max-[994px]:max-w-full"
       >
-        <NewChat show={showNewChat} setShow={setShowNewChat} />
+        <NewChat
+          show={showNewChat}
+          setShow={setShowNewChat}
+          currentUser={session.data.user}
+        />
 
         <header className="flex h-[60px] items-center justify-between bg-light-backgroundSecond px-4 py-0 dark:bg-dark-backgroundSecond">
           <div className="flex items-center justify-center gap-2">
-            {session.data?.user.avatar_url ? (
+            {session.data.user.image ? (
               <Image
                 width={40}
                 height={40}
                 className="cursor-pointer rounded-full"
-                src={session.data.user.avatar_url}
-                alt={`Foto do usuário ${session.data.user.username}`}
+                src={session.data.user.image}
+                alt={`Foto do usuário ${session.data.user.name}`}
               />
             ) : (
               ''
             )}
 
             <p className="ml-1 text-light-text dark:text-dark-text">
-              {session.data.user.username}
+              {session.data.user.name}
             </p>
           </div>
           <div className="flex">
@@ -179,16 +188,3 @@ function App() {
 }
 
 export default App
-
-export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
-  const session = await unstable_getServerSession(
-    req,
-    res,
-    buildNextAuthOptions(req, res),
-  )
-  return {
-    props: {
-      session,
-    },
-  }
-}
