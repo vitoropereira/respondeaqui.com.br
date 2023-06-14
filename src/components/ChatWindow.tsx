@@ -11,26 +11,29 @@ import Image from 'next/image'
 import { useSession } from 'next-auth/react'
 import { MessageProps } from 'src/@types/messageTypes'
 import { ChatProps } from 'src/@types/chatType'
+import { SafeUser } from '../@types/next-auth'
 
 interface ChatWindowProps {
   chatData: ChatProps
   mobileOpen: boolean
   handleWithSetMobileOpen: () => void
+  currentUser: SafeUser
 }
 
 export function ChatWindow({
   chatData,
   mobileOpen,
   handleWithSetMobileOpen,
+  currentUser,
 }: ChatWindowProps) {
   const body = useRef<HTMLDivElement>()
+
   // const {
   //   transcript,
   //   listening,
   //   resetTranscript,
   //   browserSupportsSpeechRecognition,
   // } = useSpeechRecognition();
-  const session = useSession()
 
   const [emojiOpen, setEmojiOpen] = useState(false)
   const [text, setText] = useState('')
@@ -40,21 +43,20 @@ export function ChatWindow({
   const [errorObject, setErrorObject] = useState('')
   const [sendTExt, setSendTExt] = useState(true)
 
-  const [listeningAudio, setListeningAudio] = useState(false)
-  const [users, setUsers] = useState([])
+  // const [listeningAudio, setListeningAudio] = useState(false)
 
-  const { data, error } = useSWR<MessageProps[]>(
-    `/api/v1/messages/${chatData.id}`,
-    {
-      refreshInterval: 100,
-    },
-  )
+  // const { data, error } = useSWR<MessageProps[]>(
+  //   `/api/v1/messages/${chatData.id}`,
+  //   {
+  //     refreshInterval: 100,
+  //   },
+  // )
 
-  useEffect(() => {
-    if (!error && data) {
-      setMessageList(data)
-    }
-  }, [data, error])
+  // useEffect(() => {
+  //   if (!error && data) {
+  //     setMessageList(data)
+  //   }
+  // }, [data, error])
 
   useEffect(() => {
     if (body.current) {
@@ -110,13 +112,13 @@ export function ChatWindow({
     }
 
     try {
-      if (!session.data || (session.data && !session.data.user)) {
+      if (!currentUser) {
         throw new Error('Usuário não esta logado! ')
       }
 
-      const message: MessageProps = {
+      const message = {
         content: text,
-        user_id: session.data.user.id,
+        user_id: currentUser.id,
         chat_id: chatData.id,
         content_type: 'text',
       }
@@ -136,8 +138,6 @@ export function ChatWindow({
 
       if (response.status === 201) {
         setIsLoading(false)
-        console.log('responseBody')
-        console.log(responseBody)
         setMessageList([...messageList, responseBody])
 
         setText('')

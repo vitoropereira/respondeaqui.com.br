@@ -68,8 +68,6 @@ export function NewChat({ show, setShow, currentUser }: NewChatProps) {
       setGlobalErrorMessage('')
 
       const responseBody = await response.json()
-      console.log('responseBody')
-      console.log(responseBody)
       if (response.status === 201) {
         setNewChat('')
         setIsLoading(false)
@@ -92,8 +90,6 @@ export function NewChat({ show, setShow, currentUser }: NewChatProps) {
         return
       }
     } catch (error) {
-      console.log('error')
-      console.log(error)
       setGlobalErrorMessage(
         'Não foi possível se conectar ao Responde Aqui. Por favor, verifique sua conexão.',
       )
@@ -121,8 +117,6 @@ export function NewChat({ show, setShow, currentUser }: NewChatProps) {
       const responseBody = await response.json()
 
       if (response.status === 200) {
-        console.log('responseBody')
-        console.log(responseBody)
         setIsLoading(false)
         setListChat(responseBody)
         return
@@ -140,16 +134,13 @@ export function NewChat({ show, setShow, currentUser }: NewChatProps) {
         return
       }
     } catch (error) {
-      console.log('error')
-      console.log(error)
       setGlobalErrorMessage(
         'Não foi possível se conectar ao Responde Aqui. Por favor, verifique sua conexão.',
       )
       setIsLoading(false)
     }
   }
-  console.log('listChat')
-  console.log(listChat)
+
   return (
     <div
       className="fixed bottom-0 left-0 top-0 z-10 flex 
@@ -204,10 +195,6 @@ export function NewChat({ show, setShow, currentUser }: NewChatProps) {
       <div className="flex-1 overflow-y-auto">
         {listChat &&
           listChat.map((item) => {
-            console.log('item.user.image')
-
-            console.log(item)
-
             return (
               <div
                 className="flex cursor-pointer items-center p-4 hover:bg-light-backgroundHover dark:hover:bg-dark-backgroundHover"

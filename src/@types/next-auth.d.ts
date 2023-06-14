@@ -12,22 +12,22 @@ export type SafeUser = Omit<
   emailVerified: string | null
 }
 
-declare module 'next-auth' {
-  export interface User {
-    id: string
-    name: string
-    email: string
-    tutorial_steps?: number
-    image?: string
-  }
+// declare module 'next-auth' {
+//   export interface User {
+//     id: string
+//     name: string
+//     email: string
+//     tutorial_steps?: number
+//     image?: string
+//   }
 
-  export interface Session {
-    user: {
-      id: string
-      name: string
-      email: string
-      tutorial_steps?: number
-      image?: string
-    }
-  }
-}
+//   export interface Session {
+//     user: {
+//       id: string
+//       name: string
+//       email: string
+//       tutorial_steps?: number
+//       image?: string
+//     }
+//   }
+// }

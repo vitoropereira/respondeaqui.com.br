@@ -2,7 +2,6 @@ import { PrismaChatsRepository } from '@/src/repositories/prisma/prismaChatsRepo
 import { NextResponse } from 'next/server'
 
 export async function GET(request: Request) {
-  console.log('entrei aqui!!!! ')
   const prismaChatsRepository = new PrismaChatsRepository()
 
   const allChats = await prismaChatsRepository.findAllChats()

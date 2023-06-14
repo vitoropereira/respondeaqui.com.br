@@ -25,7 +25,7 @@ export default function Login() {
 
   useEffect(() => {
     if (isSignedIn) {
-      router.push('../dashboard')
+      router.push('../chats')
     }
   }, [isSignedIn, router])
 
@@ -40,14 +40,14 @@ export default function Login() {
 
   //     await userFirebase.addUser(newUser);
 
-  //     router.push("./dashboard");
+  //     router.push("./chats");
   //   } else {
   //     alert("Erro!");
   //   }
   // };
 
   // if (currentUser) {
-  //   router.push("./dashboard");
+  //   router.push("./chats");
   // }
 
   return (

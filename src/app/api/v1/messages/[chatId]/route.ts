@@ -6,6 +6,8 @@ interface IParams {
 }
 
 export async function GET({ params }: { params: IParams }) {
+  console.log('params')
+  console.log(params)
   const { chatId } = params
 
   const prismaMessageRepository = new PrismaMessageRepository()
