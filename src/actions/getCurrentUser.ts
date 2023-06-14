@@ -1,6 +1,5 @@
 import { getServerSession } from 'next-auth/next'
-
-import { authOptions } from '@/pages/api/auth/[...nextauth]'
+import { authOptions } from '../pages/api/auth/[...nextauth]'
 import prisma from '../service/prisma'
 
 export async function getSession() {
@@ -24,7 +23,8 @@ export default async function getCurrentUser() {
     if (!currentUser) {
       return null
     }
-
+    console.log('currentUser inside')
+    console.log(currentUser)
     return {
       ...currentUser,
       createdAt: currentUser.created_at.toISOString(),

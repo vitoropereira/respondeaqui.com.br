@@ -22,6 +22,7 @@ import { ChatProps } from 'src/@types/chatType'
 import { Tutorial } from 'src/components/Tutorial'
 import { authOptions } from '../api/auth/[...nextauth]'
 import prisma from '@/src/service/prisma'
+import { SafeUser } from '@/src/@types/next-auth'
 
 type DataProp = ChatProps & {
   name?: string
@@ -32,7 +33,11 @@ type DataProp = ChatProps & {
   requestId?: string
 }
 
-function App({ currentUser }) {
+interface ChatsProps {
+  currentUser: SafeUser
+}
+
+function Chats({ currentUser }: ChatsProps) {
   const [activeChat, setActiveChat] = useState<ChatProps>()
   const [showNewChat, setShowNewChat] = useState(false)
   const [isDarkTheme, setIsDarkTheme] = useState(false)
@@ -56,12 +61,9 @@ function App({ currentUser }) {
     }
   }, [allChats, data])
 
-  const session = useSession()
-  console.log('session')
-  console.log(session)
   const router = useRouter()
 
-  const isSignedIn = session.status === 'authenticated'
+  const isSignedIn = !!currentUser
 
   function handleWithSetMobileOpen() {
     setMobileOpen(!mobileOpen)
@@ -114,25 +116,26 @@ function App({ currentUser }) {
           <Tutorial
             tutorialSteps={tutorialSteps}
             handleMakeTutorial={handleMakeTutorial}
+            currentUser={currentUser}
           />
         )}
 
         <header className="flex h-[60px] items-center justify-between bg-light-backgroundSecond px-4 py-0 dark:bg-dark-backgroundSecond max-[994px]:w-screen">
           <div className="flex items-center justify-center gap-2">
-            {session.data?.user?.image ? (
+            {currentUser.image ? (
               <Image
                 width={40}
                 height={40}
                 className="cursor-pointer rounded-full"
-                src={session.data.user.image}
-                alt={`Foto do usuário ${session.data.user.name}`}
+                src={currentUser.image}
+                alt={`Foto do usuário ${currentUser.name}`}
               />
             ) : (
               ''
             )}
 
             <p className="ml-1 text-light-text dark:text-dark-text">
-              {session.data.user && session.data.user.name}
+              {currentUser && currentUser.name}
             </p>
           </div>
           <div className="flex">
@@ -241,4 +244,4 @@ export async function getServerSideProps(context) {
   }
 }
 
-export default App
+export default Chats
