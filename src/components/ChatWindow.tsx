@@ -45,18 +45,18 @@ export function ChatWindow({
 
   // const [listeningAudio, setListeningAudio] = useState(false)
 
-  // const { data, error } = useSWR<MessageProps[]>(
-  //   `/api/v1/messages/${chatData.id}`,
-  //   {
-  //     refreshInterval: 100,
-  //   },
-  // )
+  const { data, error } = useSWR<MessageProps[]>(
+    `/api/v1/messages/${chatData.id}`,
+    {
+      refreshInterval: 100,
+    },
+  )
 
-  // useEffect(() => {
-  //   if (!error && data) {
-  //     setMessageList(data)
-  //   }
-  // }, [data, error])
+  useEffect(() => {
+    if (!error && data) {
+      setMessageList(data)
+    }
+  }, [data, error])
 
   useEffect(() => {
     if (body.current) {
