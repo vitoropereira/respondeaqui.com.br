@@ -1,17 +1,17 @@
-import Image from "next/image";
-import { useEffect, useState } from "react";
-import { ChatProps } from "src/@types/chatType";
+import Image from 'next/image'
+import { useEffect, useState } from 'react'
+import { ChatProps } from 'src/@types/chatType'
 import {
   createScrollingText,
   getRelativeTime,
   limitText,
-} from "src/utils/generalFunctions";
+} from 'src/utils/generalFunctions'
 
 interface ChatListProps {
-  onClick: () => void;
-  active: boolean;
-  data: ChatProps;
-  onMobileClick: () => void;
+  onClick: () => void
+  active: boolean
+  data: ChatProps
+  onMobileClick: () => void
 }
 
 export function ChatList({
@@ -20,43 +20,47 @@ export function ChatList({
   data,
   onMobileClick,
 }: ChatListProps) {
-  const [time, setTime] = useState("");
+  const [time, setTime] = useState('')
 
   useEffect(() => {
-    let messageDate: Date;
+    let messageDate = new Date()
     if (data.message.length > 0) {
-      messageDate = new Date(data.message[data.message.length - 1].created_at);
+      if (data.message) {
+        messageDate = new Date(data.message[data.message.length - 1].created_at)
+      }
     } else {
-      messageDate = new Date(data.updated_at);
+      messageDate = new Date(data.updated_at)
     }
-    const updatedTime = getRelativeTime(messageDate);
-    setTime(updatedTime);
-  }, [data]);
+    const updatedTime = getRelativeTime(messageDate)
+    setTime(updatedTime)
+  }, [data])
 
   return (
     <div onClick={onMobileClick}>
       <div
-        className={`flex cursor-pointer items-center h-[70px] hover:bg-light-backgroundHover hover:dark:bg-dark-backgroundHover  pl-2 ${
-          active && "bg-light-backgroundActive dark:bg-dark-backgroundActive"
+        className={`flex h-[70px] cursor-pointer items-center pl-2 hover:bg-light-backgroundHover  hover:dark:bg-dark-backgroundHover ${
+          active && 'bg-light-backgroundActive dark:bg-dark-backgroundActive'
         }`}
         onClick={onClick}
       >
-        <Image
-          className="rounded-full ml-3"
-          width="50px"
-          height="50px"
-          src={data.user.avatar_url}
-          alt=""
-        />
+        {data.user.image && (
+          <Image
+            className="ml-3 rounded-full"
+            width={50}
+            height={50}
+            src={data.user.image}
+            alt="Imagem of user."
+          />
+        )}
         <div
-          className="flex-1 h-full flex flex-col justify-center
-         border-b-light-border dark:border-b-dark-text 
-         pr-4 ml-2 flex-wrap min-w-0"
+          className="ml-2 flex h-full min-w-0 flex-1
+         flex-col flex-wrap 
+         justify-center border-b-light-border pr-4 dark:border-b-dark-text"
         >
-          <div className="flex justify-between items-center w-full">
-            <div className="text-base text-light-text dark:text-dark-text pl-1 flex flex-col justify-start items-start ">
+          <div className="flex w-full items-center justify-between">
+            <div className="flex flex-col items-start justify-start pl-1 text-base text-light-text dark:text-dark-text ">
               <span>{limitText(data.content, 30)}</span>
-              <span className="text-xs text-light-lastMessage dark:text-dark-lastMessage font-mono ml-1">
+              <span className="ml-1 font-mono text-xs text-light-lastMessage dark:text-dark-lastMessage">
                 Por: {data.user.username}
               </span>
             </div>
@@ -64,21 +68,21 @@ export function ChatList({
               {time}
             </div>
           </div>
-          <div className="flex justify-between items-center w-full">
-            <div className="text-[10px] text-light-lastMessage dark:text-dark-lastMessage flex w-full mb-2">
-              <p className="overflow-hidden whitespace-nowrap overflow-ellipsis ml-1">
+          <div className="flex w-full items-center justify-between">
+            <div className="mb-2 flex w-full text-[10px] text-light-lastMessage dark:text-dark-lastMessage">
+              <p className="ml-1 overflow-hidden overflow-ellipsis whitespace-nowrap">
                 {data.message.length > 0 &&
                 data.user_id === data.message[0].user_id
-                  ? "Você: "
-                  : ""}
+                  ? 'Você: '
+                  : ''}
                 {data.message.length > 0
                   ? limitText(data.message[0].content, 25)
-                  : "..."}
+                  : '...'}
               </p>
             </div>
           </div>
         </div>
       </div>
     </div>
-  );
+  )
 }

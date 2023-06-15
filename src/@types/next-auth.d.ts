@@ -1,21 +1,33 @@
-import NextAuth from "next-auth";
+import { User } from '@prisma/client'
 
-declare module "next-auth" {
-  export interface User {
-    id: string;
-    username: string;
-    email: string;
-    tutorial_steps?: number;
-    avatar_url?: string;
-  }
+import NextAuth from 'next-auth'
 
-  export interface Session {
-    user: {
-      id: string;
-      username: string;
-      email: string;
-      tutorial_steps?: number;
-      avatar_url?: string;
-    };
-  }
+export type SafeUser = Omit<
+  User,
+  'createdAt' | 'updatedAt' | 'emailVerified'
+> & {
+  tutorial_steps?: number
+  createdAt: string
+  updatedAt: string
+  emailVerified: string | null
 }
+
+// declare module 'next-auth' {
+//   export interface User {
+//     id: string
+//     name: string
+//     email: string
+//     tutorial_steps?: number
+//     image?: string
+//   }
+
+//   export interface Session {
+//     user: {
+//       id: string
+//       name: string
+//       email: string
+//       tutorial_steps?: number
+//       image?: string
+//     }
+//   }
+// }

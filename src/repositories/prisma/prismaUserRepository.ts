@@ -1,19 +1,20 @@
-import { User } from "@prisma/client";
-import { UpdateUserProps, UserProps } from "src/@types/userTypes";
-import prisma from "src/service/prisma";
-import { UsersRepository } from "../usersRepository";
+import { User } from '@prisma/client'
+import { UpdateUserProps, UserProps } from 'src/@types/userTypes'
+import prisma from 'src/service/prisma'
+import { UsersRepository } from '../usersRepository'
+import { SafeUser } from '@/src/@types/next-auth'
 
 export class PrismaUsersRepository implements UsersRepository {
-  async createUser({ avatar_url, email, username }: UserProps) {
+  async createUser({ image, email, name }: SafeUser) {
     const user = await prisma.user.create({
       data: {
         email,
-        username,
-        avatar_url,
+        name,
+        image,
       },
-    });
+    })
 
-    return user;
+    return user
   }
 
   async findUserByEmail(email: string) {
@@ -21,13 +22,13 @@ export class PrismaUsersRepository implements UsersRepository {
       where: {
         email,
       },
-    });
+    })
 
     if (existUser) {
-      return existUser;
+      return existUser
     }
 
-    return undefined;
+    return undefined
   }
 
   async findUserByUserId(userId: string) {
@@ -35,21 +36,25 @@ export class PrismaUsersRepository implements UsersRepository {
       where: {
         id: userId,
       },
-    });
+    })
 
     if (existUser) {
-      return existUser;
+      return existUser
     }
 
-    return undefined;
+    return undefined
   }
 
-  async updateUserDataTutorial(userId: string, userData: UpdateUserProps) {
-    const { tutorial_steps } = userData;
+  async updateUserDataTutorial(userId: string, userData: SafeUser) {
+    const { tutorial_steps } = userData
 
-    const user = await this.findUserByUserId(userId);
+    const user = await this.findUserByUserId(userId)
 
-    const tutorialStepsLevel = user.tutorial_steps + tutorial_steps;
+    if (!user) {
+      return undefined
+    }
+
+    const tutorialStepsLevel = user.tutorial_steps + tutorial_steps
 
     const userUpdated = await prisma.user.update({
       data: {
@@ -58,10 +63,10 @@ export class PrismaUsersRepository implements UsersRepository {
       where: {
         id: userId,
       },
-    });
+    })
 
     if (userUpdated) {
-      return userUpdated;
+      return userUpdated
     }
   }
 }
