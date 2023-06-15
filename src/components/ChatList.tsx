@@ -26,9 +26,7 @@ export function ChatList({
     let messageDate = new Date()
     if (data.message.length > 0) {
       if (data.message) {
-        console.log('data.message[data.message.length - 1].created_at')
-        console.log(data.message[data.message.length - 1].created_at)
-        messageDate = new Date()
+        messageDate = new Date(data.message[data.message.length - 1].created_at)
       }
     } else {
       messageDate = new Date(data.updated_at)

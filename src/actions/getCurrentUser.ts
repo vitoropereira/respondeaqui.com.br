@@ -23,8 +23,7 @@ export default async function getCurrentUser() {
     if (!currentUser) {
       return null
     }
-    console.log('currentUser inside')
-    console.log(currentUser)
+
     return {
       ...currentUser,
       createdAt: currentUser.created_at.toISOString(),
