@@ -219,7 +219,11 @@ export function ChatWindow({
       >
         {messageList &&
           messageList.map((item) => (
-            <MessageItem key={item.id} messageData={item} />
+            <MessageItem
+              key={item.id}
+              messageData={item}
+              currentUser={currentUser}
+            />
           ))}
 
         {globalErrorMessage && (

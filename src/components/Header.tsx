@@ -1,18 +1,18 @@
-import { RiQuestionAnswerLine } from "react-icons/ri";
+import { RiQuestionAnswerLine } from 'react-icons/ri'
 
 interface HeaderProps {
-  headline?: string;
+  headline?: string
 }
 
 const Header = ({ headline }: HeaderProps) => {
   return (
-    <header className="flex justify-center py-4 md:py-6 itens-center">
-      <h1 className="font-bold px-2 text-3xl">
-        {!headline ? "RespondeAqui" : headline}
+    <header className="itens-center flex justify-center py-4 md:py-6">
+      <h1 className="px-2 text-3xl font-bold">
+        {!headline ? 'RespondeAqui' : headline}
       </h1>
-      <RiQuestionAnswerLine className="w-6 h-6 text-blue-400 text-3xl" />
+      <RiQuestionAnswerLine className="h-6 w-6 text-3xl text-blue-400" />
     </header>
-  );
-};
+  )
+}
 
-export default Header;
+export default Header

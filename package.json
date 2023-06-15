@@ -10,7 +10,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "vercel-build": "prisma generate && prisma migrate deploy && next build"
+    "lint:fix": "next lint --fix",
+    "vercel-build": "prisma generate && next build"
   },
   "dependencies": {
     "@emoji-mart/data": "^1.1.2",
