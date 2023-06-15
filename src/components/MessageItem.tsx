@@ -2,12 +2,14 @@ import { useSession } from 'next-auth/react'
 import Image from 'next/image'
 import { useEffect, useState } from 'react'
 import { MessageProps } from 'src/@types/messageTypes'
+import { SafeUser } from '../@types/next-auth'
 
 interface MessageItemProps {
   messageData: MessageProps
+  currentUser: SafeUser
 }
 
-export function MessageItem({ messageData }: MessageItemProps) {
+export function MessageItem({ messageData, currentUser }: MessageItemProps) {
   const [time, setTime] = useState('')
 
   const session = useSession()
@@ -23,7 +25,7 @@ export function MessageItem({ messageData }: MessageItemProps) {
     setTime(`${hours}:${minutes}`)
   }, [messageData])
 
-  const isAuthor = session.data.user.id === messageData.user_id
+  const isAuthor = currentUser.id === messageData.user_id
 
   return (
     <div

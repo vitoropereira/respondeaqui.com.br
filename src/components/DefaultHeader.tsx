@@ -1,28 +1,25 @@
-import NextHead from "next/head";
-import { useRouter } from "next/router";
-import useMediaQuery from "src/pages/hooks/useMediaQuery";
-import webserver from "src/service/webserver";
-
-const webserverHost = webserver.getHost();
+import NextHead from 'next/head'
+import { useRouter } from 'next/router'
+import useMediaQuery from 'src/pages/hooks/useMediaQuery'
 
 export function DefaultHead() {
-  const router = useRouter();
-  const pathName = router.pathname;
+  const router = useRouter()
+  const pathName = router.pathname
 
-  const systemTheme = useMediaQuery("(prefers-color-scheme: dark)");
-  const favicon = "/chats-24.png";
+  const systemTheme = useMediaQuery('(prefers-color-scheme: dark)')
+  const favicon = '/chats-24.png'
 
   const defaultMetadata = {
-    title: "RespondeAqui: o lugar perfeito para discutir qualquer assunto",
-    image: `${webserverHost}/chats-24.png`,
+    title: 'RespondeAqui: o lugar perfeito para discutir qualquer assunto',
+    image: `https://www.respondeaqui.com.br/chats-24.png`,
     description:
-      "Conecte-se com outras pessoas e discuta qualquer assunto no RespondeAqui.",
-    url: `${webserverHost}${router.asPath}`,
-    type: "website",
+      'Conecte-se com outras pessoas e discuta qualquer assunto no RespondeAqui.',
+    url: `https://www.respondeaqui.com.br/${pathName}`,
+    type: 'website',
     noIndex: false,
-  };
+  }
 
-  const { type, title, description, image, url, noIndex } = defaultMetadata;
+  const { type, title, description, image, url, noIndex } = defaultMetadata
 
   return (
     <NextHead>
@@ -70,7 +67,7 @@ export function DefaultHead() {
       <meta name="mobile-web-app-capable" content="yes" />
       <meta name="apple-mobile-web-app-capable" content="yes" />
     </NextHead>
-  );
+  )
 }
 
 export default function SpecificHead({ metadata, children }) {
@@ -84,7 +81,7 @@ export default function SpecificHead({ metadata, children }) {
     author,
     published_time,
     modified_time,
-  } = metadata || {};
+  } = metadata || {}
 
   return (
     <NextHead>
@@ -150,5 +147,5 @@ export default function SpecificHead({ metadata, children }) {
 
       {children}
     </NextHead>
-  );
+  )
 }

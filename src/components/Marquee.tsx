@@ -1,12 +1,12 @@
-import React, { useState, useEffect, TimeHTMLAttributes } from "react";
+import React, { useState, useEffect, TimeHTMLAttributes } from 'react'
 
-interface Marquee {
-  text: string;
+interface MarqueeProps {
+  text: string
 }
 
-export function Marquee({ text }: Marquee) {
-  const [currentText, setCurrentText] = useState(text);
-  const [intervalId, setIntervalId] = useState<number>(undefined);
+export function Marquee({ text }: MarqueeProps) {
+  const [currentText, setCurrentText] = useState(text)
+  const [intervalId, setIntervalId] = useState<number>(0)
 
   // useEffect(() => {
   //   const id = setInterval(() => {
@@ -19,5 +19,5 @@ export function Marquee({ text }: Marquee) {
   //   return () => clearInterval(intervalId);
   // }, [intervalId]);
 
-  return <div className="text-sm font-bold text-left">{currentText}</div>;
+  return <div className="text-left text-sm font-bold">{currentText}</div>
 }
