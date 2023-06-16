@@ -6,7 +6,7 @@ export async function GET(request: Request) {
 
   const allChats = await prismaChatsRepository.findAllChats()
 
-  return NextResponse.json(allChats)
+  return NextResponse.json(allChats, { status: 200 })
 }
 
 export async function POST(request: Request) {
