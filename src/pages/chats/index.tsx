@@ -47,19 +47,19 @@ function Chats({ currentUser }: ChatsProps) {
   const [globalErrorMessage, setGlobalErrorMessage] = useState<string>()
   const [tutorialSteps, setTutorialSteps] = useState<number>(0)
 
-  const { data } = useSWR<DataProp[]>(`/api/v1/chats/`, {
+  const { data, error } = useSWR<DataProp[]>(`/api/v1/chats/`, {
     refreshInterval: 1000,
   })
 
   useEffect(() => {
     if (data) {
-      if (data[0].statusCode && data[0].statusCode >= 400) {
-        setGlobalErrorMessage(`${data[0].message} ${data[0].action}`)
+      if (error) {
+        setGlobalErrorMessage(error)
         return
       }
       setAllChats(data)
     }
-  }, [allChats, data])
+  }, [data, error])
 
   const router = useRouter()
 
