@@ -16,5 +16,5 @@ export async function POST(request: Request) {
 
   const newChat = await prismaChatsRepository.createChat(body)
 
-  return NextResponse.json(newChat)
+  return NextResponse.json(newChat, { status: 201 })
 }

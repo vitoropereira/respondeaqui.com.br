@@ -42,8 +42,8 @@ export function Tutorial({
     setIsLoading(true)
 
     try {
-      const userData: UpdateUserProps = {
-        tutorial_steps: 1,
+      const userData = {
+        tutorialSteps: 1,
       }
 
       const response = await fetch(`/api/v1/user/${currentUser.id}`, {
@@ -59,7 +59,7 @@ export function Tutorial({
 
       const responseBody = await response.json()
 
-      if (response.status === 200) {
+      if (response.status === 201) {
         handleMakeTutorial(responseBody.tutorial_steps)
         setMakingTutorial(responseBody.tutorial_steps)
         setIsLoading(false)

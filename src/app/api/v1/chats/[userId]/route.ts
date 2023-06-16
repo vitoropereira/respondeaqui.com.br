@@ -12,5 +12,5 @@ export async function GET(request: Request, { params }: { params: IParams }) {
 
   const res = await prismaChatsRepository.findChatByUserId(userId)
 
-  return NextResponse.json(res)
+  return NextResponse.json(res, { status: 200 })
 }

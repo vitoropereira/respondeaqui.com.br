@@ -45,16 +45,14 @@ export class PrismaUsersRepository implements UsersRepository {
     return undefined
   }
 
-  async updateUserDataTutorial(userId: string, userData: SafeUser) {
-    const { tutorial_steps } = userData
-
+  async updateUserDataTutorial(userId: string, tutorialSteps: number) {
     const user = await this.findUserByUserId(userId)
 
     if (!user) {
       return undefined
     }
 
-    const tutorialStepsLevel = user.tutorial_steps + tutorial_steps
+    const tutorialStepsLevel = user.tutorial_steps + tutorialSteps
 
     const userUpdated = await prisma.user.update({
       data: {
