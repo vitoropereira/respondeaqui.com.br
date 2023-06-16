@@ -52,6 +52,7 @@ function Chats({ currentUser }: ChatsProps) {
   })
 
   useEffect(() => {
+    console.log(data)
     if (data) {
       if (data[0].statusCode && data[0].statusCode >= 400) {
         setGlobalErrorMessage(`${data[0].message} ${data[0].action}`)
