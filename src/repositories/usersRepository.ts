@@ -7,6 +7,6 @@ export interface UsersRepository {
   findUserByUserId: (userId: string) => Promise<User | undefined>
   updateUserDataTutorial: (
     userId: string,
-    userData: SafeUser,
+    tutorialSteps: number,
   ) => Promise<User | undefined>
 }

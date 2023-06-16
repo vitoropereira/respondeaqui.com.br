@@ -18,5 +18,5 @@ export async function POST(request: Request, { params }: { params: IParams }) {
     tutorialSteps,
   )
 
-  return NextResponse.json(updateUserTutorial)
+  return NextResponse.json(updateUserTutorial, { status: 201 })
 }

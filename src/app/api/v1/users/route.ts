@@ -15,5 +15,5 @@ export async function POST(request: Request) {
     emailVerified: newUser.emailVerified?.toISOString() || null,
   }
 
-  return NextResponse.json(data)
+  return NextResponse.json(data, { status: 201 })
 }
