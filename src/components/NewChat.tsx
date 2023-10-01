@@ -56,39 +56,38 @@ export function NewChat({ show, setShow, currentUser }: NewChatProps) {
         // features: session.data.user.features,
       }
 
-      const response = await fetch(`/api/v1/chats`, {
-        method: 'POST',
+      const response = await fetch(`/api/v1/chats/start`, {
+        method: 'GET',
         headers: {
           Accept: 'application/json',
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(fullQuestion),
       })
 
       setGlobalErrorMessage('')
 
-      const responseBody = await response.json()
-      if (response.status === 201) {
-        setNewChat('')
-        setIsLoading(false)
-        setListChat([responseBody, ...listChat])
-        return
-      }
+      // const responseBody = await response.json()
+      // if (response.status === 201) {
+      //   setNewChat('')
+      //   setIsLoading(false)
+      //   setListChat([responseBody, ...listChat])
+      //   return
+      // }
 
-      if (response.status === 400) {
-        setErrorObject(responseBody)
-        setIsLoading(false)
-        return
-      }
+      // if (response.status === 400) {
+      //   setErrorObject(responseBody)
+      //   setIsLoading(false)
+      //   return
+      // }
 
-      if (response.status >= 401) {
-        setGlobalErrorMessage(`${responseBody.message} ${responseBody.action}`)
-        setIsLoading(false)
-        setInterval(() => {
-          signOut()
-        }, 5000)
-        return
-      }
+      // if (response.status >= 401) {
+      //   setGlobalErrorMessage(`${responseBody.message} ${responseBody.action}`)
+      //   setIsLoading(false)
+      //   setInterval(() => {
+      //     signOut()
+      //   }, 5000)
+      //   return
+      // }
     } catch (error) {
       setGlobalErrorMessage(
         'Não foi possível se conectar ao Responde Aqui. Por favor, verifique sua conexão.',
